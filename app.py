@@ -1,17 +1,21 @@
 import streamlit as st
 
+# Cài đặt trang web (Tiêu đề, icon)
+st.set_page_config(page_title="Moon's Content Creator", page_icon="🌙", layout="centered")
+
 # --- CẤU HÌNH DỮ LIỆU ---
 
-# THÔNG TIN SẢN PHẨM (Context để ChatGPT hiểu)
+# 1. CONTEXT SẢN PHẨM
 product_context = """
 Sản phẩm: Sữa nghệ Hera.
-Thành phần: Tinh chất Curcumin cao cấp (loại bỏ dầu/nhựa), Sữa tách béo New Zealand, Đường cỏ ngọt Stevia.
-Công dụng: Hỗ trợ đau dạ dày, trào ngược, làm lành vết thương cho người mới mổ/mẹ sau sinh, đẹp da, ngủ ngon.
-Ưu điểm: Không hăng, không đắng, không nóng trong, không gây béo.
-Đối tượng: Người đau dạ dày, mẹ bỉm sữa, người già, người sợ béo.
-Phong cách thương hiệu: Chân thành, thủ thỉ, chuyên gia nhưng gần gũi (Moon).
+Thành phần: Tinh chất Curcumin cao cấp, Sữa tách béo New Zealand, Đường cỏ ngọt Stevia.
+Công dụng: Hỗ trợ đau dạ dày, trào ngược, lành vết thương, đẹp da, ngủ ngon.
+Ưu điểm: Không hăng, không đắng, không nóng, không béo.
+Đối tượng: Người đau dạ dày, mẹ bỉm sữa, người sợ béo.
+Thương hiệu cá nhân: Moon - Chân thành, thủ thỉ, chuyên gia gần gũi.
 """
 
+# 2. LỊCH TRÌNH
 schedule = {
     "Thứ 2": {"text": "Nuôi dưỡng (Nurture)", "video": "Kể chuyện (Story-based)"},
     "Thứ 3": {"text": "Không có bài viết", "video": "Giải quyết vấn đề (Problem)"},
@@ -22,98 +26,60 @@ schedule = {
     "Chủ Nhật": {"text": "Nghỉ ngơi/Story", "video": "Hài hước/Trend"}
 }
 
-# PROMPT TEMPLATES (Lệnh cho ChatGPT)
+# 3. PROMPT TEMPLATES (TEXT)
 text_prompts = {
-    "Nuôi dưỡng (Nurture)": """
-    Viết một bài đăng Facebook cá nhân (Personal Story).
-    Mục tiêu: Kết nối cảm xúc, chưa bán hàng vội.
-    Chủ đề: Sự bận rộn và nhu cầu được chăm sóc bản thân của phụ nữ/mẹ bỉm.
-    Cấu trúc bài viết:
-    1. Hook: Một câu than thở nhẹ hoặc khoảnh khắc mệt mỏi cuối ngày.
-    2. Body: Kể về việc tìm thấy sự bình yên bên ly sữa nghệ ấm nóng. Lồng ghép khéo léo việc yêu bản thân.
-    3. Kết: Câu hỏi thăm nhẹ nhàng với bạn bè.
-    Tone mood: Ấm áp, thủ thỉ, sâu sắc.
-    """,
-    
-    "Giáo dục (Educate)": """
-    Viết một bài đăng chia sẻ kiến thức (Educational Post).
-    Mục tiêu: Giải quyết định kiến sai lầm (Myth vs Fact).
-    Chủ đề: So sánh Nghệ tươi/Bột nghệ thường VS Tinh chất Curcumin trong Sữa nghệ Hera.
-    Cấu trúc bài viết:
-    1. Hook: Giật tít về sai lầm (Ví dụ: Uống nghệ bị nóng? Bị vàng răng?).
-    2. Body: Giải thích khoa học đơn giản. Tại sao Hera loại bỏ được dầu nghệ gây nóng? Tại sao đường cỏ ngọt không gây béo?
-    3. Kết: Lời khuyên nên chọn sản phẩm tinh chế.
-    Tone mood: Chuyên gia, tin cậy, khách quan.
-    """,
-    
-    "Chuyển đổi (Convert)": """
-    Viết một bài đăng bán hàng (Sales Post).
-    Mục tiêu: Chốt đơn hàng.
-    Chủ đề: Kể câu chuyện khách hàng (Feedback) hoặc Kết quả của bản thân.
-    Cấu trúc bài viết:
-    1. Hook: Một lời khen/tin nhắn của khách hàng về việc hết đau dạ dày/ngủ ngon.
-    2. Body: Nêu rõ nỗi đau trước kia -> Sự thay đổi sau khi dùng Hera. Nhấn mạnh ưu điểm: Ngon, Dễ uống, Hiệu quả nhanh.
-    3. Call to Action: Kêu gọi mua hàng, ưu đãi gom đơn hoặc freeship.
-    Tone mood: Hào hứng, tự tin, thôi thúc.
-    """,
-    
-    "Nghỉ ngơi/Story": """
-    Viết một caption ngắn (Short Caption) kèm ảnh đi chơi hoặc gia đình.
-    Nội dung: Chúc cuối tuần vui vẻ, nhắc nhở mọi người giữ gìn sức khỏe. Không bán hàng.
-    Tone mood: Vui vẻ, năng lượng tích cực.
-    """
+    "Nuôi dưỡng (Nurture)": "Viết bài Facebook Storytelling.\nChủ đề: Sự bận rộn và nhu cầu chăm sóc bản thân.\nCấu trúc: Hook (Than thở nhẹ) -> Body (Bình yên bên ly sữa Hera) -> Kết (Hỏi thăm).\nTone: Ấm áp, thủ thỉ.",
+    "Giáo dục (Educate)": "Viết bài Kiến thức (Myth vs Fact).\nChủ đề: So sánh Nghệ tươi/Bột nghệ thường VS Tinh chất Curcumin Hera.\nCấu trúc: Hook (Giật tít sai lầm) -> Body (Khoa học đơn giản: Tách dầu, Cỏ ngọt) -> Kết (Khuyên dùng tinh chế).\nTone: Chuyên gia.",
+    "Chuyển đổi (Convert)": "Viết bài Bán hàng (Sales).\nChủ đề: Feedback khách hoặc Kết quả bản thân.\nCấu trúc: Hook (Lời khen/Kết quả) -> Body (Nỗi đau cũ -> Thay đổi nhờ Hera) -> CTA (Mua ngay, ưu đãi).\nTone: Hào hứng, tự tin.",
+    "Nghỉ ngơi/Story": "Viết Caption ngắn kèm ảnh đi chơi.\nNội dung: Chúc cuối tuần, nhắc giữ sức khỏe.\nTone: Vui vẻ."
+}
+
+# 4. KỊCH BẢN VIDEO
+video_scripts = {
+    "Kể chuyện (Story-based)": "🎬 KỊCH BẢN: TỪ MỆT MỎI ĐẾN HẠNH PHÚC\n[0-15s] Cảnh mệt mỏi, áp lực cuối ngày. Text: 'Đuối sức...'\n[15-45s] Uống Hera, tươi tỉnh, mỉm cười. Text: 'Nạp lại năng lượng yêu thương.'",
+    "Giải quyết vấn đề (Problem)": "🎬 KỊCH BẢN: ĐAU DẠ DÀY\n[0-15s] Ôm bụng đau, nhăn nhó, tia sét đỏ. Text: 'Đau bao tử lại hành!'\n[15-45s] Uống Hera, bụng êm, giơ ngón tay Like. Text: 'Êm ru sau 1 ly.'",
+    "Cảnh báo sai lầm (Warning)": "🎬 KỊCH BẢN: CẢNH BÁO PHA SAI\n[0-15s] Cầm ấm nước sôi sùng sục. Hiện dấu X ĐỎ. Text: 'Dừng lại! Nước sôi hỏng hết!'\n[15-30s] Pha nước ấm 40 độ. Uống ngon. Text: 'Nước ấm mới giữ được Curcumin.'",
+    "Phản biện (Counter-Intuitive)": "🎬 KỊCH BẢN: SỢ BÉO?\n[0-15s] Đẩy đường trắng ra xa. Lắc đầu. Text: 'Sợ béo? Xưa rồi!'\n[15-30s] Ôm lá cỏ ngọt Stevia. Show eo thon. Text: 'Đường cỏ ngọt 0 Calo, dáng xinh.'",
+    "Trước - Sau (Transformation)": "🎬 KỊCH BẢN: LỘT XÁC (SPLIT SCREEN)\n[0-20s] Trái: Da sạm, buồn, đau. Text: 'Trước khi gặp Hera...'\n[20-45s] Phải: Da hồng, vui, khỏe. Text: 'Sau 7 ngày: Khỏe đẹp từ bên trong.'",
+    "Trải nghiệm/Review": "🎬 KỊCH BẢN: NHẬT KÝ 7 NGÀY\n[0-20s] Cảnh cắt nhanh 7 ngày uống sữa. Text: 'Ngày 1: Ngon. Ngày 3: Êm...'\n[20-45s] Chốt lại vui vẻ. Text: 'Duyệt nha! Mẹ nào đau bao tử inbox Moon.'",
+    "Hài hước/Trend": "🎬 KỊCH BẢN: BẮT TREND\nNhân vật Bé Nghệ nhảy theo nhạc hot hoặc diễn cảnh hài hước về ăn uống healthy."
 }
 
 # --- GIAO DIỆN APP ---
-st.title("🌙 MOON'S CONTENT CREATOR")
-st.caption("Công cụ tạo Prompt tự động cho Sữa Nghệ Hera")
+st.title("🌙 MOON'S CREATOR v2.1")
+st.write("👉 **Mẹo:** Rê chuột vào góc phải khung đen để thấy nút **Copy** 📄")
 
 # Sidebar
 selected_day = st.selectbox("📅 Hôm nay là thứ mấy?", list(schedule.keys()))
 today_task = schedule[selected_day]
+video_topic = today_task['video']
 
-# Hiển thị nhiệm vụ
-col1, col2 = st.columns(2)
-with col1:
-    st.info(f"📝 **Bài viết:** {today_task['text']}")
-with col2:
-    st.warning(f"🎬 **Video:** {today_task['video']}")
+st.info(f"Nhiệm vụ: {selected_day} | Video: {video_topic}")
 
-st.divider()
+# TABS (Chia tab cho gọn)
+tab1, tab2 = st.tabs(["📝 BÀI VIẾT (CHATGPT)", "🎬 VIDEO (KỊCH BẢN & ẢNH)"])
 
-# XỬ LÝ BÀI VIẾT (TEXT)
-if today_task['text'] != "Không có bài viết":
-    st.subheader(f"📝 TẠO BÀI VIẾT: {today_task['text']}")
-    st.write("Copy đoạn lệnh bên dưới và dán vào ChatGPT:")
+with tab1:
+    if today_task['text'] == "Không có bài viết":
+        st.caption("Hôm nay nghỉ viết bài dài.")
+    else:
+        st.subheader("Copy lệnh này cho ChatGPT:")
+        full_prompt = f"""Đóng vai Moon (Thương hiệu cá nhân sức khỏe).
+{product_context}
+NHIỆM VỤ: {text_prompts[today_task['text']]}
+YÊU CẦU: Viết tiếng Việt tự nhiên, dùng icon, hashtag: #SuaNgheHera #HaPhanMinhNguyet"""
+        st.code(full_prompt, language='text')
+
+with tab2:
+    st.subheader(f"Chủ đề: {video_topic}")
     
-    # Ghép thông tin sản phẩm vào prompt cụ thể
-    full_prompt = f"""
-    Đóng vai là Moon - một người xây dựng thương hiệu cá nhân về sức khỏe và lối sống lành mạnh.
+    # Kịch bản text
+    st.write("📜 **Kịch bản quay/dựng:**")
+    st.code(video_scripts.get(video_topic, ""), language='text')
     
-    {product_context}
+    st.write("---")
     
-    NHIỆM VỤ:
-    {text_prompts[today_task['text']]}
-    
-    YÊU CẦU:
-    - Viết tiếng Việt tự nhiên, ngắt dòng dễ đọc.
-    - Dùng icon hợp lý.
-    - Thêm hashtag: #SuaNgheHera #HaPhanMinhNguyet #SucKhoe
-    """
-    st.code(full_prompt, language="text")
-
-# XỬ LÝ VIDEO
-st.subheader(f"🎬 TẠO VIDEO: {today_task['video']}")
-video_style = st.radio("Chọn phong cách video:", ["3D Animation (Bé Nghệ)", "KOL (Người thật)"], horizontal=True)
-
-if video_style == "3D Animation (Bé Nghệ)":
-    st.write("**Copy Prompt này dán vào Midjourney để tạo ảnh:**")
-    prompt_3d = f"/imagine prompt: A cute anthropomorphic turmeric root character acting in a scene about: {today_task['video']}. Pixar 3D animation style, warm lighting, expressive face, high detail, 8k --ar 9:16"
-    st.code(prompt_3d, language="text")
-    st.write("**Gợi ý kịch bản:** Dùng các phân cảnh vui nhộn, không thoại, nhạc nền trend.")
-else:
-    st.write("**Gợi ý kịch bản KOL:**")
-    st.info("Quay trực diện, ánh sáng tốt. Tập trung vào biểu cảm khuôn mặt và sản phẩm trên tay.")
-
-st.markdown("---")
-st.caption("Updated Version 1.5 - Auto Prompt Generation")
+    # Prompt ảnh 3D
+    st.write("🎨 **Prompt tạo ảnh 3D (Midjourney):**")
+    prompt_3d = f"/imagine prompt: A cute anthropomorphic turmeric root character acting in a scene about: {video_topic}. Pixar 3D style, warm lighting, expressive face, 8k --ar 9:16"
+    st.code(prompt_3d, language='text')
