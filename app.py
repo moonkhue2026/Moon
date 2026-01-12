@@ -13,17 +13,17 @@ def check_password():
         st.subheader("🔒 Đăng nhập hệ thống")
         password = st.text_input("Nhập mật khẩu quản trị:", type="password")
         if st.button("Đăng nhập"):
-            if password == "moonxinh":  # <--- SỬA MẬT KHẨU CỦA BẠN Ở ĐÂY
+            if password == "moonxinh":  # <--- MẬT KHẨU CỦA BẠN
                 st.session_state["password_correct"] = True
                 st.rerun()
             else:
                 st.error("Sai mật khẩu rồi!")
-        st.stop()  # Dừng lại, không chạy code bên dưới nếu chưa đăng nhập
+        st.stop()
 
-check_password() # Gọi hàm kiểm tra
+check_password() 
 
 # =========================================================
-# NỘI DUNG CHÍNH CỦA APP (CHỈ HIỆN KHI ĐÃ NHẬP ĐÚNG PASS)
+# NỘI DUNG CHÍNH (ĐÃ BỔ SUNG LẠI PHẦN CHỌN KOL/3D)
 # =========================================================
 
 # 1. CONTEXT SẢN PHẨM
@@ -47,7 +47,7 @@ schedule = {
     "Chủ Nhật": {"text": "Nghỉ ngơi/Story", "video": "Hài hước/Trend"}
 }
 
-# 3. PROMPT TEMPLATES (TEXT)
+# 3. PROMPT TEXT
 text_prompts = {
     "Nuôi dưỡng (Nurture)": "Viết bài Facebook Storytelling.\nChủ đề: Sự bận rộn và nhu cầu chăm sóc bản thân.\nCấu trúc: Hook (Than thở nhẹ) -> Body (Bình yên bên ly sữa Hera) -> Kết (Hỏi thăm).\nTone: Ấm áp, thủ thỉ.",
     "Giáo dục (Educate)": "Viết bài Kiến thức (Myth vs Fact).\nChủ đề: So sánh Nghệ tươi/Bột nghệ thường VS Tinh chất Curcumin Hera.\nCấu trúc: Hook (Giật tít sai lầm) -> Body (Khoa học đơn giản: Tách dầu, Cỏ ngọt) -> Kết (Khuyên dùng tinh chế).\nTone: Chuyên gia.",
@@ -63,11 +63,11 @@ video_scripts = {
     "Phản biện (Counter-Intuitive)": "🎬 KỊCH BẢN: SỢ BÉO?\n[0-15s] Đẩy đường trắng ra xa. Lắc đầu. Text: 'Sợ béo? Xưa rồi!'\n[15-30s] Ôm lá cỏ ngọt Stevia. Show eo thon. Text: 'Đường cỏ ngọt 0 Calo, dáng xinh.'",
     "Trước - Sau (Transformation)": "🎬 KỊCH BẢN: LỘT XÁC (SPLIT SCREEN)\n[0-20s] Trái: Da sạm, buồn, đau. Text: 'Trước khi gặp Hera...'\n[20-45s] Phải: Da hồng, vui, khỏe. Text: 'Sau 7 ngày: Khỏe đẹp từ bên trong.'",
     "Trải nghiệm/Review": "🎬 KỊCH BẢN: NHẬT KÝ 7 NGÀY\n[0-20s] Cảnh cắt nhanh 7 ngày uống sữa. Text: 'Ngày 1: Ngon. Ngày 3: Êm...'\n[20-45s] Chốt lại vui vẻ. Text: 'Duyệt nha! Mẹ nào đau bao tử inbox Moon.'",
-    "Hài hước/Trend": "🎬 KỊCH BẢN: BẮT TREND\nNhân vật Bé Nghệ nhảy theo nhạc hot hoặc diễn cảnh hài hước về ăn uống healthy."
+    "Hài hước/Trend": "🎬 KỊCH BẢN: BẮT TREND\nNhân vật nhảy theo nhạc hot hoặc diễn cảnh hài hước về ăn uống healthy."
 }
 
 # --- GIAO DIỆN APP ---
-st.title("🌙 MOON'S CREATOR v2.2 (Secured)")
+st.title("🌙 MOON'S CREATOR v2.3")
 st.write("👉 **Mẹo:** Rê chuột vào góc phải khung đen để thấy nút **Copy** 📄")
 
 # Sidebar
@@ -94,13 +94,25 @@ YÊU CẦU: Viết tiếng Việt tự nhiên, dùng icon, hashtag: #SuaNgheHera
 with tab2:
     st.subheader(f"Chủ đề: {video_topic}")
     
-    # Kịch bản text
+    # 1. KỊCH BẢN TEXT (LUÔN HIỆN)
     st.write("📜 **Kịch bản quay/dựng:**")
     st.code(video_scripts.get(video_topic, ""), language='text')
     
-    st.write("---")
+    st.divider()
     
-    # Prompt ảnh 3D
-    st.write("🎨 **Prompt tạo ảnh 3D (Midjourney):**")
-    prompt_3d = f"/imagine prompt: A cute anthropomorphic turmeric root character acting in a scene about: {video_topic}. It is holding a glass of warm, creamy golden-yellow turmeric milk. Pixar 3D style, warm lighting, expressive face, 8k --ar 9:16"
-    st.code(prompt_3d, language='text')
+    # 2. CHỌN PHONG CÁCH (ĐÃ KHÔI PHỤC LẠI)
+    video_style = st.radio("Chọn phong cách video:", ["3D Animation (Bé Nghệ)", "KOL (Người thật)"], horizontal=True)
+    
+    if video_style == "3D Animation (Bé Nghệ)":
+        st.write("🎨 **Prompt tạo ảnh 3D (Midjourney):**")
+        # Prompt đã update màu sữa vàng
+        prompt_3d = f"/imagine prompt: A cute anthropomorphic turmeric root character acting in a scene about: {video_topic}. It is holding a glass of warm, creamy golden-yellow turmeric milk. Pixar 3D style, warm lighting, expressive face, 8k --ar 9:16"
+        st.code(prompt_3d, language='text')
+    else:
+        st.info("💡 **HƯỚNG DẪN QUAY KOL (NGƯỜI THẬT):**")
+        st.markdown("""
+        * **Bối cảnh:** Sáng sủa, gọn gàng (Góc bếp hoặc bàn làm việc).
+        * **Góc máy:** Quay cận mặt để bắt trọn biểu cảm (Đau đớn -> Hạnh phúc).
+        * **Sản phẩm:** Luôn cầm ly sữa trên tay ở phân đoạn 2.
+        * **Ánh sáng:** Dùng ánh sáng vàng ấm để da dẻ hồng hào, hợp màu nghệ.
+        """)
