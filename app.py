@@ -116,3 +116,4 @@ with tab2:
         * **Sản phẩm:** Luôn cầm ly sữa trên tay ở phân đoạn 2.
         * **Ánh sáng:** Dùng ánh sáng vàng ấm để da dẻ hồng hào, hợp màu nghệ.
         """)
+
