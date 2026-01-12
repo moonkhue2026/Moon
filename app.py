@@ -3,27 +3,8 @@ import streamlit as st
 # Cài đặt trang web
 st.set_page_config(page_title="Moon's Content Creator", page_icon="🌙", layout="centered")
 
-# --- 🔐 BẢO MẬT: CHECK MẬT KHẨU ---
-def check_password():
-    """Hàm kiểm tra mật khẩu đơn giản"""
-    if "password_correct" not in st.session_state:
-        st.session_state["password_correct"] = False
-
-    if not st.session_state["password_correct"]:
-        st.subheader("🔒 Đăng nhập hệ thống")
-        password = st.text_input("Nhập mật khẩu quản trị:", type="password")
-        if st.button("Đăng nhập"):
-            if password == "moonxinh":  # <--- MẬT KHẨU CỦA BẠN
-                st.session_state["password_correct"] = True
-                st.rerun()
-            else:
-                st.error("Sai mật khẩu rồi!")
-        st.stop()
-
-check_password() 
-
 # =========================================================
-# NỘI DUNG CHÍNH (ĐÃ BỔ SUNG LẠI PHẦN CHỌN KOL/3D)
+# DỮ LIỆU HỆ THỐNG
 # =========================================================
 
 # 1. CONTEXT SẢN PHẨM
@@ -66,8 +47,10 @@ video_scripts = {
     "Hài hước/Trend": "🎬 KỊCH BẢN: BẮT TREND\nNhân vật nhảy theo nhạc hot hoặc diễn cảnh hài hước về ăn uống healthy."
 }
 
-# --- GIAO DIỆN APP ---
-st.title("🌙 MOON'S CREATOR v2.3")
+# =========================================================
+# GIAO DIỆN APP
+# =========================================================
+st.title("🌙 MOON'S CREATOR v2.4")
 st.write("👉 **Mẹo:** Rê chuột vào góc phải khung đen để thấy nút **Copy** 📄")
 
 # Sidebar
@@ -94,26 +77,24 @@ YÊU CẦU: Viết tiếng Việt tự nhiên, dùng icon, hashtag: #SuaNgheHera
 with tab2:
     st.subheader(f"Chủ đề: {video_topic}")
     
-    # 1. KỊCH BẢN TEXT (LUÔN HIỆN)
+    # 1. KỊCH BẢN TEXT
     st.write("📜 **Kịch bản quay/dựng:**")
     st.code(video_scripts.get(video_topic, ""), language='text')
     
     st.divider()
     
-    # 2. CHỌN PHONG CÁCH (ĐÃ KHÔI PHỤC LẠI)
+    # 2. CHỌN PHONG CÁCH
     video_style = st.radio("Chọn phong cách video:", ["3D Animation (Bé Nghệ)", "KOL (Người thật)"], horizontal=True)
     
     if video_style == "3D Animation (Bé Nghệ)":
         st.write("🎨 **Prompt tạo ảnh 3D (Midjourney):**")
-        # Prompt đã update màu sữa vàng
         prompt_3d = f"/imagine prompt: A cute anthropomorphic turmeric root character acting in a scene about: {video_topic}. It is holding a glass of warm, creamy golden-yellow turmeric milk. Pixar 3D style, warm lighting, expressive face, 8k --ar 9:16"
         st.code(prompt_3d, language='text')
     else:
         st.info("💡 **HƯỚNG DẪN QUAY KOL (NGƯỜI THẬT):**")
         st.markdown("""
         * **Bối cảnh:** Sáng sủa, gọn gàng (Góc bếp hoặc bàn làm việc).
-        * **Góc máy:** Quay cận mặt để bắt trọn biểu cảm (Đau đớn -> Hạnh phúc).
+        * **Góc máy:** Quay cận mặt để bắt trọn biểu cảm.
         * **Sản phẩm:** Luôn cầm ly sữa trên tay ở phân đoạn 2.
-        * **Ánh sáng:** Dùng ánh sáng vàng ấm để da dẻ hồng hào, hợp màu nghệ.
+        * **Ánh sáng:** Dùng ánh sáng vàng ấm.
         """)
-
