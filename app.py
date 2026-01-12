@@ -1,9 +1,30 @@
 import streamlit as st
 
-# Cài đặt trang web (Tiêu đề, icon)
+# Cài đặt trang web
 st.set_page_config(page_title="Moon's Content Creator", page_icon="🌙", layout="centered")
 
-# --- CẤU HÌNH DỮ LIỆU ---
+# --- 🔐 BẢO MẬT: CHECK MẬT KHẨU ---
+def check_password():
+    """Hàm kiểm tra mật khẩu đơn giản"""
+    if "password_correct" not in st.session_state:
+        st.session_state["password_correct"] = False
+
+    if not st.session_state["password_correct"]:
+        st.subheader("🔒 Đăng nhập hệ thống")
+        password = st.text_input("Nhập mật khẩu quản trị:", type="password")
+        if st.button("Đăng nhập"):
+            if password == "moonxinh":  # <--- SỬA MẬT KHẨU CỦA BẠN Ở ĐÂY
+                st.session_state["password_correct"] = True
+                st.rerun()
+            else:
+                st.error("Sai mật khẩu rồi!")
+        st.stop()  # Dừng lại, không chạy code bên dưới nếu chưa đăng nhập
+
+check_password() # Gọi hàm kiểm tra
+
+# =========================================================
+# NỘI DUNG CHÍNH CỦA APP (CHỈ HIỆN KHI ĐÃ NHẬP ĐÚNG PASS)
+# =========================================================
 
 # 1. CONTEXT SẢN PHẨM
 product_context = """
@@ -46,7 +67,7 @@ video_scripts = {
 }
 
 # --- GIAO DIỆN APP ---
-st.title("🌙 MOON'S CREATOR v2.1")
+st.title("🌙 MOON'S CREATOR v2.2 (Secured)")
 st.write("👉 **Mẹo:** Rê chuột vào góc phải khung đen để thấy nút **Copy** 📄")
 
 # Sidebar
@@ -56,7 +77,7 @@ video_topic = today_task['video']
 
 st.info(f"Nhiệm vụ: {selected_day} | Video: {video_topic}")
 
-# TABS (Chia tab cho gọn)
+# TABS
 tab1, tab2 = st.tabs(["📝 BÀI VIẾT (CHATGPT)", "🎬 VIDEO (KỊCH BẢN & ẢNH)"])
 
 with tab1:
@@ -81,5 +102,5 @@ with tab2:
     
     # Prompt ảnh 3D
     st.write("🎨 **Prompt tạo ảnh 3D (Midjourney):**")
-    prompt_3d = f"/imagine prompt: A cute anthropomorphic turmeric root character acting in a scene about: {video_topic}. Pixar 3D style, warm lighting, expressive face, 8k --ar 9:16"
+    prompt_3d = f"/imagine prompt: A cute anthropomorphic turmeric root character acting in a scene about: {video_topic}. It is holding a glass of warm, creamy golden-yellow turmeric milk. Pixar 3D style, warm lighting, expressive face, 8k --ar 9:16"
     st.code(prompt_3d, language='text')
