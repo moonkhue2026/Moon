@@ -4,7 +4,7 @@ import streamlit as st
 st.set_page_config(page_title="Moon's Collagen Creator", page_icon="🌸", layout="centered")
 
 # =========================================================
-# DỮ LIỆU SẢN PHẨM (COLLAGEN)
+# DỮ LIỆU HỆ THỐNG (COLLAGEN)
 # =========================================================
 
 # 1. CONTEXT SẢN PHẨM
@@ -17,7 +17,7 @@ Công dụng: Căng bóng da, mờ nếp nhăn, cấp ẩm, giúp tóc móng ch�
 Thương hiệu cá nhân: Moon - Người chia sẻ bí quyết "Lão hóa ngược".
 """
 
-# 2. LỊCH TRÌNH (Giữ nguyên logic nhưng đổi tên chủ đề nếu cần)
+# 2. LỊCH TRÌNH
 schedule = {
     "Thứ 2": {"text": "Nuôi dưỡng (Nurture)", "video": "Kể chuyện (Story-based)"},
     "Thứ 3": {"text": "Không có bài viết", "video": "Giải quyết vấn đề (Problem)"},
@@ -28,7 +28,7 @@ schedule = {
     "Chủ Nhật": {"text": "Nghỉ ngơi/Story", "video": "Hài hước/Trend"}
 }
 
-# 3. PROMPT TEXT (Đã sửa cho Collagen)
+# 3. PROMPT TEXT (CHATGPT)
 text_prompts = {
     "Nuôi dưỡng (Nurture)": "Viết bài Storytelling.\nChủ đề: Nỗi sợ già và mong muốn níu giữ thanh xuân.\nCấu trúc: Hook (Giật mình khi thấy nếp nhăn) -> Body (Hành trình tìm lại làn da căng mướt nhờ Collagen) -> Kết (Thông điệp yêu bản thân).\nTone: Tâm tình, thấu hiểu.",
     "Giáo dục (Educate)": "Viết bài Kiến thức.\nChủ đề: Tại sao uống Collagen mãi không đẹp? (Do chưa chọn đúng loại Peptide).\nCấu trúc: Hook (Sai lầm phổ biến) -> Body (Phân biệt Collagen thường vs Thủy phân Peptide) -> Kết (Chọn Hera để hấp thu tối đa).\nTone: Chuyên gia sắc đẹp.",
@@ -36,20 +36,22 @@ text_prompts = {
     "Nghỉ ngơi/Story": "Viết Caption ngắn kèm ảnh chill/uống collagen.\nNội dung: Morning routine, skincare từ bên trong.\nTone: Sang chảnh, nhẹ nhàng."
 }
 
-# 4. KỊCH BẢN VIDEO (Đã sửa cho Collagen)
+# 4. KỊCH BẢN VIDEO (SCRIPT)
 video_scripts = {
-    "Kể chuyện (Story-based)": "🎬 KỊCH BẢN: THANH XUÂN TRỞ LẠI\n[0-15s] Soi gương thấy vết chân chim, thở dài buồn bã. Text: '25 tuổi mà ngỡ 35...'\n[15-45s] Uống Collagen Hera, da dẻ hồng hào, tự tin selfie. Text: 'Đánh thức thanh xuân mỗi sáng.'",
-    "Giải quyết vấn đề (Problem)": "🎬 KỊCH BẢN: DA KHÔ MỐC?\n[0-15s] Makeup bị mốc nền (cakey), da nứt nẻ. Text: 'Da khô như ngói vỡ!'\n[15-45s] Uống Collagen, da ngậm nước căng bóng (Hiệu ứng nước). Text: 'Cấp nước tầng sâu, nền da mướt mịn.'",
-    "Cảnh báo sai lầm (Warning)": "🎬 KỊCH BẢN: UỐNG SAI CÁCH\n[0-15s] Uống Collagen viên to khó nuốt hoặc loại gây nóng nổi mụn. Text: 'Dừng lại! Đừng nạp thêm mụn!'\n[15-30s] Chuyển sang Collagen Peptide Hera mát lành. Text: 'Chọn Peptide thủy phân, không lo nóng.'",
-    "Phản biện (Counter-Intuitive)": "🎬 KỊCH BẢN: ĂN DA HEO BỔ SUNG COLLAGEN?\n[0-15s] Ăn đống da heo/chân gà. Lắc đầu. Text: 'Ăn cái này chỉ béo thôi!'\n[15-30s] Cầm gói Collagen nhỏ gọn. Text: '1 gói Hera = 10kg chân gà (về lượng Peptide).'",
-    "Trước - Sau (Transformation)": "🎬 KỊCH BẢN: LỘT XÁC 28 NGÀY\n[0-20s] Trái: Da xám xịt, lỗ chân lông to. Text: 'Day 1: Tuyệt vọng.'\n[20-45s] Phải: Da phát sáng (Glass skin), mộc 100%. Text: 'Day 28: Chấp cả Camera thường.'",
-    "Trải nghiệm/Review": "🎬 KỊCH BẢN: VLOG BUỔI SÁNG\n[0-20s] Cảnh pha Collagen màu hồng đỏ đẹp mắt, uống ngon lành. Text: 'Vị lựu đỏ ngon xỉu...'\n[20-45s] Zoom cận da. Text: 'Bí quyết da đẹp của Moon đây. Chị em thử ngay nha.'",
-    "Hài hước/Trend": "🎬 KỊCH BẢN: BẮT TREND\nNhân vật (Bé Giọt Nước/Collagen) nhảy trend biến hình: Từ quả táo héo -> Quả táo căng mọng."
+    "Kể chuyện (Story-based)": "🎬 KỊCH BẢN: THANH XUÂN TRỞ LẠI\n🔸 HOOK: Soi gương thấy vết chân chim, thở dài.\n🔸 BODY: Uống Collagen Hera, da dẻ hồng hào, tự tin selfie.\n🔸 CTA: Hất tóc tự tin, mời mọi người uống.",
+    "Giải quyết vấn đề (Problem)": "🎬 KỊCH BẢN: DA KHÔ MỐC?\n🔸 HOOK: Makeup bị mốc nền (cakey), da nứt nẻ.\n🔸 BODY: Uống Collagen, da ngậm nước căng bóng như gương.\n🔸 CTA: Sờ tay lên má, cười thích thú.",
+    "Cảnh báo sai lầm (Warning)": "🎬 KỊCH BẢN: UỐNG SAI CÁCH\n🔸 HOOK: Cầm viên thuốc to đùng khó nuốt, lắc đầu.\n🔸 BODY: Chuyển sang gói Collagen nước Hera, uống ngon lành.\n🔸 CTA: Giơ ngón cái (Like).",
+    "Phản biện (Counter-Intuitive)": "🎬 KỊCH BẢN: ĂN DA HEO BỔ SUNG COLLAGEN?\n🔸 HOOK: Nhìn đống da heo/chân gà đầy dầu mỡ, sợ hãi.\n🔸 BODY: Cầm gói Hera nhỏ gọn tinh tế.\n🔸 CTA: Uống một hơi sảng khoái.",
+    "Trước - Sau (Transformation)": "🎬 KỊCH BẢN: LỘT XÁC 28 NGÀY\n🔸 HOOK: Mặt mộc xám xịt, lỗ chân lông to.\n🔸 BODY: Biến hình (Transition) sang da căng bóng (Glass skin).\n🔸 CTA: Tạo dáng beauty queen.",
+    "Trải nghiệm/Review": "🎬 KỊCH BẢN: VLOG BUỔI SÁNG\n🔸 HOOK: Cảnh xé gói collagen, pha nước màu hồng đẹp mắt.\n🔸 BODY: Uống chậm rãi, tận hưởng vị lựu đỏ.\n🔸 CTA: Zoom cận cảnh làn da mộc.",
+    "Hài hước/Trend": "🎬 KỊCH BẢN: BẮT TREND\n🔸 HOOK: Nhân vật nhảy trend biến hình (Héo úa -> Tươi xanh).\n🔸 BODY: Điệu đà bên ly collagen.\n🔸 CTA: Mời gọi 'Về đội của Moon'."
 }
 
-# --- GIAO DIỆN APP ---
+# =========================================================
+# GIAO DIỆN APP
+# =========================================================
 st.title("🌸 MOON'S COLLAGEN CREATOR")
-st.write("👉 **Mẹo:** Rê chuột vào góc phải khung đen để thấy nút **Copy** 📄")
+st.write("👉 **Tính năng:** Sora Prompt (No Text) + Thoại Việt (Lip-sync) + Tự chia đoạn.")
 
 # Sidebar
 selected_day = st.selectbox("📅 Hôm nay là thứ mấy?", list(schedule.keys()))
@@ -59,7 +61,7 @@ video_topic = today_task['video']
 st.info(f"Nhiệm vụ: {selected_day} | Video: {video_topic}")
 
 # TABS
-tab1, tab2 = st.tabs(["📝 BÀI VIẾT (CHATGPT)", "🎬 VIDEO (KỊCH BẢN & ẢNH)"])
+tab1, tab2 = st.tabs(["📝 BÀI VIẾT (CHATGPT)", "🎬 VIDEO (SORA & MIDJOURNEY)"])
 
 with tab1:
     if today_task['text'] == "Không có bài viết":
@@ -69,31 +71,101 @@ with tab1:
         full_prompt = f"""Đóng vai Moon (Thương hiệu cá nhân sức khỏe & Sắc đẹp).
 {product_context}
 NHIỆM VỤ: {text_prompts[today_task['text']]}
-YÊU CẦU: Viết tiếng Việt tự nhiên, sang trọng, dùng icon hoa lá, hashtag: #HeraCollagen #DepDa #LaoHoaNguoc #MoonBeauty"""
+YÊU CẦU: Caption hấp dẫn, sang chảnh, thoại tự nhiên, có CTA. Hashtag: #HeraCollagen #DepDa #LaoHoaNguoc #MoonBeauty"""
         st.code(full_prompt, language='text')
 
 with tab2:
     st.subheader(f"Chủ đề: {video_topic}")
-    
-    # 1. KỊCH BẢN TEXT
-    st.write("📜 **Kịch bản quay/dựng:**")
+    st.write("📜 **Kịch bản tóm tắt:**")
     st.code(video_scripts.get(video_topic, ""), language='text')
     
     st.divider()
     
-    # 2. CHỌN PHONG CÁCH
-    video_style = st.radio("Chọn phong cách video:", ["3D Animation (Mascot)", "KOL (Người thật)"], horizontal=True)
+    # 1. CHỌN PHONG CÁCH
+    video_style = st.radio("Chọn phong cách video:", ["3D Animation (Bé Collagen)", "KOL (Người thật)"], horizontal=True)
     
-    if video_style == "3D Animation (Mascot)":
-        st.write("🎨 **Prompt tạo ảnh 3D (Midjourney):**")
-        # Prompt mới cho Collagen: Nhân vật Giọt nước/Tinh thể lấp lánh hoặc Cô gái Pixar da đẹp
-        prompt_3d = f"/imagine prompt: A cute anthropomorphic glowing collagen drop character (or a cute pink crystal fairy). The character has big shiny eyes and smooth skin, looking happy in a scene about: {video_topic}. Pixar 3D style, soft pink and white lighting, beauty product photography aesthetic, 8k --ar 9:16"
-        st.code(prompt_3d, language='text')
+    # Thiết lập biến Style
+    if video_style == "3D Animation (Bé Collagen)":
+        style_desc = "Pixar 3D animation style, cute anthropomorphic pink collagen drop character"
+        char_desc = "The character is a cute, glowing pink water drop with big sparkly eyes and smooth skin"
+        action_verb = "animating"
+        product_desc = "a glass of pink pomegranate collagen drink"
     else:
-        st.info("💡 **HƯỚNG DẪN QUAY KOL (NGƯỜI THẬT):**")
-        st.markdown("""
-        * **Bối cảnh:** Bàn trang điểm, phòng ngủ sáng sủa, rèm trắng.
-        * **Trang phục:** Đồ ngủ lụa hoặc đồ tập sáng màu (Gợi cảm giác tươi trẻ).
-        * **Góc máy:** Ưu tiên góc quay cận da (Macro) để show độ căng bóng.
-        * **Sản phẩm:** Cầm ly nước màu hồng/đỏ (Collagen vị lựu).
-        """)
+        style_desc = "High-quality realistic cinematic video, photorealistic, 8k, beauty commercial style"
+        char_desc = "A beautiful Vietnamese female beauty expert (Moon), flawless glowing skin, elegant silk pajamas or white dress"
+        action_verb = "acting"
+        product_desc = "a glass of pink pomegranate collagen drink"
+
+    # 2. MIDJOURNEY PROMPT (THUMBNAIL)
+    st.write("🎨 **Prompt Ảnh Thumbnail (Midjourney):**")
+    prompt_mj = f"/imagine prompt: {char_desc} holding {product_desc}, {action_verb} in a bright clean bedroom setting about {video_topic}. {style_desc}, soft beauty lighting, 8k --ar 9:16"
+    st.code(prompt_mj, language='text')
+    
+    st.divider()
+    
+    # 3. SORA PROMPT (CÓ THOẠI TIẾNG VIỆT + NO TEXT)
+    st.subheader("🎥 Tạo Video (Sora Clean Feed)")
+    
+    # Slider chọn tổng thời lượng
+    total_duration = st.select_slider("Chọn TỔNG thời lượng video mong muốn:", options=["15s", "30s", "45s", "60s"], value="30s")
+    
+    # Logic chia đoạn + THOẠI (COLLAGEN)
+    segments = []
+    if total_duration == "15s":
+        segments = [
+            ("Full Video", 
+             "The character is touching her cheek and speaking enthusiastically.",
+             "Da dẻ dạo này chán quá mấy bà ơi! May mà tìm được chân ái Hera này, da mướt rượt luôn nè!")
+        ]
+    elif total_duration == "30s":
+        segments = [
+            ("Phần 1 (0-15s): Hook", 
+             "The character looks sad, looking in the mirror, touching wrinkles.",
+             "Trời ơi, mới 25 tuổi mà nếp nhăn đuôi mắt xuất hiện rồi. Cứu tui với!"),
+             
+            ("Phần 2 (15-30s): Giải pháp", 
+             "The character looks happy, drinking the pink collagen drink.",
+             "Bí mật là đây nè. Collagen Hera vị lựu, uống 1 gói bằng 10 lần đắp mặt nạ. Thử đi ghiền đó!")
+        ]
+    elif total_duration == "45s":
+        segments = [
+            ("Phần 1 (0-15s): Hook", 
+             "The character looks tired, dull skin.",
+             "Mấy nay thức khuya cày phim, da sạm đi thấy rõ luôn. Nhìn vào gương mà buồn nẫu ruột."),
+             
+            ("Phần 2 (15-30s): Giải pháp", 
+             "The character introduces the product happily.",
+             "Nhưng mà Moon không lo đâu. Mỗi sáng làm 1 gói Hera Collagen này là lấy lại phong độ ngay."),
+             
+            ("Phần 3 (30-45s): Kết quả", 
+             "The character shows glowing skin close-up.",
+             "Nhìn nè, da căng bóng như gương luôn. Chị em nào muốn lão hóa ngược thì inbox Moon nha.")
+        ]
+    else: # 60s
+        segments = [
+            ("Phần 1 (0-15s): Hook", "Sad/Worried about skin.", "Mọi người có tin là uống cái này trẻ ra 5 tuổi không?"),
+            ("Phần 2 (15-30s): Diễn biến", "Explaining the science (simple).", "Hồi xưa Moon cũng không tin, mà từ hồi uống Peptide thủy phân này da khác hẳn."),
+            ("Phần 3 (30-45s): Giải pháp", "Drinking and enjoying.", "Vị lựu ngon xỉu, không hề tanh nha. Mà quan trọng là không bị nóng trong người."),
+            ("Phần 4 (45-60s): Kết", "Happy ending & CTA.", "Đầu tư cho nhan sắc là không bao giờ lỗ. Rinh ngay kẻo lỡ ưu đãi nha!")
+        ]
+
+    # Vòng lặp hiển thị
+    for name, action, vn_script in segments:
+        st.markdown(f"**🎞️ {name}**")
+        
+        # Tạo prompt gộp
+        sora_prompt = f"""
+        {style_desc}.
+        Subject: {char_desc}.
+        Scene Context: Segment about '{video_topic}'.
+        Action: {action}
+        Speaking Line (Vietnamese): "{vn_script}"
+        Lip-sync instruction: Ensure mouth moves naturally matching the dialogue.
+        Constraint: NO TEXT OVERLAYS, NO SUBTITLES, CLEAN BACKGROUND.
+        Details: Soft beauty lighting, glowing skin texture.
+        --duration 15s
+        """
+        st.code(sora_prompt, language='text')
+        st.caption(f"💡 Thoại gợi ý: '{vn_script}'")
+        
+        st.divider()
