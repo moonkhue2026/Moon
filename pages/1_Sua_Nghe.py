@@ -36,22 +36,76 @@ text_prompts = {
     "Nghỉ ngơi/Story": "Viết Caption ngắn kèm ảnh đi chơi.\nNội dung: Chúc cuối tuần, nhắc giữ sức khỏe.\nTone: Vui vẻ."
 }
 
-# 4. KỊCH BẢN VIDEO (SCRIPT)
+# 4. KỊCH BẢN VIDEO (SCRIPT GỐC)
 video_scripts = {
-    "Kể chuyện (Story-based)": "🎬 KỊCH BẢN: TỪ MỆT MỎI ĐẾN HẠNH PHÚC\n🔸 HOOK: Cảnh thở dài, gục xuống bàn.\n🔸 BODY: Uống Hera, mắt sáng lên, mỉm cười.\n🔸 CTA: Giơ ly sữa mời mọi người.",
-    "Giải quyết vấn đề (Problem)": "🎬 KỊCH BẢN: ĐAU DẠ DÀY\n🔸 HOOK: Ôm bụng nhăn nhó, đau đớn.\n🔸 BODY: Uống Hera, hiệu ứng dịu mát, bụng êm.\n🔸 CTA: Giơ ngón tay Like, cười tươi.",
-    "Cảnh báo sai lầm (Warning)": "🎬 KỊCH BẢN: CẢNH BÁO PHA SAI\n🔸 HOOK: Định chế nước sôi sùng sục vào ly.\n🔸 BODY: Pha nước ấm 40 độ chuẩn, ly sữa vàng mịn.\n🔸 CTA: Mời uống và gật đầu hài lòng.",
+    "Kể chuyện (Story-based)": "🎬 KỊCH BẢN: TỪ MỆT MỎI ĐẾN HẠNH PHÚC\n🔸 HOOK: Cảnh thở dài, gục xuống bàn vì áp lực.\n🔸 BODY: Uống Hera, mắt sáng lên, mỉm cười nhẹ nhõm.\n🔸 CTA: Giơ ly sữa mời mọi người.",
+    "Giải quyết vấn đề (Problem)": "🎬 KỊCH BẢN: ĐAU DẠ DÀY\n🔸 HOOK: Ôm bụng nhăn nhó, đau đớn, tia sét đỏ.\n🔸 BODY: Uống Hera, hiệu ứng dịu mát lan tỏa, bụng êm.\n🔸 CTA: Giơ ngón tay Like, cười tươi.",
+    "Cảnh báo sai lầm (Warning)": "🎬 KỊCH BẢN: CẢNH BÁO PHA SAI\n🔸 HOOK: Định chế nước sôi sùng sục vào ly. Hiện dấu X đỏ.\n🔸 BODY: Pha nước ấm 40 độ chuẩn, ly sữa vàng mịn.\n🔸 CTA: Mời uống và gật đầu hài lòng.",
     "Phản biện (Counter-Intuitive)": "🎬 KỊCH BẢN: SỢ BÉO?\n🔸 HOOK: Lắc đầu xua tay với hũ đường trắng.\n🔸 BODY: Ôm lá cỏ ngọt Stevia, show eo thon.\n🔸 CTA: Nháy mắt, uống ngon lành.",
     "Trước - Sau (Transformation)": "🎬 KỊCH BẢN: LỘT XÁC\n🔸 HOOK: Mặt buồn, da sạm, thiếu sức sống.\n🔸 BODY: Biến hình sang da hồng hào, tươi cười rạng rỡ.\n🔸 CTA: Tạo dáng tự tin bên sản phẩm.",
     "Trải nghiệm/Review": "🎬 KỊCH BẢN: NHẬT KÝ 7 NGÀY\n🔸 HOOK: Show tờ lịch hoặc giơ 7 ngón tay.\n🔸 BODY: Cảnh uống ngon lành vui vẻ.\n🔸 CTA: Hôn gió/Bắn tim.",
     "Hài hước/Trend": "🎬 KỊCH BẢN: BẮT TREND\n🔸 HOOK: Nhạc nổi lên, nhân vật vào thế chuẩn bị.\n🔸 BODY: Nhảy theo nhạc hot hoặc diễn cảnh hài hước về ăn uống healthy.\n🔸 CTA: Chỉ tay vào sản phẩm mời gọi."
 }
 
+# 5. DỮ LIỆU SORA CHI TIẾT (MAPPING ĐÚNG CHỦ ĐỀ)
+sora_scenarios = {
+    "Kể chuyện (Story-based)": {
+        "15s": [("Full Video", "Character looks tired at desk, then drinks milk and smiles peacefully.", "Haizz, đuối sức quá... May mà có ly sữa nghệ này, nạp lại năng lượng yêu thương liền!")],
+        "30s": [
+            ("Phần 1 (0-15s)", "Character sighs deeply, looking exhausted/stressed.", "Công việc ngập đầu, người cứ uể oải, chán ghê..."),
+            ("Phần 2 (15-30s)", "Character drinks milk, eyes light up, looks refreshed.", "Nhưng mà có Hera là khác liền. 1 ly ấm nóng, tỉnh táo hẳn ra!")
+        ]
+    },
+    "Giải quyết vấn đề (Problem)": {
+        "15s": [("Full Video", "Character holds stomach in pain, then drinks and feels better.", "Trời ơi cái bao tử nó hành! May mà có Hera, uống vô êm ru bà con ơi!")],
+        "30s": [
+            ("Phần 1 (0-15s)", "Character clutches stomach, grimacing in pain.", "Ui da, đau bao tử quá, ăn không ngon ngủ không yên!"),
+            ("Phần 2 (15-30s)", "Character drinks golden milk, rubs tummy happily.", "Bí quyết là đây nè. Sữa nghệ Hera, êm dịu dạ dày, hết đau liền nha.")
+        ]
+    },
+    "Cảnh báo sai lầm (Warning)": {
+        "15s": [("Full Video", "Character stops boiling water, uses warm water instead.", "Dừng lại! Đừng pha nước sôi nha, mất hết chất đó! Pha nước ấm 40 độ thôi nè.")],
+        "30s": [
+            ("Phần 1 (0-15s)", "Character holds a boiling kettle, big RED X appears.", "Dừng lại ngay! Pha sữa nghệ mà dùng nước sôi sùng sục là hỏng hết Curcumin đó!"),
+            ("Phần 2 (15-30s)", "Character pours warm water, drinks happily.", "Nhớ nha, chỉ dùng nước ấm 40 độ thôi. Vừa ngon vừa giữ trọn dưỡng chất!")
+        ]
+    },
+    "Phản biện (Counter-Intuitive)": {
+        "15s": [("Full Video", "Character pushes away sugar, points to slim waist.", "Sợ béo hả? Xưa rồi! Hera dùng đường cỏ ngọt, 0 calo, uống thả ga nha!")],
+        "30s": [
+            ("Phần 1 (0-15s)", "Character looks at sugar jar and shakes head 'No'.", "Nhiều bà sợ uống sữa bị béo đúng không? Đừng lo nha!"),
+            ("Phần 2 (15-30s)", "Character shows Stevia leaf and slim figure.", "Hera dùng đường cỏ ngọt Stevia ăn kiêng, không sợ béo mà dáng còn xinh nữa nè.")
+        ]
+    },
+    "Trước - Sau (Transformation)": {
+        "15s": [("Full Video", "Split screen: Dull skin vs Glowing skin.", "Nhìn da Moon hồi trước chán chưa? Còn giờ thì hồng hào nhờ Hera nè!")],
+        "30s": [
+            ("Phần 1 (0-15s)", "Character looks sad in mirror, touching dull face.", "Hồi trước da mình sạm đen, nhìn thiếu sức sống lắm, buồn ghê..."),
+            ("Phần 2 (15-30s)", "Character spins around, showing glowing skin.", "Từ ngày uống Hera, da dẻ hồng hào, ai cũng khen. Thích lắm luôn!")
+        ]
+    },
+     "Trải nghiệm/Review": {
+        "15s": [("Full Video", "Montage of drinking milk happily.", "Thử thách 7 ngày uống Hera cùng Moon nha! Ngày nào cũng một ly, khỏe đẹp từ bên trong.")],
+        "30s": [
+             ("Phần 1 (0-15s)", "Character points to calendar/7 fingers.", "Cùng Moon thực hiện thử thách 7 ngày thay đổi bản thân với Sữa Nghệ Hera nha."),
+             ("Phần 2 (15-30s)", "Drinking shot and blowing a kiss.", "Vị ngon, dễ uống, mà kết quả thì mê ly. Chị em thử ngay đi!")
+        ]
+    },
+    "Hài hước/Trend": {
+         "15s": [("Full Video", "Dancing nicely with the product.", "Muốn khỏe đẹp thì về đội của Moon! Nhảy cùng Hera nào!")],
+         "30s": [
+             ("Phần 1 (0-15s)", "Funny dance moves start.", "Nhạc lên là quẩy lên! Tập thể dục cùng Sữa Nghệ nào cả nhà ơi."),
+             ("Phần 2 (15-30s)", "Pose with product.", "Vừa vui vừa khỏe. Nhớ uống Hera mỗi ngày nha!")
+         ]
+    }
+}
+
+
 # =========================================================
 # GIAO DIỆN APP
 # =========================================================
-st.title("🌙 MOON'S CREATOR v3.1 (Final)")
-st.write("👉 **Tính năng:** Sora Prompt (No Text) + Thoại Việt (Lip-sync) + Tự chia đoạn.")
+st.title("🌙 MOON'S CREATOR v3.2 (Fixed Logic)")
+st.write("👉 **Tính năng:** Sora Prompt chuẩn theo từng chủ đề + Thoại Việt khớp ngữ cảnh.")
 
 # Sidebar
 selected_day = st.selectbox("📅 Hôm nay là thứ mấy?", list(schedule.keys()))
@@ -101,51 +155,23 @@ with tab2:
     
     st.divider()
     
-    # 3. SORA PROMPT (CÓ THOẠI TIẾNG VIỆT + NO TEXT)
+    # 3. SORA PROMPT (LOGIC MỚI - CHUẨN THEO CHỦ ĐỀ)
     st.subheader("🎥 Tạo Video (Sora Clean Feed)")
     
     # Slider chọn tổng thời lượng
-    total_duration = st.select_slider("Chọn TỔNG thời lượng video mong muốn:", options=["15s", "30s", "45s", "60s"], value="30s")
+    total_duration = st.select_slider("Chọn TỔNG thời lượng video mong muốn:", options=["15s", "30s"], value="30s")
     
-    # Logic chia đoạn + THOẠI
-    segments = []
-    if total_duration == "15s":
-        segments = [
-            ("Full Video", 
-             "The character is speaking enthusiastically directly to the camera.",
-             "Mệt mỏi quá à? Thử ngay ly sữa nghệ Hera này nha, đảm bảo hồi sinh năng lượng liền!")
-        ]
-    elif total_duration == "30s":
-        segments = [
-            ("Phần 1 (0-15s): Hook", 
-             "The character looks worried/painful and speaks to the camera.",
-             "Trời ơi, cái lưng cái bụng nó biểu tình rồi! Làm sao đây ta?"),
-             
-            ("Phần 2 (15-30s): Giải pháp", 
-             "The character looks happy, holding the milk and speaking.",
-             "May mà có em Hera này. Uống vào êm ru, ngủ ngon tới sáng. Chị em thử ngay nhé!")
-        ]
-    elif total_duration == "45s":
-        segments = [
-            ("Phần 1 (0-15s): Hook", 
-             "The character describes the pain.",
-             "Mấy nay đau dạ dày, ăn không ngon ngủ không yên, da dẻ sạm hết cả đi."),
-             
-            ("Phần 2 (15-30s): Giải pháp", 
-             "The character introduces the product.",
-             "Bí quyết của Moon là đây. Sữa nghệ Hera tách béo, không lo nóng, vị siêu ngon."),
-             
-            ("Phần 3 (30-45s): Kết quả", 
-             "The character shows result and calls to action.",
-             "Giờ thì khỏe re, da đẹp dáng xinh. Ai muốn như Moon thì inbox ngay nha!")
-        ]
-    else: # 60s
-        segments = [
-            ("Phần 1 (0-15s): Hook", "Speaking about the problem.", "Haizz, lại đau bao tử nữa rồi, chán ghê!"),
-            ("Phần 2 (15-30s): Diễn biến", "Explaining the situation.", "Ăn uống thất thường nên nó hành vậy đó mọi người."),
-            ("Phần 3 (30-45s): Giải pháp", "Showing the milk.", "Nhưng mà đừng lo, Moon có bảo bối sữa nghệ Hera này rồi."),
-            ("Phần 4 (45-60s): Kết", "Happy ending.", "Uống 1 ly là êm ngay. Mọi người nhớ giữ sức khỏe nha!")
-        ]
+    # Lấy dữ liệu Sora dựa trên CHỦ ĐỀ HIỆN TẠI (video_topic)
+    # Nếu không tìm thấy chủ đề (lỗi), dùng default là story-based
+    current_scenario_data = sora_scenarios.get(video_topic, sora_scenarios["Kể chuyện (Story-based)"])
+    
+    # Lấy segments dựa trên THỜI LƯỢNG
+    # Nếu chọn 45s/60s mà chưa setup kịch bản, nó sẽ tự lùi về 30s
+    if total_duration not in current_scenario_data:
+        st.warning(f"Chưa có kịch bản chi tiết {total_duration} cho chủ đề này, đang hiển thị bản 30s.")
+        segments = current_scenario_data.get("30s", [])
+    else:
+        segments = current_scenario_data[total_duration]
 
     # Vòng lặp hiển thị
     for name, action, vn_script in segments:
