@@ -36,7 +36,7 @@ text_prompts = {
     "Nghỉ ngơi/Story": "Viết Caption ngắn kèm ảnh đi chơi.\nNội dung: Chúc cuối tuần, nhắc giữ sức khỏe.\nTone: Vui vẻ."
 }
 
-# 4. KỊCH BẢN VIDEO (SCRIPT GỐC)
+# 4. KỊCH BẢN TÓM TẮT
 video_scripts = {
     "Kể chuyện (Story-based)": "🎬 KỊCH BẢN: TỪ MỆT MỎI ĐẾN HẠNH PHÚC\n🔸 HOOK: Cảnh thở dài, gục xuống bàn vì áp lực.\n🔸 BODY: Uống Hera, mắt sáng lên, mỉm cười nhẹ nhõm.\n🔸 CTA: Giơ ly sữa mời mọi người.",
     "Giải quyết vấn đề (Problem)": "🎬 KỊCH BẢN: ĐAU DẠ DÀY\n🔸 HOOK: Ôm bụng nhăn nhó, đau đớn, tia sét đỏ.\n🔸 BODY: Uống Hera, hiệu ứng dịu mát lan tỏa, bụng êm.\n🔸 CTA: Giơ ngón tay Like, cười tươi.",
@@ -47,7 +47,7 @@ video_scripts = {
     "Hài hước/Trend": "🎬 KỊCH BẢN: BẮT TREND\n🔸 HOOK: Nhạc nổi lên, nhân vật vào thế chuẩn bị.\n🔸 BODY: Nhảy theo nhạc hot hoặc diễn cảnh hài hước về ăn uống healthy.\n🔸 CTA: Chỉ tay vào sản phẩm mời gọi."
 }
 
-# 5. DỮ LIỆU SORA CHI TIẾT (MAPPING ĐÚNG CHỦ ĐỀ - ĐỦ 45s/60s)
+# 5. DỮ LIỆU SORA CHI TIẾT
 sora_scenarios = {
     "Kể chuyện (Story-based)": {
         "15s": [("Full Video", "Character looks tired at desk, then drinks milk and smiles peacefully.", "Haizz, đuối sức quá... May mà có ly sữa nghệ này, nạp lại năng lượng yêu thương liền!")],
@@ -181,15 +181,17 @@ sora_scenarios = {
 # =========================================================
 # GIAO DIỆN APP
 # =========================================================
-st.title("🌙 MOON'S CREATOR v3.3 (Full Duration)")
-st.write("👉 **Tính năng:** Sora Prompt chuẩn chủ đề + Đủ thời lượng (15s/30s/45s/60s).")
+st.title("🌙 MOON'S CREATOR v3.4 (Full Task)")
+st.write("👉 **Tính năng:** Sora Prompt chuẩn chủ đề + Đủ thời lượng + Hiện đầy đủ nhiệm vụ.")
 
 # Sidebar
 selected_day = st.selectbox("📅 Hôm nay là thứ mấy?", list(schedule.keys()))
 today_task = schedule[selected_day]
 video_topic = today_task['video']
 
-st.info(f"Nhiệm vụ: {selected_day} | Video: {video_topic}")
+# --- ĐÃ SỬA: HIỂN THỊ CẢ BÀI VIẾT VÀ VIDEO ---
+st.info(f"Nhiệm vụ: {selected_day} | 📝 Bài viết: {today_task['text']} | 🎬 Video: {video_topic}")
+# ---------------------------------------------
 
 # TABS
 tab1, tab2 = st.tabs(["📝 BÀI VIẾT (CHATGPT)", "🎬 VIDEO (SORA & MIDJOURNEY)"])
@@ -235,11 +237,10 @@ with tab2:
     # 3. SORA PROMPT (LOGIC MỚI - CHUẨN THEO CHỦ ĐỀ)
     st.subheader("🎥 Tạo Video (Sora Clean Feed)")
     
-    # Slider chọn tổng thời lượng (ĐÃ BỔ SUNG 45s, 60s)
+    # Slider chọn tổng thời lượng
     total_duration = st.select_slider("Chọn TỔNG thời lượng video mong muốn:", options=["15s", "30s", "45s", "60s"], value="30s")
     
     # Lấy dữ liệu Sora dựa trên CHỦ ĐỀ HIỆN TẠI (video_topic)
-    # Nếu không tìm thấy chủ đề (lỗi), dùng default là story-based
     current_scenario_data = sora_scenarios.get(video_topic, sora_scenarios["Kể chuyện (Story-based)"])
     
     # Lấy segments dựa trên THỜI LƯỢNG
