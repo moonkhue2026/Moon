@@ -1,6 +1,6 @@
 import streamlit as st
 
-# Cài đặt trang web (Icon hoa anh đào cho Collagen)
+# Cài đặt trang web
 st.set_page_config(page_title="Moon's Collagen Creator", page_icon="🌸", layout="centered")
 
 # =========================================================
@@ -36,7 +36,7 @@ text_prompts = {
     "Nghỉ ngơi/Story": "Viết Caption ngắn kèm ảnh chill/uống collagen.\nNội dung: Morning routine, skincare từ bên trong.\nTone: Sang chảnh, nhẹ nhàng."
 }
 
-# 4. KỊCH BẢN VIDEO (SCRIPT)
+# 4. KỊCH BẢN TÓM TẮT
 video_scripts = {
     "Kể chuyện (Story-based)": "🎬 KỊCH BẢN: THANH XUÂN TRỞ LẠI\n🔸 HOOK: Soi gương thấy vết chân chim, thở dài.\n🔸 BODY: Uống Collagen Hera, da dẻ hồng hào, tự tin selfie.\n🔸 CTA: Hất tóc tự tin, mời mọi người uống.",
     "Giải quyết vấn đề (Problem)": "🎬 KỊCH BẢN: DA KHÔ MỐC?\n🔸 HOOK: Makeup bị mốc nền (cakey), da nứt nẻ.\n🔸 BODY: Uống Collagen, da ngậm nước căng bóng như gương.\n🔸 CTA: Sờ tay lên má, cười thích thú.",
@@ -47,11 +47,141 @@ video_scripts = {
     "Hài hước/Trend": "🎬 KỊCH BẢN: BẮT TREND\n🔸 HOOK: Nhân vật nhảy trend biến hình (Héo úa -> Tươi xanh).\n🔸 BODY: Điệu đà bên ly collagen.\n🔸 CTA: Mời gọi 'Về đội của Moon'."
 }
 
+# 5. DỮ LIỆU SORA CHI TIẾT (FULL TOPIC & DURATION)
+sora_scenarios = {
+    "Kể chuyện (Story-based)": {
+        "15s": [("Full Video", "Character looks at mirror sadly, then drinks collagen and smiles.", "Mới có 25 tuổi mà nếp nhăn đã ghé thăm rồi. Cứu tui với Hera ơi!")],
+        "30s": [
+            ("Phần 1 (0-15s)", "Character touches wrinkles/dry skin in mirror.", "Soi gương mà buồn nẫu ruột, da dẻ chán đời quá đi mất."),
+            ("Phần 2 (15-30s)", "Character drinks pink drink, skin glows.", "Nhưng từ khi có Hera, thanh xuân như trở lại. Yêu lắm cơ!")
+        ],
+        "45s": [
+            ("Phần 1 (0-15s)", "Character looking tired working late.", "Công việc áp lực làm da mình xuống cấp không phanh."),
+            ("Phần 2 (15-30s)", "Character takes a break with Hera Collagen.", "Bí quyết 'hồi sinh' của Moon là gói collagen vị lựu này nè."),
+            ("Phần 3 (30-45s)", "Character confident and happy.", "Uống xong thấy tươi tỉnh hẳn. Phụ nữ là phải đẹp bất chấp nha!")
+        ],
+        "60s": [
+            ("Phần 1 (0-15s)", "Character scrolling phone, seeing beautiful girls.", "Lướt mạng thấy ai cũng da đẹp dáng xinh mà tủi thân ghê."),
+            ("Phần 2 (15-30s)", "Character decides to change, buys Hera.", "Quyết tâm thay đổi! Bắt đầu với Collagen Peptide thủy phân Hera."),
+            ("Phần 3 (30-45s)", "Character drinking consistently.", "Vị ngon, dễ uống, không lo nóng trong người."),
+            ("Phần 4 (45-60s)", "Character showing result.", "Kết quả sau 1 tháng nè. Da mướt rượt, chồng khen nức nở luôn!")
+        ]
+    },
+    "Giải quyết vấn đề (Problem)": {
+        "15s": [("Full Video", "Character trying to makeup but skin is dry/cakey, then drinks collagen.", "Makeup mà da mốc meo chán ghê. Để Hera cấp nước thần tốc cho nè!")],
+        "30s": [
+            ("Phần 1 (0-15s)", "Character applying powder, it looks bad.", "Trời ơi, đánh phấn mà nó không ăn, da khô như ngói vỡ."),
+            ("Phần 2 (15-30s)", "Character drinks collagen, skin becomes glass-skin.", "Uống ngay Hera Collagen. Cấp ẩm tầng sâu, da căng bóng liền.")
+        ],
+        "45s": [
+            ("Phần 1 (0-15s)", "Character feeling dry skin in AC room.", "Ngồi điều hòa cả ngày da khô khốc, nứt nẻ khó chịu lắm."),
+            ("Phần 2 (15-30s)", "Character drinks Hera.", "Cấp cứu ngay bằng một ly Collagen mát lạnh."),
+            ("Phần 3 (30-45s)", "Character touching smooth cheek.", "Sờ lên da thấy mướt mịn thích ghê. Mùa này không thể thiếu em nó đâu.")
+        ],
+        "60s": [
+            ("Phần 1 (0-15s)", "Character complaining about aging signs.", "Dạo này cười là thấy nếp nhăn, lo sốt vó luôn mấy bà."),
+            ("Phần 2 (15-30s)", "Character researching, chooses Hera.", "Tìm hiểu mãi mới chốt được em Hera này vì hàm lượng Peptide cao."),
+            ("Phần 3 (30-45s)", "Character drinking happy.", "Uống vào thấy da đàn hồi tốt hơn hẳn, vết chân chim mờ dần."),
+            ("Phần 4 (45-60s)", "Character wink/kiss.", "Đừng để già mới chống. Chăm da từ bên trong ngay đi nhé!")
+        ]
+    },
+    "Cảnh báo sai lầm (Warning)": {
+        "15s": [("Full Video", "Character holding giant pills, shakes head. Drinks liquid instead.", "Uống viên to mắc nghẹn mà hấp thu kém lắm. Chuyển sang dạng nước thủy phân đi!")],
+        "30s": [
+            ("Phần 1 (0-15s)", "Character struggling to swallow pills.", "Ám ảnh nhất là uống mấy viên collagen to đùng, vừa khó nuốt vừa nóng."),
+            ("Phần 2 (15-30s)", "Character drinks liquid Hera easily.", "Chuyển qua Hera dạng nước đi. Hấp thu gấp 10 lần mà ngon như nước trái cây.")
+        ],
+        "45s": [
+            ("Phần 1 (0-15s)", "Character with pimples (acne).", "Nhiều người sợ uống collagen bị nổi mụn. Moon cũng từng sợ vậy."),
+            ("Phần 2 (15-30s)", "Character explains 'Hydrolyzed'.", "Nhưng đó là loại thường thôi. Hera là Peptide thủy phân, mát lắm nha."),
+            ("Phần 3 (30-45s)", "Character showing clear skin.", "Uống êm ru, da láng o, không hề có một cục mụn nào luôn.")
+        ],
+        "60s": [
+            ("Phần 1 (0-15s)", "Character pouring money down the drain.", "Uống sai cách là tiền mất tật mang đó mấy bà ơi."),
+            ("Phần 2 (15-30s)", "Character holds Hera box.", "Chọn collagen là phải chọn loại có Vitamin C và HA đi kèm mới chuẩn."),
+            ("Phần 3 (30-45s)", "Character reading ingredients.", "Hera có đủ combo vàng: Peptide, Vitamin C, HA, Lựu đỏ."),
+            ("Phần 4 (45-60s)", "Character thumbs up.", "Đầu tư thông minh là phải chọn Hera. Đẹp bền vững luôn!")
+        ]
+    },
+    "Phản biện (Counter-Intuitive)": {
+        "15s": [("Full Video", "Character looking at fatty pig skin, refuses. Drinks Hera.", "Ăn da heo chỉ béo thôi! 1 gói Hera bằng 10kg chân gà đó nha!")],
+        "30s": [
+            ("Phần 1 (0-15s)", "Character surrounded by greasy food.", "Ăn chân gà, da heo để bổ sung collagen? Sai lầm nha, chỉ tổ béo bụng thôi!"),
+            ("Phần 2 (15-30s)", "Character holds slim sachet.", "Nhỏ nhưng có võ. 1 gói Hera chứa hàm lượng collagen tinh khiết cực cao.")
+        ],
+        "45s": [
+            ("Phần 1 (0-15s)", "Character pinching belly fat.", "Sợ uống ngọt bị mập hả? Tâm lý chung của chị em mình rồi."),
+            ("Phần 2 (15-30s)", "Character shows 'Sugar Free/Stevia'.", "Yên tâm nha, Hera dùng đường cỏ ngọt, không sinh năng lượng."),
+            ("Phần 3 (30-45s)", "Character showing waist.", "Uống thả ga mà dáng vẫn 'mi nhon'. Mê chưa mê chưa?")
+        ],
+        "60s": [
+            ("Phần 1 (0-15s)", "Character thinking collagen is expensive.", "Nhiều người nghĩ làm đẹp tốn kém lắm."),
+            ("Phần 2 (15-30s)", "Character holding product, calculating.", "Tính ra mỗi ngày chỉ bằng một ly trà sữa thôi hà."),
+            ("Phần 3 (30-45s)", "Character pushing away milk tea.", "Bớt trà sữa lại, thêm collagen vào. Lời to luôn đó."),
+            ("Phần 4 (45-60s)", "Character beautiful.", "Vừa khỏe vừa đẹp, chồng yêu chiều. Đầu tư đi ngại chi!")
+        ]
+    },
+    "Trước - Sau (Transformation)": {
+        "15s": [("Full Video", "Split screen: Old/Sad vs New/Happy.", "Hành trình lột xác 28 ngày của Moon nè. Không tin nổi luôn đúng không?")],
+        "30s": [
+            ("Phần 1 (0-15s)", "Character looking at Before photo (dull).", "Nhìn lại ảnh cũ mà hết hồn. Da xám xịt, nhìn già chát."),
+            ("Phần 2 (15-30s)", "Character looking at After (now).", "Còn giờ thì chấp camera thường luôn. Da căng bóng, tự tin hơn hẳn.")
+        ],
+        "45s": [
+            ("Phần 1 (0-15s)", "Character marking calendar Day 1.", "Ngày đầu tiên bắt đầu hành trình tìm lại thanh xuân."),
+            ("Phần 2 (15-30s)", "Time lapse drinking over days.", "Kiên trì, kỷ luật. Ngày nào cũng 1 gói vào buổi sáng."),
+            ("Phần 3 (30-45s)", "Character marking Day 28.", "Và đây là kết quả sau 1 liệu trình. Da mướt như da em bé!")
+        ],
+        "60s": [
+            ("Phần 1 (0-15s)", "Character telling a story.", "Có ai từng tự ti vì mặt mộc như Moon không?"),
+            ("Phần 2 (15-30s)", "Character showing the product solution.", "Đừng buồn nữa, giải pháp nằm trong tay bạn nè."),
+            ("Phần 3 (30-45s)", "Character drinking and smiling.", "Uống Hera không chỉ đẹp da mà tóc móng cũng chắc khỏe hơn nhiều."),
+            ("Phần 4 (45-60s)", "Character inspiring others.", "Phụ nữ hiện đại là phải biết chăm sóc bản thân. Cùng Moon tỏa sáng nha!")
+        ]
+    },
+     "Trải nghiệm/Review": {
+        "15s": [("Full Video", "Vlog style: Mixing and drinking.", "Morning routine của Moon! Một ly Collagen lựu đỏ cho ngày mới rạng rỡ.")],
+        "30s": [
+             ("Phần 1 (0-15s)", "Character opening box, showing sachets.", "Đập hộp Hera Collagen cùng Moon nha. Bao bì hồng xinh xỉu."),
+             ("Phần 2 (15-30s)", "Character tasting.", "Vị chua ngọt thanh mát, thơm mùi lựu, không hề tanh chút nào.")
+        ],
+        "45s": [
+             ("Phần 1 (0-15s)", "Character preparing breakfast.", "Bữa sáng healthy không thể thiếu món này."),
+             ("Phần 2 (15-30s)", "Mixing collagen into water/yogurt.", "Pha với nước lọc hoặc sữa chua đều ngon tuyệt cú mèo."),
+             ("Phần 3 (30-45s)", "Character enjoying.", "Nạp vitamin xinh đẹp vào người thôi. Mời cả nhà nha!")
+        ],
+        "60s": [
+             ("Phần 1 (0-15s)", "Character talking to camera.", "Hôm nay Moon review chân thật về em Collagen đang hot này nha."),
+             ("Phần 2 (15-30s)", "Zoom into texture/color.", "Nước màu hồng ngọc đẹp mắt, bột tan siêu nhanh."),
+             ("Phần 3 (30-45s)", "Character drinking.", "Cảm giác uống vào người nó mát, sảng khoái lắm."),
+             ("Phần 4 (45-60s)", "Character recommending.", "Chấm 10/10 nha. Chị em nào muốn da đẹp thì chốt đơn lẹ lẹ!")
+        ]
+    },
+    "Hài hước/Trend": {
+         "15s": [("Full Video", "Transformation trend with music.", "Biến hình! Từ bà cô già nua thành hot girl da đẹp nhờ Hera nè!")],
+         "30s": [
+             ("Phần 1 (0-15s)", "Character looks messy/tired.", "Sáng ngủ dậy đầu bù tóc rối, da dẻ sần sùi..."),
+             ("Phần 2 (15-30s)", "Character spins -> Glamorous.", "Uống Hera xong biến hình lộng lẫy liền. Phép thuật Winx đó!")
+         ],
+         "45s": [
+             ("Phần 1 (0-15s)", "Character refusing other drinks.", "Trà sữa? No. Nước ngọt? No no."),
+             ("Phần 2 (15-30s)", "Character grabs Hera.", "Collagen Hera? Yes yes yes!"),
+             ("Phần 3 (30-45s)", "Character dancing happy.", "Chân ái cuộc đời tui là đây. A hi hi đồ ngốc!")
+         ],
+         "60s": [
+             ("Phần 1 (0-15s)", "Character acting dramatic/sad.", "Cuộc đời thật bất công..."),
+             ("Phần 2 (15-30s)", "Character reveals why.", "...tại sao mình không biết đến Hera sớm hơn!"),
+             ("Phần 3 (30-45s)", "Character drinking greedily.", "Giờ phải uống bù mới được. Ngon quá xá là ngon."),
+             ("Phần 4 (45-60s)", "Character laughing.", "Đùa xíu thôi chứ uống đúng liều lượng nha mấy bà. Đẹp từ từ mà chắc!")
+        ]
+    }
+}
+
 # =========================================================
 # GIAO DIỆN APP
 # =========================================================
-st.title("🌸 MOON'S COLLAGEN CREATOR")
-st.write("👉 **Tính năng:** Sora Prompt (No Text) + Thoại Việt (Lip-sync) + Tự chia đoạn.")
+st.title("🌸 MOON'S COLLAGEN CREATOR v2.1 (Full Duration)")
+st.write("👉 **Tính năng:** Sora Prompt chuẩn chủ đề + Đủ thời lượng (15s/30s/45s/60s).")
 
 # Sidebar
 selected_day = st.selectbox("📅 Hôm nay là thứ mấy?", list(schedule.keys()))
@@ -103,51 +233,21 @@ with tab2:
     
     st.divider()
     
-    # 3. SORA PROMPT (CÓ THOẠI TIẾNG VIỆT + NO TEXT)
+    # 3. SORA PROMPT (LOGIC MỚI + FULL DURATION)
     st.subheader("🎥 Tạo Video (Sora Clean Feed)")
     
     # Slider chọn tổng thời lượng
     total_duration = st.select_slider("Chọn TỔNG thời lượng video mong muốn:", options=["15s", "30s", "45s", "60s"], value="30s")
     
-    # Logic chia đoạn + THOẠI (COLLAGEN)
-    segments = []
-    if total_duration == "15s":
-        segments = [
-            ("Full Video", 
-             "The character is touching her cheek and speaking enthusiastically.",
-             "Da dẻ dạo này chán quá mấy bà ơi! May mà tìm được chân ái Hera này, da mướt rượt luôn nè!")
-        ]
-    elif total_duration == "30s":
-        segments = [
-            ("Phần 1 (0-15s): Hook", 
-             "The character looks sad, looking in the mirror, touching wrinkles.",
-             "Trời ơi, mới 25 tuổi mà nếp nhăn đuôi mắt xuất hiện rồi. Cứu tui với!"),
-             
-            ("Phần 2 (15-30s): Giải pháp", 
-             "The character looks happy, drinking the pink collagen drink.",
-             "Bí mật là đây nè. Collagen Hera vị lựu, uống 1 gói bằng 10 lần đắp mặt nạ. Thử đi ghiền đó!")
-        ]
-    elif total_duration == "45s":
-        segments = [
-            ("Phần 1 (0-15s): Hook", 
-             "The character looks tired, dull skin.",
-             "Mấy nay thức khuya cày phim, da sạm đi thấy rõ luôn. Nhìn vào gương mà buồn nẫu ruột."),
-             
-            ("Phần 2 (15-30s): Giải pháp", 
-             "The character introduces the product happily.",
-             "Nhưng mà Moon không lo đâu. Mỗi sáng làm 1 gói Hera Collagen này là lấy lại phong độ ngay."),
-             
-            ("Phần 3 (30-45s): Kết quả", 
-             "The character shows glowing skin close-up.",
-             "Nhìn nè, da căng bóng như gương luôn. Chị em nào muốn lão hóa ngược thì inbox Moon nha.")
-        ]
-    else: # 60s
-        segments = [
-            ("Phần 1 (0-15s): Hook", "Sad/Worried about skin.", "Mọi người có tin là uống cái này trẻ ra 5 tuổi không?"),
-            ("Phần 2 (15-30s): Diễn biến", "Explaining the science (simple).", "Hồi xưa Moon cũng không tin, mà từ hồi uống Peptide thủy phân này da khác hẳn."),
-            ("Phần 3 (30-45s): Giải pháp", "Drinking and enjoying.", "Vị lựu ngon xỉu, không hề tanh nha. Mà quan trọng là không bị nóng trong người."),
-            ("Phần 4 (45-60s): Kết", "Happy ending & CTA.", "Đầu tư cho nhan sắc là không bao giờ lỗ. Rinh ngay kẻo lỡ ưu đãi nha!")
-        ]
+    # Lấy dữ liệu Sora dựa trên CHỦ ĐỀ HIỆN TẠI (video_topic)
+    current_scenario_data = sora_scenarios.get(video_topic, sora_scenarios["Kể chuyện (Story-based)"])
+    
+    # Lấy segments dựa trên THỜI LƯỢNG
+    if total_duration not in current_scenario_data:
+        st.warning(f"Chưa có kịch bản chi tiết {total_duration} cho chủ đề này, đang hiển thị bản 30s.")
+        segments = current_scenario_data.get("30s", [])
+    else:
+        segments = current_scenario_data[total_duration]
 
     # Vòng lặp hiển thị
     for name, action, vn_script in segments:
