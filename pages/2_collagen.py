@@ -47,7 +47,7 @@ video_scripts = {
     "Hài hước/Trend": "🎬 KỊCH BẢN: BẮT TREND\n🔸 HOOK: Nhân vật nhảy trend biến hình (Héo úa -> Tươi xanh).\n🔸 BODY: Điệu đà bên ly collagen.\n🔸 CTA: Mời gọi 'Về đội của Moon'."
 }
 
-# 5. DỮ LIỆU SORA CHI TIẾT (FULL TOPIC & DURATION)
+# 5. DỮ LIỆU SORA CHI TIẾT
 sora_scenarios = {
     "Kể chuyện (Story-based)": {
         "15s": [("Full Video", "Character looks at mirror sadly, then drinks collagen and smiles.", "Mới có 25 tuổi mà nếp nhăn đã ghé thăm rồi. Cứu tui với Hera ơi!")],
@@ -177,18 +177,21 @@ sora_scenarios = {
     }
 }
 
+
 # =========================================================
 # GIAO DIỆN APP
 # =========================================================
-st.title("🌸 MOON'S COLLAGEN CREATOR v2.1 (Full Duration)")
-st.write("👉 **Tính năng:** Sora Prompt chuẩn chủ đề + Đủ thời lượng (15s/30s/45s/60s).")
+st.title("🌸 MOON'S COLLAGEN CREATOR v2.2 (Full Task)")
+st.write("👉 **Tính năng:** Sora Prompt chuẩn chủ đề + Đủ thời lượng + Hiện đầy đủ nhiệm vụ.")
 
 # Sidebar
 selected_day = st.selectbox("📅 Hôm nay là thứ mấy?", list(schedule.keys()))
 today_task = schedule[selected_day]
 video_topic = today_task['video']
 
-st.info(f"Nhiệm vụ: {selected_day} | Video: {video_topic}")
+# --- ĐÃ SỬA: HIỂN THỊ CẢ BÀI VIẾT VÀ VIDEO ---
+st.info(f"Nhiệm vụ: {selected_day} | 📝 Bài viết: {today_task['text']} | 🎬 Video: {video_topic}")
+# ---------------------------------------------
 
 # TABS
 tab1, tab2 = st.tabs(["📝 BÀI VIẾT (CHATGPT)", "🎬 VIDEO (SORA & MIDJOURNEY)"])
@@ -233,7 +236,7 @@ with tab2:
     
     st.divider()
     
-    # 3. SORA PROMPT (LOGIC MỚI + FULL DURATION)
+    # 3. SORA PROMPT (LOGIC MỚI - CHUẨN THEO CHỦ ĐỀ)
     st.subheader("🎥 Tạo Video (Sora Clean Feed)")
     
     # Slider chọn tổng thời lượng
