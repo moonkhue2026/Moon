@@ -4,14 +4,14 @@ import streamlit as st
 st.set_page_config(page_title="Moon's Health Creator", page_icon="🥑", layout="wide")
 
 # =========================================================
-# 1. DỮ LIỆU DANH MỤC (ĐÃ BỔ SUNG KHỦNG)
+# 1. DỮ LIỆU DANH MỤC
 # =========================================================
 
 categories = {
     "🍎 Trái cây (Fruits)": [
         "Táo", "Cam", "Chuối", "Dưa hấu", "Nho", "Thanh long", "Bơ",
         "Sầu riêng", "Măng cụt", "Vải thiều", "Nhãn", "Xoài", "Dâu tây", 
-        "Ổi", "Mận (Hà Nội)", "Đu đủ", "Vú sữa", "Mãng cầu"
+        "Ổi", "Mận", "Đu đủ", "Vú sữa", "Mãng cầu"
     ],
     "🌿 Rau củ & Dược liệu (Veg & Herbs)": [
         "Cải thìa", "Cà rốt", "Súp lơ", "Khổ qua", "Rau má", "Cà chua", "Khoai tây",
@@ -26,19 +26,19 @@ categories = {
 
 themes = {
     "Sức khỏe (Cảnh báo)": {
-        "tone": "Nghiêm túc nhưng hình ảnh dễ thương, cảnh báo thói quen xấu.",
-        "action": "đang đau đớn, ôm bụng/đầu, hoặc giơ biển báo cấm (dấu X).",
-        "setting": "Phòng khám hiện đại hoặc Bên trong cơ thể (trừu tượng)."
+        "tone": "Nghiêm túc, cảnh báo",
+        "context": "Tác hại, Sai lầm khi ăn uống, Bệnh tật tiềm ẩn",
+        "action": "đang đau đớn, ôm bụng/đầu, hoặc giơ dấu X đỏ cảnh báo"
     },
-    "Mẹo dân gian": {
-        "tone": "Thủ thỉ, chia sẻ bí quyết, gần gũi.",
-        "action": "đang pha chế, cầm thảo dược, hoặc thì thầm bí mật.",
-        "setting": "Gian bếp ấm cúng hoặc Vườn thuốc nam."
+    "Mẹo dân gian (Chữa bệnh)": {
+        "tone": "Thủ thỉ, chia sẻ bí quyết",
+        "context": "Bài thuốc nam, Mẹo vặt chữa bệnh không dùng thuốc",
+        "action": "đang pha chế, cầm thảo dược, hoặc giơ ngón cái (Like)"
     },
-    "Ẩm thực & Đời sống": {
-        "tone": "Dí dỏm, vui nhộn, tận hưởng cuộc sống.",
-        "action": "đang nhảy múa, nấu ăn, hoặc tắm nắng (chill).",
-        "setting": "Gian bếp sang trọng hoặc Bàn tiệc ngoài trời."
+    "Ẩm thực & Dinh dưỡng": {
+        "tone": "Vui vẻ, năng động",
+        "context": "Công dụng tuyệt vời, Món ngon mỗi ngày",
+        "action": "đang nhảy múa, nấu ăn, hoặc tận hưởng món ngon"
     }
 }
 
@@ -46,169 +46,155 @@ themes = {
 # GIAO DIỆN APP
 # =========================================================
 
-st.title("🥑 MOON'S HEALTH CREATOR (Pro Version)")
-st.markdown("*Kiến tạo Video triệu view: Đa dạng Rau củ - Tùy biến Thời lượng*")
+st.title("🥑 MOON'S HEALTH CREATOR (v4.1)")
+st.markdown("*Kiến tạo Video triệu view: Rau củ - Trái cây - Sức khỏe*")
 
-# --- BƯỚC 1: CHỌN CHỦ ĐỀ & NHÂN VẬT ---
-st.header("1️⃣ CHỦ ĐỀ & NHÂN VẬT")
+# --- BƯỚC 1: CẤU HÌNH (SIDEBAR HOẶC TOP) ---
 c1, c2, c3 = st.columns(3)
-
 with c1:
     cat_select = st.selectbox("Chọn nhóm:", list(categories.keys()))
-
+    char_select = st.selectbox("Chọn nhân vật:", categories[cat_select])
 with c2:
-    char_select = st.selectbox("Chọn nhân vật chính:", categories[cat_select])
-
+    theme_select = st.selectbox("Chủ đề:", list(themes.keys()))
+    duration_option = st.select_slider("Thời lượng video:", options=["15s", "30s", "45s", "60s"], value="30s")
 with c3:
-    theme_select = st.selectbox("Chủ đề nội dung:", list(themes.keys()))
-
-# --- BƯỚC 2: CÀI ĐẶT SẢN XUẤT ---
-st.header("2️⃣ CÀI ĐẶT SẢN XUẤT")
-col_s1, col_s2, col_s3 = st.columns(3)
-
-with col_s1:
-    style_select = st.radio("Phong cách Visual:", ["3D Animation (Pixar/Disney)", "KOL (Chuyên gia thật)"], horizontal=True)
-
-with col_s2:
-    # THANH TRƯỢT THỜI LƯỢNG (LINH HOẠT)
-    duration_option = st.select_slider("Thời lượng video:", options=["15s (Shorts)", "30s (Tiêu chuẩn)", "60s (Video dài)"], value="30s (Tiêu chuẩn)")
-
-with col_s3:
     quality = st.selectbox("Chất lượng:", ["8K", "4K"])
 
-# --- XỬ LÝ LOGIC ---
+# Xử lý Logic Data
 current_theme = themes[theme_select]
-ar_param = "--ar 9:16" # Mặc định dọc cho Shorts/Reels
+ar_param = "--ar 9:16"
 
-# Tách chuỗi thời lượng để lấy số giây
-total_seconds = int(duration_option.split("s")[0]) 
+# Tạo dữ liệu phân đoạn (Segments) dựa trên thời lượng
+t_total = int(duration_option.replace("s", ""))
+segments = []
 
-# Tính toán thời lượng từng phân cảnh (Tỷ lệ vàng: Hook ngắn - Body dài - CTA ngắn)
-if total_seconds == 15:
-    t_hook, t_body, t_cta = "5s", "5s", "5s"
-elif total_seconds == 30:
-    t_hook, t_body, t_cta = "5s", "20s", "5s"
+# Logic chia kịch bản
+if t_total == 15:
+    segments = [
+        ("HOOK (0-5s)", "Gây tò mò/Sốc", f"Biết gì chưa? {char_select} không chỉ để ăn đâu nha!", f"Character looks shocked/surprised holding {char_select}."),
+        ("BODY (5-10s)", "Giải thích nhanh", f"Nó giúp trị bệnh cực hay mà ít ai biết.", f"Character explains excitedly, pointing at {char_select}."),
+        ("CTA (10-15s)", "Kêu gọi", f"Thử ngay đi nhé, hiệu quả lắm đó!", f"Character winks and gives thumbs up.")
+    ]
+elif t_total == 30:
+    segments = [
+        ("HOOK (0-5s)", "Vấn đề/Nỗi đau", f"Ai đang bị đau nhức/mệt mỏi thì bơi vào đây ngay!", f"Character looks in pain or worried."),
+        ("BODY 1 (5-15s)", "Giới thiệu giải pháp", f"Chỉ cần dùng {char_select} theo cách này là êm ru.", f"Character shows {char_select} glowing with magic effect."),
+        ("BODY 2 (15-25s)", "Hướng dẫn/Kết quả", f"Dùng liên tục 3 ngày là thấy khác biệt liền.", f"Character demonstrates usage happily."),
+        ("CTA (25-30s)", "Kêu gọi", f"Lưu lại ngay kẻo trôi bài nha cả nhà!", f"Character waves goodbye.")
+    ]
+elif t_total == 45:
+    segments = [
+        ("HOOK (0-5s)", "Cảnh báo", f"Dừng lại! Đừng ăn {char_select} nếu chưa biết điều này.", f"Character makes a 'STOP' gesture."),
+        ("BODY 1 (5-20s)", "Giải thích sai lầm", f"Nhiều người cứ tưởng tốt, nhưng dùng sai là hại người đó.", f"Character shakes head, showing a red X sign."),
+        ("BODY 2 (20-35s)", "Hướng dẫn đúng", f"Cách đúng là phải làm như thế này nè...", f"Character showing the correct method carefully."),
+        ("CTA (35-45s)", "Kết luận", f"Nhớ chia sẻ cho người thân cùng biết nhé.", f"Character blows a kiss.")
+    ]
 else: # 60s
-    t_hook, t_body, t_cta = "10s", "40s", "10s"
+    segments = [
+        ("HOOK (0-10s)", "Kể chuyện/Drama", f"Hồi xưa Moon hay bị ốm vặt lắm, khổ sở vô cùng.", f"Character looking sad/sick in bed."),
+        ("BODY 1 (10-25s)", "Khám phá", f"Tình cờ được bà hàng xóm mách cho mẹo dùng {char_select}.", f"Character discovering {char_select} in the garden."),
+        ("BODY 2 (25-45s)", "Trải nghiệm & Kết quả", f"Kiên trì áp dụng, giờ khỏe re, da dẻ hồng hào.", f"Character transformation from sick to strong/happy."),
+        ("CTA (45-60s)", "Thông điệp", f"Sức khỏe là vàng. Hãy chăm sóc bản thân từ những thứ tự nhiên nhất nha.", f"Character hugging {char_select} affectionately.")
+    ]
 
-# Mô tả nhân vật dựa trên Style
-if style_select == "3D Animation (Pixar/Disney)":
-    subject_prompt = f"a cute anthropomorphic {char_select.split('(')[0]} character, big expressive eyes, Pixar style 3D render"
-    style_keywords = "3D animation, Disney Pixar style, vibrant colors, soft studio lighting, high fidelity, octane render, 8k"
-    movement_desc = "movements are bouncy, squash and stretch animation style"
-else:
-    subject_prompt = f"a professional Vietnamese health expert (KOL), friendly face, holding a fresh {char_select.split('(')[0]}"
-    style_keywords = "Cinematic lighting, photorealistic, shot on Arri Alexa, 8k, sharp focus, professional commercial look"
-    movement_desc = "movements are natural, professional and engaging"
+# Tổng hợp kịch bản tóm tắt để hiển thị
+full_script_text = f"CHỦ ĐỀ: {char_select} - {theme_select} ({duration_option})\n\n"
+for name, role, script_vn, _ in segments:
+    full_script_text += f"🔸 {name} - {role}: \"{script_vn}\"\n"
 
 # =========================================================
-# TABS HIỂN THỊ
+# TABS HIỂN THỊ (GIAO DIỆN CŨ)
 # =========================================================
 
-tab1, tab2 = st.tabs(["📝 KỊCH BẢN (AI WRITER)", "🎬 PROMPT VIDEO (VEO & SORA)"])
+tab1, tab2 = st.tabs(["📝 BÀI VIẾT (CHATGPT)", "🎬 VIDEO (SORA & MIDJOURNEY)"])
 
+# --- TAB 1: BÀI VIẾT ---
 with tab1:
-    st.subheader("Copy lệnh này cho ChatGPT/Claude để viết kịch bản chi tiết:")
-    
-    # Tạo prompt cho AI Writer
-    ai_writer_prompt = f"""
-    Bạn là chuyên gia sáng tạo nội dung TikTok triệu view. Hãy viết kịch bản video ({duration_option}) về:
-    - Nhân vật chính: {char_select} (Được nhân hóa).
-    - Chủ đề: {theme_select}.
-    - Phong cách: {current_theme['tone']}
-    
-    YÊU CẦU CẤU TRÚC:
-    1. HOOK (0-{t_hook.replace('s','')}s): Tình huống gây tò mò hoặc giật gân (Ví dụ: {char_select} {current_theme['action']}).
-    2. BODY ({t_hook.replace('s','')}s-{int(t_hook.replace('s',''))+int(t_body.replace('s',''))}s): 
-       - Giải thích vấn đề hoặc kể chuyện.
-       - Thoại: Ngắn gọn, bắt trend, hài hước.
-    3. CTA (Cuối): Kêu gọi hành động (Follow, Tim, Share).
-    
-    Định dạng đầu ra: Bảng phân cảnh (Thời lượng - Hình ảnh mô tả - Lời thoại tiếng Việt).
+    st.subheader("Copy lệnh này cho ChatGPT để viết bài chia sẻ:")
+    blog_prompt = f"""
+    Đóng vai chuyên gia sức khỏe (Moon). Hãy viết một bài đăng Facebook chia sẻ kiến thức về: **{char_select}**.
+    - Chủ đề: {current_theme['context']}.
+    - Đối tượng: Những người quan tâm sức khỏe, nội trợ.
+    - Nội dung:
+      1. Nêu rõ Công dụng chính (hoặc Tác hại nếu dùng sai).
+      2. Dẫn chứng khoa học hoặc mẹo dân gian.
+      3. Lời khuyên của Moon.
+    - Tone giọng: {current_theme['tone']}, gần gũi, tin cậy.
+    - Hashtag: #{char_select.replace(' ','')} #SongKhoeCungMoon #MeoDanGian
     """
-    st.code(ai_writer_prompt, language='text')
+    st.code(blog_prompt, language='text')
 
+# --- TAB 2: VIDEO ---
 with tab2:
-    st.subheader(f"🎥 Prompt tạo video (Chủ đề: {char_select} | {duration_option})")
-    st.caption(f"💡 Hệ thống tự động chia thời lượng: Hook ({t_hook}) - Body ({t_body}) - CTA ({t_cta})")
-
-    # PHÂN ĐOẠN 1: HOOK
-    st.markdown("### 🎞️ PHÂN CẢNH 1: HOOK (Gây chú ý)")
-    c_hook_1, c_hook_2 = st.columns(2)
+    # 1. KỊCH BẢN TÓM TẮT
+    st.subheader("📜 Kịch bản tóm tắt:")
+    st.code(full_script_text, language='text')
     
-    with c_hook_1:
-        st.info("🤖 **VEO 3 Prompt**")
-        veo_hook = f"""
-        Cinematic shot, {subject_prompt}. 
-        Action: The character is {current_theme['action']} looking straight at the camera with a shocked or funny expression. {movement_desc}.
-        Background: {current_theme['setting']}, blurred background.
-        Style: {style_keywords}.
-        """
-        st.code(veo_hook, language='text')
-        
-    with c_hook_2:
-        st.error("🦅 **SORA Prompt**")
-        sora_hook = f"""
-        {style_keywords}.
-        Subject: {subject_prompt}.
-        Scene: Close-up shot. The character {current_theme['action']}.
-        Atmosphere: Energetic and engaging. High texture quality on the {char_select}.
-        Constraint: NO TEXT OVERLAYS.
-        {ar_param} --duration {t_hook}
-        """
-        st.code(sora_hook, language='text')
+    st.divider()
+
+    # 2. CHỌN STYLE & THUMBNAIL
+    video_style = st.radio("Chọn phong cách video:", ["3D Animation (Pixar/Disney)", "KOL (Người thật)"], horizontal=True)
+    
+    # Logic Style Prompt
+    if video_style == "3D Animation (Pixar/Disney)":
+        subject_prompt = f"a cute anthropomorphic {char_select.split('(')[0]} character, big expressive eyes, Pixar style 3D render"
+        style_keywords = "3D animation, Disney Pixar style, vibrant colors, soft studio lighting, high fidelity, 8k"
+        movement_desc = "bouncy, squash and stretch animation"
+        action_verb = "animating"
+    else:
+        subject_prompt = f"a professional Vietnamese health expert (KOL), friendly face, holding fresh {char_select.split('(')[0]}"
+        style_keywords = "Cinematic lighting, photorealistic, shot on Arri Alexa, 8k, professional commercial look"
+        movement_desc = "natural, professional gestures"
+        action_verb = "acting"
+
+    st.subheader("🎨 Prompt Ảnh Thumbnail (Midjourney):")
+    prompt_mj = f"/imagine prompt: {subject_prompt}, {action_verb} in a scene about {theme_select}. {style_keywords}, 8k --ar 9:16"
+    st.code(prompt_mj, language='text')
 
     st.divider()
 
-    # PHÂN ĐOẠN 2: BODY
-    st.markdown("### 🎞️ PHÂN CẢNH 2: BODY (Nội dung chính)")
-    c_body_1, c_body_2 = st.columns(2)
+    # 3. PROMPT VIDEO (SORA & VEO)
+    st.subheader(f"🎥 Tạo Video (Sora & Veo)")
     
-    with c_body_1:
-        st.info("🤖 **VEO 3 Prompt**")
-        veo_body = f"""
-        Medium shot, {subject_prompt}.
-        Action: The character is explaining/dancing/interacting with props about {theme_select}. {movement_desc}.
-        Lighting: Warm, cozy lighting emphasizing the freshness/health aspect.
-        Style: {style_keywords}.
-        """
-        st.code(veo_body, language='text')
+    # Vòng lặp hiển thị từng phân cảnh
+    for name, role, script_vn, action_en in segments:
+        st.markdown(f"#### 🎞️ {name}: {role}")
+        st.caption(f"💡 Nội dung: {script_vn}")
         
-    with c_body_2:
-        st.error("🦅 **SORA Prompt**")
-        sora_body = f"""
-        {style_keywords}.
-        Subject: {subject_prompt}.
-        Scene: Wide shot showing the character in {current_theme['setting']}.
-        Action: The character is actively demonstrating the tip or warning. Dynamic camera movement.
-        Constraint: NO TEXT OVERLAYS.
-        {ar_param} --duration {t_body}
-        """
-        st.code(sora_body, language='text')
-
-    st.divider()
-
-    # PHÂN ĐOẠN 3: CTA
-    st.markdown("### 🎞️ PHÂN CẢNH 3: CTA (Kêu gọi)")
-    c_cta_1, c_cta_2 = st.columns(2)
-    
-    with c_cta_1:
-        st.info("🤖 **VEO 3 Prompt**")
-        veo_cta = f"""
-        Close-up, {subject_prompt}.
-        Action: The character winks, gives a thumbs up, or points to the 'Subscribe' button area. Smiling happily.
-        Style: {style_keywords}.
-        """
-        st.code(veo_cta, language='text')
+        c_veo, c_sora = st.columns(2)
         
-    with c_cta_2:
-        st.error("🦅 **SORA Prompt**")
-        sora_cta = f"""
-        {style_keywords}.
-        Subject: {subject_prompt}.
-        Action: Friendly gesture, waving goodbye or blowing a kiss.
-        Atmosphere: Positive and inviting.
-        Constraint: NO TEXT OVERLAYS.
-        {ar_param} --duration {t_cta}
-        """
-        st.code(sora_cta, language='text')
+        # VEO 3 PROMPT (8s)
+        with c_veo:
+            st.info("🤖 **VEO 3 (8s)**")
+            veo_prompt = f"""
+            Cinematic shot, {subject_prompt}.
+            Action: {action_en} {movement_desc}. Character is speaking.
+            Atmosphere: {current_theme['tone']}.
+            Style: {style_keywords}.
+            --duration 8s
+            """
+            st.code(veo_prompt, language='text')
+            with st.expander("Dịch Veo"):
+                st.write(f"Hành động: {action_en}")
+                st.write("Thời lượng: 8 giây (Chuẩn Veo).")
+
+        # SORA PROMPT (15s)
+        with c_sora:
+            st.error("🦅 **SORA (15s)**")
+            sora_prompt = f"""
+            {style_keywords}.
+            Subject: {subject_prompt}.
+            Action: {action_en} {movement_desc}.
+            Speaking Line (Vietnamese): "{script_vn}"
+            Lip-sync instruction: Mouth moves naturally matching Vietnamese dialogue.
+            Scene Context: {current_theme['context']}.
+            Constraint: NO TEXT OVERLAYS.
+            {ar_param} --duration 15s
+            """
+            st.code(sora_prompt, language='text')
+            with st.expander("Dịch Sora"):
+                st.write(f"Hành động: {action_en}")
+                st.write(f"Thoại nhép: '{script_vn}'")
+                st.write("Thời lượng: 15 giây.")
+        
+        st.divider()
