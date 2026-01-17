@@ -1,26 +1,35 @@
 import streamlit as st
 
-st.set_page_config(page_title="KOL Nelly Manager", page_icon="👠", layout="wide")
+st.set_page_config(page_title="Nelly's Daily Routine", page_icon="👠", layout="wide")
 
 # =========================================================
-# 1. CẤU HÌNH PHONG CÁCH NELLY
+# 1. CẤU HÌNH PHONG CÁCH & LỊCH TRÌNH
 # =========================================================
 
-styles = {
-    "Sang trọng (Luxury)": {
-        "kw": "High-end commercial, Vogue style, luxury apartment background, golden hour, 8k",
-        "outfit": "high-end designer suit or evening gown",
-        "vibe": "confident, powerful, sophisticated"
+schedule_data = {
+    "🌅 Buổi Sáng (Morning Routine)": {
+        "activity": "Vận động & Lifestyle",
+        "topics": ["Gym/Yoga tại nhà", "Bơi lội chào ngày mới", "Chạy bộ công viên", "Morning Skincare", "Pha cà phê/Matcha"],
+        "vibe": "Energetic, fresh, bright morning light",
+        "outfit": "Stylish gym wear (Alo Yoga/Lululemon) or Silk robe"
     },
-    "Thân thiện (Daily)": {
-        "kw": "Vlog style, cinematic daily life, cozy modern home, soft natural light, 4k",
-        "outfit": "casual chic, silk pajamas or sportswear",
-        "vibe": "warm, engaging, authentic"
+    "🥗 Buổi Trưa (Healthy Lunch)": {
+        "activity": "Ăn uống Healthy",
+        "topics": ["Salad ức gà", "Sinh tố Green Detox", "Bữa trưa Eat Clean", "Review nhà hàng chay", "Uống đủ nước"],
+        "vibe": "Cozy, clean, natural lighting, appetizing",
+        "outfit": "Casual chic, comfortable home wear"
     },
-    "Chuyên gia (Expert)": {
-        "kw": "Studio lighting, clean background, sharp focus, professional look, 8k",
-        "outfit": "modern blazer, smart glasses",
-        "vibe": "trustworthy, intelligent, focused"
+    "☕ Buổi Chiều (Knowledge & Tips)": {
+        "activity": "Chia sẻ kiến thức/Kỹ năng",
+        "topics": ["Tips makeup nhanh", "Kỹ năng giao tiếp", "Truyền động lực (Quote)", "Học ngoại ngữ/Edit video", "Review sách hay"],
+        "vibe": "Professional, smart, focus, warm tone",
+        "outfit": "Smart casual, Blazer, Glasses"
+    },
+    "✨ Buổi Tối (Fashion & Glamour)": {
+        "activity": "Biểu diễn Thời trang",
+        "topics": ["Đi sự kiện (Event)", "Outfit of the Night (OOTD)", "Catwalk thần thái", "Biến hình (Transformation)", "Dạo phố đêm"],
+        "vibe": "Luxury, glamour, city lights, flash photography",
+        "outfit": "High-end Evening Gown, Designer Bag, Heels"
     }
 }
 
@@ -28,171 +37,129 @@ styles = {
 # GIAO DIỆN CHÍNH
 # =========================================================
 
-st.title("👠 NELLY'S WORKSPACE MANAGER")
-st.markdown("*Quản lý 4 Trụ cột công việc: Sáng tạo - Cộng đồng - Booking - Nghiên cứu*")
+st.title("👠 NELLY'S DAILY ROUTINE")
+st.markdown("*Lịch làm việc chuyên nghiệp của Fashion & Lifestyle KOL*")
 
-# SIDEBAR: GIAO NHIỆM VỤ CỤ THỂ
-with st.sidebar:
-    st.header("📅 LÊN KẾ HOẠCH LÀM VIỆC")
+# --- BƯỚC 1: CHỌN KHUNG GIỜ LÀM VIỆC ---
+c1, c2 = st.columns([1, 2])
+
+with c1:
+    st.info("📅 **LỊCH TRÌNH HÔM NAY**")
+    time_of_day = st.radio("Chọn buổi:", list(schedule_data.keys()))
     
-    # 1. Chọn nhóm công việc (4 Trụ cột Moon yêu cầu)
-    task_type = st.radio("Chọn loại nhiệm vụ:", [
-        "1. Sáng tạo nội dung (Content Creation)", 
-        "2. Tương tác cộng đồng (Community)",
-        "3. Hợp tác Marketing (Booking/Review)",
-        "4. Nghiên cứu & Cập nhật (R&D)"
-    ])
+    # Lấy dữ liệu theo buổi
+    current_schedule = schedule_data[time_of_day]
     
+    st.write("---")
+    topic_select = st.selectbox("Chủ đề cụ thể:", current_schedule["topics"])
+    st.caption(f"Trang phục: {current_schedule['outfit']}")
+
+with c2:
+    st.success(f"🎬 **SẢN XUẤT VIDEO: {topic_select}**")
+    
+    # Cấu hình Video
+    col_set1, col_set2 = st.columns(2)
+    with col_set1:
+        duration_option = st.select_slider("Thời lượng Video:", options=["15s", "30s", "45s", "60s"], value="15s")
+    with col_set2:
+        style_select = st.radio("Phong cách:", ["KOL (Người thật)", "3D Animation (Mascot)"], horizontal=True)
+
+    # Logic Style
+    if style_select == "KOL (Người thật)":
+        subject_prompt = "A stunning Vietnamese fashion KOL (Nelly), beautiful face, confident aura"
+        visual_style = "High-end commercial, Arri Alexa, 8k, photorealistic"
+    else:
+        subject_prompt = "A cute 3D fashion doll character (Nelly)"
+        visual_style = "Pixar style, vibrant colors, 8k"
+
+    # =========================================================
+    # XỬ LÝ LOGIC PROMPT (GỘP HOẶC TÁCH)
+    # =========================================================
+    
+    t_num = int(duration_option.replace("s", ""))
+    prompts_list = []
+    
+    # Nội dung chung dựa trên chủ đề
+    outfit = current_schedule['outfit']
+    vibe = current_schedule['vibe']
+    topic = topic_select
+
+    # --- TRƯỜNG HỢP 1: 15S (GỘP 1 PROMPT) ---
+    if t_num == 15:
+        # Kịch bản tóm tắt
+        script_summary = f"""
+        - HOOK (0-3s): Nelly xuất hiện ấn tượng/gây tò mò với {topic}.
+        - BODY (3-12s): Thực hiện hành động chính ({current_schedule['activity']}) đầy năng lượng.
+        - CTA (12-15s): Kêu gọi tương tác/thả tim.
+        """
+        
+        # Prompt gộp
+        action_desc = f"Start with a close up of Nelly looking at camera excitedly regarding {topic}. Then cut to wide shot of her {current_schedule['activity']}, wearing {outfit}. Ends with her winking and gesturing to follow."
+        vn_line = f"Chào cả nhà! Hôm nay cùng Nelly {topic} nha. Bí quyết là đây nè! Nhớ thả tim cho Nelly đó."
+        
+        prompts_list.append({
+            "title": "🎞️ FULL VIDEO (15s)",
+            "action": action_desc,
+            "dialogue": vn_line
+        })
+
+    # --- TRƯỜNG HỢP 2: 30S (TÁCH 2 PROMPTS) ---
+    elif t_num == 30:
+        script_summary = f"""
+        - PHẦN 1 (0-15s): Hook + Dẫn dắt vấn đề.
+        - PHẦN 2 (15-30s): Giải quyết/Show kết quả + CTA.
+        """
+        # P1
+        prompts_list.append({
+            "title": "🎞️ PHẦN 1 (0-15s): Mở đầu",
+            "action": f"Nelly starts facing camera, talking about {topic} with {vibe} atmosphere. She looks slightly worried or curious, then presents the solution/item.",
+            "dialogue": f"Mọi người hay hỏi Nelly bí quyết về {topic} đúng không? Hôm nay Nelly bật mí nha."
+        })
+        # P2
+        prompts_list.append({
+            "title": "🎞️ PHẦN 2 (15-30s): Kết quả & CTA",
+            "action": f"Nelly confidently demonstrates {topic}, showing the result/final look. She looks happy, spins around or smiles brightly. Waving goodbye.",
+            "dialogue": f"Đó, đơn giản vậy thôi mà hiệu quả lắm. Áp dụng ngay và khoe kết quả với Nelly nhé!"
+        })
+
+    # --- TRƯỜNG HỢP 3: 45S (TÁCH 3 PROMPTS) ---
+    elif t_num == 45:
+        script_summary = "Video 3 phần: Mở đầu -> Chi tiết -> Kết thúc."
+        prompts_list.append({"title": "🎞️ PHẦN 1 (0-15s)", "action": f"Intro to {topic}, outfit {outfit}", "dialogue": "Hello cả nhà, lại là Nelly đây..."})
+        prompts_list.append({"title": "🎞️ PHẦN 2 (15-30s)", "action": f"Deep dive into {topic}, showing details", "dialogue": "Bước quan trọng nhất là..."})
+        prompts_list.append({"title": "🎞️ PHẦN 3 (30-45s)", "action": "Final result and Call to action", "dialogue": "Tuyệt vời chưa? Thử ngay nhé!"})
+
+    # --- TRƯỜNG HỢP 4: 60S (TÁCH 4 PROMPTS) ---
+    else:
+        script_summary = "Video 4 phần: Vlog hoàn chỉnh."
+        prompts_list.append({"title": "🎞️ PHẦN 1 (0-15s)", "action": "Vlog intro walking/talking", "dialogue": "Hôm nay là một ngày bận rộn của Nelly..."})
+        prompts_list.append({"title": "🎞️ PHẦN 2 (15-30s)", "action": "Main activity highlights", "dialogue": "Đầu tiên là phải..."})
+        prompts_list.append({"title": "🎞️ PHẦN 3 (30-45s)", "action": "Sharing tip/secret", "dialogue": "Lưu ý nhỏ cho mấy bà là..."})
+        prompts_list.append({"title": "🎞️ PHẦN 4 (45-60s)", "action": "Outro and goodbye", "dialogue": "Hẹn gặp lại các tình yêu nha!"})
+
+    # --- HIỂN THỊ KẾT QUẢ ---
+    
+    # 1. Kịch bản ngắn gọn (Nằm trong giao diện Video)
+    with st.expander("📜 KỊCH BẢN TÓM TẮT (Tiếng Việt)", expanded=True):
+        st.info(script_summary)
+
+    # 2. Hiển thị Prompt
     st.divider()
+    st.subheader("🎥 VIDEO PROMPT (SORA & VEO)")
     
-    # Form nhập liệu thay đổi theo từng loại nhiệm vụ
-    task_input = {}
-    
-    if "Sáng tạo" in task_type:
-        task_input['niche'] = st.selectbox("Lĩnh vực:", ["Làm đẹp (Beauty)", "Công nghệ (Tech)", "Ẩm thực (Food)", "Tài chính (Finance)", "Lifestyle"])
-        task_input['topic'] = st.text_input("Chủ đề cụ thể:", "Ví dụ: 5 sai lầm khi quản lý tài chính cá nhân")
-        task_input['style'] = st.selectbox("Style Nelly:", ["Chuyên gia (Expert)", "Sang trọng (Luxury)"])
+    for p in prompts_list:
+        st.markdown(f"**{p['title']}**")
         
-    elif "Cộng đồng" in task_type:
-        task_input['topic'] = st.text_input("Câu chuyện muốn chia sẻ:", "Ví dụ: Hành trình vượt qua sự tự ti của Nelly")
-        task_input['style'] = "Thân thiện (Daily)"
-        
-    elif "Hợp tác" in task_type:
-        task_input['brand'] = st.text_input("Tên Thương hiệu/Sàn:", "Ví dụ: Shopee, Dyson, Chanel")
-        task_input['product'] = st.text_input("Sản phẩm:", "Ví dụ: Máy sấy tóc, Son môi")
-        task_input['type'] = st.selectbox("Loại content:", ["Review chân thực", "Unboxing", "Livestream/Sale"])
-        task_input['style'] = "Sang trọng (Luxury)" if "Unboxing" in task_input['type'] else "Chuyên gia (Expert)"
-        
-    elif "Nghiên cứu" in task_type:
-        task_input['trend'] = st.text_input("Xu hướng cần học:", "Ví dụ: Cách edit video kiểu Douyin, Trend biến hình mới")
-        
-    st.divider()
-    
-    # Cấu hình Video chung
-    duration = st.select_slider("Thời lượng:", options=["15s", "30s", "60s"], value="30s")
-    model_ai = st.radio("AI Model:", ["Sora (15s)", "Veo 3 (8s)"], horizontal=True)
-
-# =========================================================
-# XỬ LÝ LOGIC & HIỂN THỊ (MAIN CONTENT)
-# =========================================================
-
-if "Nghiên cứu" in task_type:
-    # --- GIAO DIỆN RIÊNG CHO R&D ---
-    st.info(f"📚 **NHIỆM VỤ R&D:** {task_input['trend']}")
-    st.markdown("""
-    **Checklist cho Nelly:**
-    - [ ] Lướt Douyin/TikTok 30 phút để tìm video gốc.
-    - [ ] Phân tích âm nhạc, góc quay, transition.
-    - [ ] Ghi chú lại 3 điểm cốt lõi để áp dụng cho kênh.
-    - [ ] Tìm đọc tài liệu chuyên sâu nếu là kiến thức sản phẩm mới.
-    """)
-    st.warning("👉 Nhiệm vụ này tập trung vào việc HỌC, chưa cần sản xuất video ngay.")
-
-else:
-    # --- GIAO DIỆN SẢN XUẤT CONTENT (3 LOẠI CÒN LẠI) ---
-    
-    # 1. Xác định Style & Context
-    current_style = styles[task_input.get('style', 'Sang trọng (Luxury)')]
-    
-    # Tiêu đề nhiệm vụ
-    if "Sáng tạo" in task_type:
-        title = f"{task_input['niche']}: {task_input['topic']}"
-        context_prompt = f"Sharing expert knowledge about {task_input['topic']}"
-    elif "Cộng đồng" in task_type:
-        title = f"Tâm sự: {task_input['topic']}"
-        context_prompt = "Sharing personal story, emotional connection"
-    else: # Booking
-        title = f"{task_input['type']} x {task_input['brand']}: {task_input['product']}"
-        context_prompt = f"Promoting {task_input['product']} for {task_input['brand']}"
-
-    st.subheader(f"🎬 KỊCH BẢN: {title}")
-    
-    # 2. Logic Kịch bản (3 Trụ cột)
-    t_num = int(duration.replace("s",""))
-    segments = []
-
-    # === LOGIC SÁNG TẠO (CHUYÊN MÔN) ===
-    if "Sáng tạo" in task_type:
-        segments = [
-            ("HOOK", "Gây tò mò", f"3 điều Nelly ước mình biết sớm hơn về {task_input['topic']}.", "Holding a notebook/tablet, looking smart."),
-            ("BODY", "Kiến thức", f"Thứ nhất... Thứ hai... (Chia sẻ kiến thức sâu).", "Pointing to text/graphics floating in air."),
-            ("CTA", "Tương tác", f"Bạn thấy sao? Comment ý kiến bên dưới nhé.", "Smiling and waiting for response.")
-        ]
-        
-    # === LOGIC CỘNG ĐỒNG (TÂM SỰ) ===
-    elif "Cộng đồng" in task_type:
-        segments = [
-            ("HOOK", "Cảm xúc", f"Hôm nay cho phép Nelly yếu đuối một chút nhé...", "Sitting on sofa, holding a cup of tea."),
-            ("BODY", "Trải nghiệm", f"Kể về hành trình/khó khăn đã qua...", "Looking out the window then back to camera."),
-            ("CTA", "Kết nối", f"Cảm ơn mọi người đã luôn ở bên Nelly.", "Hand on heart gesture.")
-        ]
-        
-    # === LOGIC BOOKING (QUẢNG CÁO) ===
-    else: # Hợp tác
-        if "Unboxing" in task_input['type']:
-            action_body = f"Opening the {task_input['brand']} box, showing {task_input['product']} details."
-            hook_text = "Cùng Nelly đập hộp siêu phẩm mới nhất này nha!"
-        else:
-            action_body = f"Using {task_input['product']} on face/hand, showing satisfaction."
-            hook_text = f"Tại sao {task_input['product']} lại hot đến vậy?"
-            
-        segments = [
-            ("HOOK", "Show hàng", hook_text, f"Holding {task_input['product']} box excitedly."),
-            ("BODY", "Trải nghiệm", f"Thiết kế sang trọng, chất lượng đỉnh cao...", action_body),
-            ("CTA", "Chốt đơn", f"Săn ngay deal hời tại giỏ hàng nhé!", "Showing phone screen/Sale sign.")
-        ]
-
-    # Điều chỉnh thời lượng 60s
-    if t_num == 60:
-        segments.insert(1, ("BODY 2", "Chi tiết sâu", "Đi sâu vào phân tích/kể chuyện chi tiết hơn.", "Change angle/Close up shot."))
-
-    # 3. HIỂN THỊ TAB LÀM VIỆC
-    tab1, tab2, tab3 = st.tabs(["📜 KỊCH BẢN CHI TIẾT", "🎥 PROMPT VIDEO", "📝 BÀI VIẾT BLOG"])
-    
-    with tab1:
-        script_text = ""
-        for name, role, vn, en in segments:
-            script_text += f"🔸 {name} ({role}): \"{vn}\"\n"
-        st.info(script_text)
-        
-    with tab2:
-        st.markdown(f"**Prompt ({model_ai}):**")
-        for name, role, vn, en in segments:
-            st.markdown(f"🎞️ **{name}**")
-            
-            # Tinh chỉnh Prompt theo Niche (Công nghệ vs Làm đẹp)
-            props = ""
-            if "Công nghệ" in str(task_input): props = ", holding smartphone/laptop"
-            if "Ẩm thực" in str(task_input): props = ", in luxury kitchen with food"
-            
-            if "Sora" in model_ai:
-                prompt = f"""
-                {current_style['kw']}.
-                Subject: A stunning Vietnamese fashion KOL (Nelly), {current_style['vibe']} expression{props}.
-                Outfit: {current_style['outfit']}.
-                Action: {en}.
-                Speaking Line (Vietnamese): "{vn}"
-                Lip-sync: Match Vietnamese dialogue.
-                Context: {context_prompt}. Constraint: NO TEXT.
-                --duration 15s
-                """
-            else:
-                prompt = f"""
-                Cinematic shot, Nelly (Vietnamese KOL){props}.
-                Outfit: {current_style['outfit']}.
-                Action: {en}. Speaking.
-                Style: {current_style['kw']}.
-                --duration 8s
-                """
-            st.code(prompt, language='text')
-
-    with tab3:
-        st.subheader("Copy lệnh cho ChatGPT:")
-        st.code(f"""
-        Đóng vai KOL Nelly. Viết bài Facebook/Blog về: **{title}**.
-        - Mục tiêu: {task_type}.
-        - Nội dung chính: {context_prompt}.
-        - Tone giọng: {current_style['vibe']}.
-        - Kêu gọi hành động: {segments[-1][2]}.
-        - Hashtag: #NellyKOL #{title.split(':')[0].replace(' ','')}
-        """, language='text')
+        # Code Sora
+        sora_prompt = f"""
+        {visual_style}.
+        Subject: {subject_prompt}, wearing {outfit}.
+        Action: {p['action']}.
+        Speaking Line (Vietnamese): "{p['dialogue']}"
+        Lip-sync instruction: Match Vietnamese dialogue naturally.
+        Atmosphere: {vibe}. Constraint: NO TEXT OVERLAYS.
+        --duration 15s
+        """
+        st.code(sora_prompt, language='text')
+        st.caption(f"💡 Thoại: {p['dialogue']}")
+        st.divider()
