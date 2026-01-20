@@ -1,124 +1,109 @@
 import streamlit as st
 import random
 
-st.set_page_config(page_title="Nelly's Fashion Matrix", page_icon="👠", layout="wide")
+st.set_page_config(page_title="Nelly's Viral Matrix", page_icon="💃", layout="wide")
 
 # =========================================================
-# 1. KHO TÀNG Ý TƯỞNG & CAPTION VIRAL
+# 1. KHO TÀNG Ý TƯỞNG (5 NHÓM VIRAL)
 # =========================================================
 
 categories = {
+    "💃 Dancing & Trends (Vũ đạo Viral)": [
+        "Nhảy Cover Trend TikTok mới nhất",
+        "Aerobic đốt mỡ bụng tại nhà",
+        "Sexy Dance thần thái (High Heels)",
+        "Shuffle Dance cực cuốn",
+        "Dance Sport sang trọng (Cha Cha Cha/Rumba)",
+        "Biến hình: Từ đồ ngủ sang Đồ nhảy (Transformation)",
+        "Nhảy Free-style ngẫu hứng trên phố"
+    ],
     "👗 Hack Dáng & Phối Đồ (Styling)": [
         "Hack chân dài cho nấm lùn 1m50",
         "Che bụng mỡ dưới thần thánh",
-        "Phối đồ cho người vai rộng/thô",
+        "Phối đồ Gym/Sporty đi chơi vẫn sang",
         "Biến đồ công sở nhàm chán thành Sang chảnh",
-        "Mặc đồ rẻ tiền (Local Brand) trông như hàng hiệu",
         "Tips chọn quần Jeans tôn vòng 3",
         "Phối màu đơn sắc (Monochrome) tinh tế"
     ],
     "📸 Tạo Dáng & Thần Thái (Posing)": [
         "3 Dáng đứng chụp ảnh 'kéo chân' ảo diệu",
-        "Tạo dáng ngồi quán cafe sao cho sang?",
+        "Tạo dáng với gương phòng tập (Gym Mirror)",
         "Cách cười tự nhiên không bị gượng gạo",
         "Xử lý tay khi chụp ảnh (đỡ bị đơ)",
-        "Góc mặt thần thánh của bạn ở đâu?",
-        "Pose dáng với ghế/cầu thang",
         "Thần thái 'Chị Đại' (Boss Girl Energy)"
     ],
     "💄 Làm Đẹp & Skincare (Beauty)": [
-        "Makeup trong veo đi làm 5 phút",
-        "Tips đánh son không bị lem/trôi",
+        "Makeup tone Tây đi tiệc/đi quẩy",
+        "Tips giữ lớp nền không trôi khi tập Gym",
         "Quy trình dưỡng da Glass Skin buổi tối",
-        "Xử lý tóc bết khẩn cấp khi đi tiệc",
-        "Chọn mùi nước hoa 'Signature' quyến rũ",
-        "Mẹo kẻ mắt (Eyeliner) cho người mới",
-        "Cách giữ lớp nền lâu trôi cả ngày"
+        "Chọn mùi nước hoa 'Bad Girl' quyến rũ",
+        "Cách buộc tóc đuôi ngựa (Ponytail) hack tuổi"
     ],
     "🥂 Phong Cách Sống (Lifestyle)": [
         "Xây dựng sự tự tin từ bên trong",
-        "Quản lý tài chính cho cô nàng nghiện mua sắm",
-        "Một ngày làm việc hiệu quả của Nelly",
-        "Cách từ chối thanh lịch & sang trọng",
-        "Dọn tủ đồ tối giản (Declutter Wardrobe)",
+        "Vlog: Một ngày đi tập & làm việc của Nelly",
+        "Chế độ ăn Eat Clean giữ dáng",
         "Tư duy phụ nữ hiện đại: Độc lập & Hạnh phúc"
     ]
 }
 
-# Dictionary chứa Caption mẫu theo từng nhóm chủ đề
+# CAPTION THƯ VIỆN (Tự động nhảy theo chủ đề)
 caption_library = {
+    "Dancing": [
+        "Nhảy xấu không sao, quan trọng là thần thái! 💃🔥",
+        "Đốt cháy sàn diễn (và cả mỡ bụng) cùng Nelly! 💦",
+        "Nhạc lên là em lên! Ai đu trend này chưa? 🎶",
+        "Tập luyện là cách yêu bản thân tốt nhất. Go hard or go home! 💪"
+    ],
     "Styling": [
         "Quần áo không làm nên con người, nhưng làm nên thần thái! 😎",
         "Không có phụ nữ lùn, chỉ có phụ nữ chưa biết hack dáng! 👠",
-        "Mặc đẹp không phải để ai ngắm, mà là để mình vui! ✨",
-        "Outfit hôm nay: 10 điểm không có nhưng! 🔥"
+        "Mặc đẹp không phải để ai ngắm, mà là để mình vui! ✨"
     ],
     "Posing": [
         "Đứng im cũng đẹp, mà cười cái là 'đổ' luôn! 📸",
         "Thần thái là thứ không mua được bằng tiền, nhưng luyện tập thì được! 💃",
-        "Lưu ngay bí kíp tạo dáng này kẻo xóa video nha mấy bà! 🤫",
-        "Góc nghiêng thần thánh hay góc chết? Xem kết quả nhé! 😉"
+        "Lưu ngay bí kíp tạo dáng này kẻo xóa video nha mấy bà! 🤫"
     ],
     "Beauty": [
         "Đẹp tự nhiên nhưng không phải tự nhiên mà đẹp! 💄",
-        "Dưỡng da là khoản đầu tư không bao giờ lỗ. 💖",
-        "Makeup sương sương nhưng sát thương cực lớn! 💋",
-        "Mùi hương là vũ khí bí mật của phụ nữ. 🌸"
+        "Mồ hôi là lớp makeup đẹp nhất của cô gái phòng Gym! 💦",
+        "Makeup sương sương nhưng sát thương cực lớn! 💋"
     ],
     "Lifestyle": [
         "Sống sang không phải là khoe tiền, mà là biết yêu bản thân. 🥂",
         "Phụ nữ hiện đại: Kiếm tiền giỏi, Sống chất chơi! 👑",
-        "Đừng chờ ai mang hoa đến, hãy tự trồng vườn hoa của mình. 🌻",
-        "Hạnh phúc là khi được là chính mình phiên bản tốt nhất. ✨"
+        "Body này được tạo nên từ kỷ luật, không phải may mắn. 🔥"
     ]
 }
 
-# =========================================================
-# 2. MA TRẬN GÓC ĐỘ (ANGLES)
-# =========================================================
-
+# MA TRẬN GÓC ĐỘ
 pillars = {
-    "🔥 1. Biến hình/Kết quả (Transformation)": {
-        "desc": "Show Before/After để gây choáng ngợp.",
-        "tone": "Hào hứng, Nhạc Trend, Nhanh",
-        "action_kw": "snapping fingers transition, spinning transformation, glowing up"
-    },
-    "🎓 2. Hướng dẫn/Mẹo (Tutorial)": {
-        "desc": "Cầm tay chỉ việc, từng bước một.",
-        "tone": "Chuyên gia, Rõ ràng, Chậm rãi",
-        "action_kw": "pointing to details, demonstrating step-by-step, nodding"
-    },
-    "⚠️ 3. Sai lầm/Cảnh báo (Mistakes)": {
-        "desc": "Đánh vào nỗi sợ 'Làm sai nên xấu'.",
-        "tone": "Nghiêm túc, Drama hóa",
-        "action_kw": "shaking head No, holding STOP sign, showing 'X' mark"
-    },
-    "💖 4. Tâm sự/Vlog (Storytelling)": {
-        "desc": "Kể chuyện cá nhân để hút fan trung thành.",
-        "tone": "Thủ thỉ, Gần gũi, Cảm xúc",
-        "action_kw": "talking to camera, drinking coffee, looking thoughtful"
-    }
+    "🔥 1. Biến hình/Kết quả (Transformation)": {"desc": "Show Before/After gây choáng ngợp.", "tone": "Hào hứng, Nhạc Trend", "action_kw": "snapping fingers transition, spinning transformation, glowing up"},
+    "🎓 2. Hướng dẫn/Mẹo (Tutorial)": {"desc": "Cầm tay chỉ việc, từng bước một.", "tone": "Chuyên gia, Rõ ràng", "action_kw": "pointing to details, demonstrating step-by-step"},
+    "⚠️ 3. Sai lầm/Cảnh báo (Mistakes)": {"desc": "Đánh vào nỗi sợ 'Làm sai'.", "tone": "Nghiêm túc, Drama hóa", "action_kw": "shaking head No, holding STOP sign"},
+    "💖 4. Biểu diễn/Vlog (Performance)": {"desc": "Show kỹ năng hoặc kể chuyện.", "tone": "Cuốn hút, Cảm xúc", "action_kw": "performing confidently, smiling at camera, energetic movement"}
 }
 
 # =========================================================
 # GIAO DIỆN APP
 # =========================================================
 
-st.title("👠 NELLY'S FASHION MATRIX v4.1")
-st.markdown("*Giao diện tối ưu: Copy 1 lần là xong!*")
+st.title("💃 NELLY'S VIRAL MATRIX v5.0")
+st.markdown("*Chiến thần Viral: Fashion x Dancing x Lifestyle*")
 
 # --- BƯỚC 1: CHỌN CHỦ ĐỀ ---
 c1, c2 = st.columns(2)
 with c1:
     group_select = st.selectbox("1. Nhóm chủ đề:", list(categories.keys()))
 with c2:
-    topic_select = st.selectbox("2. Chủ đề cụ thể (Viral Topic):", categories[group_select])
+    topic_select = st.selectbox("2. Chủ đề cụ thể:", categories[group_select])
 
 # --- BƯỚC 2: CHỌN GÓC ĐỘ ---
 st.divider()
 c3, c4 = st.columns(2)
 with c3:
-    pillar_select = st.selectbox("3. Góc quay (Style):", list(pillars.keys()))
+    pillar_select = st.selectbox("3. Góc quay (Angle):", list(pillars.keys()))
 with c4:
     current_pillar = pillars[pillar_select]
     st.info(f"💡 **Cách làm:** {current_pillar['desc']}")
@@ -137,53 +122,69 @@ with col_v3:
 # XỬ LÝ LOGIC (GENERATOR)
 # =========================================================
 
-# 1. Setup Visual Style
+# 1. XỬ LÝ VISUAL STYLE (Quan trọng: Đổi style khi chọn Dancing)
+is_dancing = "Dancing" in group_select
+
 if style_select == "KOL (Người thật)":
-    subject_prompt = "A stunning Vietnamese fashion KOL (Nelly), wearing trendy outfit, confident aura"
-    visual_style = "High-end fashion commercial, Vogue magazine style, 8k"
+    if is_dancing:
+        subject_prompt = "A fit and stunning Vietnamese fashion KOL (Nelly), wearing trendy sporty gym set (crop top & leggings), energetic aura"
+        visual_style = "High-energy dance video, TikTok viral style, dynamic camera movement, bright studio lighting, 4k"
+        outfit_desc = "Sporty Gym Wear"
+    else:
+        subject_prompt = "A stunning Vietnamese fashion KOL (Nelly), wearing trendy high-fashion outfit, confident aura"
+        visual_style = "High-end fashion commercial, Vogue magazine style, cinematic lighting, 8k"
+        outfit_desc = "High Fashion"
 else:
     subject_prompt = "A cute 3D fashion doll character (Nelly), Pixar style"
     visual_style = "Disney Pixar style, vibrant colors, 8k"
+    outfit_desc = "Cute 3D Outfit"
 
-# 2. Chọn Caption ngẫu nhiên theo nhóm
-if "Styling" in group_select: cap_list = caption_library["Styling"]
-elif "Posing" in group_select: cap_list = caption_library["Posing"]
-elif "Beauty" in group_select: cap_list = caption_library["Beauty"]
-else: cap_list = caption_library["Lifestyle"]
-selected_cap = random.choice(cap_list)
+# 2. CHỌN CAPTION NGẪU NHIÊN
+cap_key = "Lifestyle"
+if "Dancing" in group_select: cap_key = "Dancing"
+elif "Styling" in group_select: cap_key = "Styling"
+elif "Posing" in group_select: cap_key = "Posing"
+elif "Beauty" in group_select: cap_key = "Beauty"
+selected_cap = random.choice(caption_library[cap_key])
 
-# 3. Logic Kịch bản (Auto-Writing)
+# 3. LOGIC KỊCH BẢN (Tùy biến cho Dancing)
 t_num = int(duration_option.replace("s", ""))
 prompts_list = []
 
-# (Logic Hook-Body-CTA như bản cũ, giữ nguyên chất lượng)
-if "Biến hình" in pillar_select:
-    script_sum = f"- HOOK: Nelly trông xuề xòa với vấn đề '{topic_select}'.\n- BODY: Búng tay biến hình sang chảnh.\n- CTA: Thần thái ngút ngàn."
-    act_15s = f"Start with {subject_prompt} looking messy/sad wearing bad outfit. Action: Snaps fingers/Spins. Cut to: {subject_prompt} wearing luxury outfit, looking perfect. End with winking at camera."
-    dia_15s = f"Đừng để ai nhìn thấy bạn lúc này! 1, 2, 3... Biến hình! Đây mới là đẳng cấp của {topic_select}. Bạn chấm mấy điểm?"
-elif "Hướng dẫn" in pillar_select:
-    script_sum = f"- HOOK: Khổ sở vì chưa biết {topic_select}?\n- BODY: Nelly chỉ 3 bước thực hiện.\n- CTA: Kết quả đẹp mỹ mãn."
-    act_15s = f"Start with {subject_prompt} gesturing 'Follow me'. Cut to showing step-by-step guide on {topic_select}. End with showing the final beautiful result."
-    dia_15s = f"Muốn {topic_select} chuẩn như Stylist? Lưu ngay 3 bước này của Nelly nhé. Đơn giản nhưng hiệu quả bất ngờ đấy!"
-elif "Sai lầm" in pillar_select:
-    script_sum = f"- HOOK: Dừng lại! Đừng làm thế này nếu 'quê'.\n- BODY: Chỉ lỗi sai & Cách sửa.\n- CTA: Sửa lại ngay."
-    act_15s = f"Start with {subject_prompt} holding a red 'X' sign looking shocked. Cut to demonstrating the wrong way vs the right way of {topic_select}. End with nodding 'Yes'."
-    dia_15s = f"Sai lầm tai hại khi {topic_select} mà 90% chị em mắc phải! Bỏ ngay kiểu này đi nhé. Sửa thế này mới sang nè!"
-else: # Tâm sự
-    script_sum = f"- HOOK: Nelly cũng từng tự ti về {topic_select}...\n- BODY: Hành trình thay đổi.\n- CTA: Truyền động lực."
-    act_15s = f"Start with {subject_prompt} sitting on sofa looking thoughtful. Cut to flashback of hard work. End with confident smile looking at horizon."
-    dia_15s = f"Mọi người hay khen Nelly mặc đẹp, nhưng ít ai biết trước đây... {topic_select} từng là nỗi ám ảnh của mình. Hãy tin vào bản thân nhé!"
+if is_dancing:
+    # Kịch bản riêng cho Nhảy
+    if "Biến hình" in pillar_select:
+        act_15s = f"Start with Nelly wearing pajamas looking tired. Action: Claps hands/Jumps. Cut to: Nelly in {outfit_desc} dancing energetically to the beat. End with a cool ending pose."
+        dia_15s = "Lên đồ đi tập thôi nào! Đừng lười biếng nữa. 1.. 2.. 3.. Let's go!"
+        script_sum = "- HOOK: Nelly mặc đồ ngủ lôi thôi.\n- BODY: Biến hình sang đồ tập sexy, nhảy cực sung.\n- CTA: Pose dáng thần thái."
+    elif "Hướng dẫn" in pillar_select:
+        act_15s = f"Start with Nelly showing a difficult dance move fast. Cut to: Nelly doing it slow-motion, breaking down steps 1-2-3. End with doing it fast again perfectly."
+        dia_15s = "Trend này nhìn khó vậy thôi chứ dễ lắm. Để Nelly chỉ cho nha. Bước 1... Bước 2... Thấy chưa, thử liền đi!"
+        script_sum = "- HOOK: Demo động tác khó.\n- BODY: Hướng dẫn chậm (Slow-mo).\n- CTA: Thách thức khán giả làm theo."
+    else: # Biểu diễn
+        act_15s = f"Start with close-up of Nelly's confident face. Cut to full body shot performing {topic_select} with high energy and precision. Dynamic camera angles following her moves."
+        dia_15s = "(Music playing) Nhảy cùng Nelly nào! Cảm nhận nhịp điệu và tỏa sáng nhé!"
+        script_sum = "- HOOK: Thần thái cuốn hút.\n- BODY: Full bài nhảy sôi động, góc quay đẹp.\n- CTA: Kêu gọi duet."
+else:
+    # Kịch bản cho Fashion/Beauty (Giữ nguyên logic cũ)
+    if "Biến hình" in pillar_select:
+        act_15s = f"Start with {subject_prompt} looking messy. Snaps fingers. Cut to {subject_prompt} looking perfect. End with winking."
+        dia_15s = f"Biến hình cùng Nelly nha! {topic_select} chưa bao giờ dễ đến thế."
+        script_sum = "- HOOK: Before xuề xòa.\n- BODY: Biến hình After sang chảnh.\n- CTA: Thả tim."
+    else:
+        act_15s = f"Start with {subject_prompt} talking to camera. Cut to demonstrating {topic_select}. End with happy result."
+        dia_15s = f"Hôm nay Nelly chia sẻ về {topic_select}. Mọi người lưu lại ngay nhé!"
+        script_sum = f"- HOOK: Giới thiệu {topic_select}.\n- BODY: Nội dung chính.\n- CTA: Kêu gọi share."
 
 # Logic Chia Prompt (Chunking)
 if t_num == 15:
     prompts_list.append({"title": "🎞️ FULL VIDEO (15s) - GOM GỌN", "action": act_15s, "dialogue": dia_15s})
 elif t_num == 30:
-    prompts_list.append({"title": "🎞️ PHẦN 1 (0-15s): Vấn đề", "action": f"Part 1. {act_15s.split('.')[0]}...", "dialogue": f"{dia_15s.split('.')[0]}..."})
-    prompts_list.append({"title": "🎞️ PHẦN 2 (15-30s): Giải pháp", "action": f"Part 2. {act_15s.split('.')[-1]}...", "dialogue": f"...{dia_15s.split('.')[-1]}"})
-# ... (Giữ nguyên logic 45s, 60s nếu cần)
+    prompts_list.append({"title": "🎞️ PHẦN 1 (0-15s)", "action": f"Part 1. {act_15s.split('.')[0]}...", "dialogue": f"{dia_15s.split('.')[0]}..."})
+    prompts_list.append({"title": "🎞️ PHẦN 2 (15-30s)", "action": f"Part 2. {act_15s.split('.')[-1]}...", "dialogue": f"...{dia_15s.split('.')[-1]}"})
 
 # =========================================================
-# HIỂN THỊ KẾT QUẢ (GIAO DIỆN MỚI)
+# HIỂN THỊ KẾT QUẢ
 # =========================================================
 
 with st.expander("📜 KỊCH BẢN TÓM TẮT (Tiếng Việt)", expanded=True):
@@ -191,21 +192,18 @@ with st.expander("📜 KỊCH BẢN TÓM TẮT (Tiếng Việt)", expanded=True)
 
 st.divider()
 
-# TẠO TABS CHUYÊN NGHIỆP
 tab_video, tab_blog = st.tabs(["🎥 VIDEO & CAPTION", "📝 BÀI VIẾT & ẢNH BLOG"])
 
-# --- TAB 1: VIDEO + CAPTION HÀI ---
+# TAB 1: VIDEO + CAPTION (Dễ Copy)
 with tab_video:
-    # 1. Caption Hài hước (Dễ Copy)
     st.subheader("🤣 Caption TikTok/Reels (Copy ngay):")
     caption_text = f"""{selected_cap}
 
-#NellyFashion #StyleTips #{topic_select.replace(' ','')}"""
+#Nelly{cap_key} #{topic_select.replace(' ','')} #Trending"""
     st.code(caption_text, language="text")
     
     st.divider()
     
-    # 2. Prompt Video
     st.subheader(f"Prompt tạo video ({model_select})")
     for p in prompts_list:
         st.markdown(f"**{p['title']}**")
@@ -228,23 +226,23 @@ with tab_video:
             st.code(prompt, language='text')
         st.divider()
 
-# --- TAB 2: BÀI VIẾT + ẢNH MINH HỌA (CHIA ĐÔI CỘT) ---
+# TAB 2: BÀI VIẾT + ẢNH (Chia đôi cột)
 with tab_blog:
     c_blog, c_img = st.columns(2)
-    
     with c_blog:
         st.subheader("1. Prompt viết bài (ChatGPT):")
         st.code(f"""
-        Viết bài Facebook/Blog về: {topic_select}.
-        - Góc độ khai thác: {pillar_select}.
+        Viết bài Facebook/TikTok về: {topic_select}.
+        - Phong cách: {outfit_desc} (Năng động/Sang trọng).
+        - Góc độ: {pillar_select}.
         - Tone giọng: {current_pillar['tone']}.
-        - Kêu gọi hành động: Share ngay nếu thấy đúng.
-        - Hashtag: #NellyFashion #StyleTips
+        - Hashtag: #{topic_select.replace(' ','')} #NellyTeam
         """, language='text')
-        
     with c_img:
         st.subheader("2. Prompt ảnh bìa (Midjourney):")
-        # Prompt Midjourney được tối ưu cho Fashion
-        mj_prompt = f"/imagine prompt: A high-fashion photography shot of Nelly (Vietnamese beauty), wearing stylish outfit relevant to {topic_select}, posing confidently in a luxury city street background or modern studio. Golden hour lighting, vogue magazine style, cinematic depth of field, 8k --ar 3:4"
+        # Prompt ảnh cũng đổi style theo chủ đề
+        mj_vibe = "dynamic dance studio, neon lights, energetic atmosphere" if is_dancing else "luxury city street, golden hour, vogue style"
+        mj_outfit = "trendy gym wear" if is_dancing else "high fashion outfit"
+        
+        mj_prompt = f"/imagine prompt: A stunning photography shot of Nelly (Vietnamese beauty), wearing {mj_outfit}, posing confidently in {mj_vibe}. Cinematic depth of field, 8k --ar 3:4"
         st.code(mj_prompt, language='text')
-        st.caption("👉 Dùng ảnh này làm bìa Video hoặc ảnh bài viết.")
