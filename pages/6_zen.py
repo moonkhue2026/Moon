@@ -6,7 +6,6 @@ st.set_page_config(page_title="Zen Master - Lời Phật Dạy", page_icon="🙏
 # 1. DỮ LIỆU CẤU HÌNH
 # =========================================================
 
-# Các chủ đề Tâm linh
 topics = {
     "🌿 Buông bỏ & An nhiên": "Letting go, inner peace, calmness",
     "🔥 Chuyển hóa Nóng giận": "Overcoming anger, mindfulness, patience",
@@ -16,7 +15,6 @@ topics = {
     "🌙 Giấc ngủ & Chữa lành": "Deep sleep, healing energy, relaxation"
 }
 
-# Các phong cách Hình ảnh (Cinematic)
 visual_styles = {
     "Vàng Gold (Uy Nghiêm)": "Golden buddha statue, cinematic golden lighting, divine atmosphere, floating light particles",
     "Xanh Ngọc (Chữa Lành)": "Jade buddha statue, waterfall background, lush nature, soft mist, zen garden vibe",
@@ -24,102 +22,105 @@ visual_styles = {
     "Thủy Mặc (Nghệ Thuật)": "Ink wash painting style, misty mountains, ancient aesthetics, soft brush strokes, ethereal"
 }
 
-# [MỚI] Các định dạng Video (Format)
 formats = {
     "📜 Lời Nhắc (Quote - 15s)": {
-        "desc": "Câu nói ngắn gọn, video nền chậm",
-        "prompt_mod": "Static shot, very subtle movement, focus on atmosphere",
+        "desc": "Câu nói ngắn gọn, thấm thía",
+        "prompt_mod": "Static shot, very subtle movement",
         "duration": "15s"
     },
+    "❓ Giải Mã (Hỏi Xoáy Đáp Xoay - 60s)": {
+        "desc": "Hỏi đáp thắc mắc đời thường",
+        "prompt_mod": "Close-up on peaceful details",
+        "duration": "60s"
+    },
     "📖 Kể Chuyện (Story - 60s)": {
-        "desc": "Kể tích truyện nhân quả/cổ học",
-        "prompt_mod": "Narrative shot, slow panning, revealing details of the scene",
+        "desc": "Kể tích truyện nhân quả",
+        "prompt_mod": "Narrative shot, slow panning",
         "duration": "60s"
     },
     "🎶 Nhạc Thiền (Mantra - Loop)": {
-        "desc": "Video lặp lại để nghe nhạc/thiền",
-        "prompt_mod": "Seamless loop, mesmerizing fluid motion (water/smoke/light)",
+        "desc": "Video lặp lại để nghe nhạc",
+        "prompt_mod": "Seamless loop, fluid motion",
         "duration": "60s"
-    },
-    "❓ Giải Mã (Q&A - 30s)": {
-        "desc": "Hỏi đáp thắc mắc đời thường",
-        "prompt_mod": "Close-up on peaceful details (hands/face), engaging angle",
-        "duration": "30s"
     }
 }
 
-# Link Trợ lý GPT của Moon
 GPT_LINK = "https://chatgpt.com/g/g-693137cfde808191b2a5f60c8a49c862-chia-khoa-tam-linh-bac-giac-ngo"
 
 # =========================================================
 # GIAO DIỆN APP
 # =========================================================
-st.title("🙏 ZEN MASTER MANAGER v2.0")
-st.markdown("*Kiến tạo Video Tâm linh - Tích hợp Trợ lý Bác Giác Ngộ*")
+st.title("🙏 ZEN MASTER MANAGER v2.3")
+st.markdown("*Video Tâm linh: Có Giọng Đọc (Voice) & Nhạc Thiền*")
 
-# --- BƯỚC 1: LÊN Ý TƯỞNG ---
+# --- BƯỚC 1: CẤU HÌNH ---
 c1, c2, c3 = st.columns(3)
-with c1:
-    topic_select = st.selectbox("1. Chủ đề:", list(topics.keys()))
-with c2:
-    format_select = st.selectbox("2. Định dạng:", list(formats.keys()))
-with c3:
-    style_select = st.selectbox("3. Style ảnh:", list(visual_styles.keys()))
+with c1: topic_select = st.selectbox("1. Chủ đề:", list(topics.keys()))
+with c2: format_select = st.selectbox("2. Định dạng:", list(formats.keys()))
+with c3: style_select = st.selectbox("3. Style ảnh:", list(visual_styles.keys()))
+
+# --- BƯỚC 2: NHẬP LỜI BÌNH (MỚI) ---
+st.divider()
+st.markdown("### 🎙️ Nhập nội dung Lời bình (Voiceover):")
+voice_text = st.text_area("Dán nội dung mà 'Bác Giác Ngộ' đã viết vào đây để AI đọc:", 
+                          placeholder="Ví dụ: Buông bỏ không phải là mất tất cả, mà là để đôi tay thảnh thơi...", height=100)
 
 current_format = formats[format_select]
 visual_prompt = visual_styles[style_select]
 context_kw = topics[topic_select]
 
-st.divider()
-
 # =========================================================
-# XỬ LÝ LOGIC (GENERATOR)
+# XỬ LÝ LOGIC PROMPT (CÓ VOICE & AUDIO)
 # =========================================================
 
-# 1. Prompt Video (Sora/Runway) - Tinh chỉnh theo Format
+# Lệnh GPT (Giữ nguyên)
+if "Lời Nhắc" in format_select:
+    gpt_command = f"Viết QUOTE ngắn về: {topic_select}. Sâu sắc, ngắn gọn."
+elif "Giải Mã" in format_select:
+    gpt_command = f"Viết kịch bản HỎI XOÁY ĐÁP XOAY về: {topic_select}. Có Hook, Body, CTA."
+elif "Kể Chuyện" in format_select:
+    gpt_command = f"Viết truyện ngắn NHÂN QUẢ về: {topic_select}. Có bài học."
+else:
+    gpt_command = f"Gợi ý Nhạc thiền & Caption cho chủ đề: {topic_select}."
+
+# Prompt Ảnh (Midjourney)
+mj_prompt = f"/imagine prompt: A majestic {visual_prompt}. Context: {context_kw}. High detail, photorealistic, 8k, spiritual atmosphere --ar 9:16"
+
+# Prompt Video (Sora) - ĐÃ THÊM PHẦN AUDIO & VOICE
+# Nếu người dùng chưa nhập text, để placeholder
+voice_content = voice_text if voice_text else "[Paste your script here]"
+
 video_prompt = f"""
 Cinematic shot, {visual_prompt}.
-Subject: Statue of Buddha (or symbolic Zen element like Lotus/Hands).
-Format Style: {current_format['prompt_mod']}.
-Motion: Slow motion, cinematic depth of field.
-Context: {context_kw}. 
-Atmosphere: Peaceful, Holy.
+Subject: Statue of Buddha (or symbolic Zen element).
+Action: {current_format['prompt_mod']}. Slow motion, cinematic depth of field.
+Lighting: Soft, volumetric lighting, divine atmosphere.
+
+AUDIO SETTINGS:
+- Background Music: Soft, peaceful Zen music (Flute/Piano/Nature sounds), 432Hz frequency.
+- Voiceover: A warm, soothing Vietnamese voice narrating the following text: "{voice_content}"
+- Mix: Balanced audio, voice is clear over the music.
+
+CONSTRAINT: NO TEXT OVERLAYS, NO SUBTITLES, NO LOGOS, CLEAN BACKGROUND.
 --duration {current_format['duration']}
-"""
-
-# 2. Prompt Ảnh (Midjourney)
-mj_prompt = f"/imagine prompt: A majestic {visual_prompt}. Context: {context_kw}. High detail, photorealistic, 8k, unreal engine 5 render, spiritual atmosphere --ar 9:16"
-
-# 3. Lệnh cho Trợ lý GPT (Prompt Content)
-gpt_command = f"""
-Tôi muốn làm video dạng: **{format_select}**.
-Chủ đề: **{topic_select}**.
-Hãy viết nội dung kịch bản chi tiết:
-- Nếu là Quote: Cho tôi 1 câu nói hay và ngắn gọn.
-- Nếu là Kể chuyện: Viết kịch bản ngắn gọn, có bài học nhân quả.
-- Nếu là Nhạc thiền: Gợi ý tên bản nhạc và dòng mô tả video (Caption).
-- Giọng văn: Ấm áp, chữa lành, sâu sắc.
 """
 
 # =========================================================
 # HIỂN THỊ KẾT QUẢ
 # =========================================================
 
-# NÚT TRUY CẬP TRỢ LÝ (Điểm nhấn)
-st.success("👇 **BƯỚC 1: BẤM VÀO ĐÂY ĐỂ GẶP TRỢ LÝ 'BÁC GIÁC NGỘ'**")
-st.link_button("🧘‍♂️ Mở Trợ Lý: Chìa Khóa Tâm Linh", GPT_LINK)
+st.success("👇 **BƯỚC 1: LẤY NỘI DUNG TỪ TRỢ LÝ**")
+st.link_button("🧘‍♂️ Mở 'Bác Giác Ngộ' (GPT)", GPT_LINK)
+st.code(gpt_command, language='text')
 
-# TABS CÔNG CỤ
-t1, t2, t3 = st.tabs(["📝 LỆNH VIẾT (Cho GPT)", "🎥 PROMPT VIDEO (Sora)", "📸 PROMPT ẢNH (MJ)"])
+st.divider()
+
+st.success("👇 **BƯỚC 2: COPY PROMPT TẠO VIDEO (ĐÃ CÓ VOICE)**")
+t1, t2 = st.tabs(["🎥 VIDEO PROMPT (Sora)", "📸 IMAGE PROMPT (MJ)"])
 
 with t1:
-    st.info("👉 Copy lệnh bên dưới và dán vào Chat với 'Bác Giác Ngộ':")
-    st.code(gpt_command, language='text')
-
-with t2:
-    st.subheader(f"Prompt Video ({current_format['duration']})")
+    st.info("💡 Prompt này đã bao gồm lệnh: Đọc tiếng Việt + Giữ nhạc nền + Không hiện chữ.")
     st.code(video_prompt, language='text')
 
-with t3:
-    st.subheader("Prompt Ảnh Bìa/Thumbnail")
+with t2:
     st.code(mj_prompt, language='text')
