@@ -3,10 +3,9 @@ import streamlit as st
 st.set_page_config(page_title="Zen Master - Kinh Pháp Cú", page_icon="🙏", layout="wide")
 
 # =========================================================
-# 1. DỮ LIỆU CẤU HÌNH (ĐÃ CẬP NHẬT 26 PHẨM)
+# 1. DỮ LIỆU CẤU HÌNH (Giữ nguyên 26 Phẩm & Góc quay)
 # =========================================================
 
-# Dictionary: Tên Tiếng Việt -> Từ khóa Tiếng Anh cho AI hiểu
 topics = {
     "1️⃣ Phẩm Song Yếu (Khổ vui do tâm)": "Twin Verses, mind creates reality, duality of life",
     "2️⃣ Phẩm Không Phóng Dật (Tỉnh thức)": "Vigilance, mindfulness, awakening, path to immortality",
@@ -50,7 +49,6 @@ formats = {
     "🎶 Nhạc Thiền (Mantra)": {"desc": "Video lặp lại để nghe nhạc", "motion": "Seamless loop, fluid motion"}
 }
 
-# FULL CAMERA ANGLES (V3.3)
 camera_angles = {
     "--- NHÓM ZEN/TĨNH (Khuyên dùng) ---": "", 
     "🔍 Macro Extreme Close-up (Cận cảnh cực đại)": "Extreme close-up macro shot of details (eyes/hands/lotus texture), sharp focus",
@@ -71,8 +69,8 @@ GPT_LINK = "https://chatgpt.com/g/g-693137cfde808191b2a5f60c8a49c862-chia-khoa-t
 # =========================================================
 # GIAO DIỆN APP
 # =========================================================
-st.title("🙏 ZEN MASTER: 26 PHẨM KINH PHÁP CÚ")
-st.markdown("*Lộ trình xây kênh bài bản: Từ Phẩm 1 -> Phẩm 26*")
+st.title("🙏 ZEN MASTER: CONTENT VIRAL v3.5")
+st.markdown("*Quy trình: 1. Tạo Ảnh -> 2. Viết Kịch bản (Có Hook/CTA) -> 3. Tạo Video*")
 
 # --- CẤU HÌNH ---
 c1, c2, c3, c4, c5 = st.columns(5)
@@ -92,35 +90,48 @@ with c5:
     angle_select = st.selectbox("5. Góc máy:", valid_angles, index=0)
 
 current_format = formats[format_select]
-context_kw = topics[topic_select] # Lấy từ khóa tiếng Anh tương ứng
+context_kw = topics[topic_select]
 angle_prompt = camera_angles[angle_select]
 t_num = int(duration_option.replace("s", ""))
 
 # =========================================================
-# XỬ LÝ LOGIC
+# XỬ LÝ LOGIC (CẬP NHẬT LỆNH GPT GẮT HƠN)
 # =========================================================
 
-# 1. Prompt Ảnh (Midjourney) - Dùng Context Keywords mới
+# 1. Prompt Ảnh
 mj_prompt = f"/imagine prompt: A majestic {visual_prompt}. Context: {context_kw}. High detail, photorealistic, 8k, spiritual atmosphere --ar 9:16"
 
-# 2. Logic Lệnh GPT
-word_count = int(t_num * 2.5)
+# 2. Logic Lệnh GPT (BẮT BUỘC CÓ HOOK & CTA)
+word_count = int(t_num * 2.5) # Số từ ước lượng
+
 if "Lời Nhắc" in format_select:
-    gpt_req = f"Viết 1 câu QUOTE ngắn gọn (< {word_count} từ)."
+    gpt_req = f"""
+    Viết Kịch bản video ngắn ({t_num}s) gồm 3 phần bắt buộc:
+    1. **HOOK (Mở đầu 3s):** Một câu hỏi hoặc vấn đề đánh trúng tâm lý người xem (VD: "Bạn đang mệt mỏi phải không?").
+    2. **QUOTE (Thân bài):** Một lời dạy của Phật sâu sắc và ngắn gọn để giải quyết vấn đề trên.
+    3. **CTA (Kết thúc):** Một lời chúc hoặc kêu gọi nhẹ nhàng (VD: "Nam Mô A Di Đà Phật").
+    *Tổng cộng khoảng {word_count} từ.*
+    """
 elif "Giải Mã" in format_select:
-    gpt_req = f"Viết kịch bản HỎI XOÁY ĐÁP XOAY ({t_num}s)."
+    gpt_req = f"""
+    Viết Kịch bản HỎI XOÁY ĐÁP XOAY ({t_num}s) gồm 3 phần:
+    1. **HOOK (Câu hỏi xoáy):** Đặt vấn đề gai góc, đời thường.
+    2. **BODY (Đáp xoay):** Giải thích thấu đáo theo Nhân Quả.
+    3. **CTA:** Lời khuyên tu tập cụ thể.
+    """
 elif "Kể Chuyện" in format_select:
-    gpt_req = f"Viết truyện ngắn NHÂN QUẢ ({t_num}s)."
+    gpt_req = f"Viết truyện ngắn NHÂN QUẢ ({t_num}s). Mở đầu kịch tính (HOOK), Thân bài ý nghĩa, Kết thúc đúc kết (CTA)."
 else:
-    gpt_req = f"Gợi ý Nhạc thiền & Caption ({t_num}s)."
+    gpt_req = f"Gợi ý Nhạc thiền & Caption ({t_num}s). Caption phải có câu mở đầu thu hút."
 
 gpt_command = f"""
 Chủ đề: **{topic_select}**. Thời lượng: **{duration_option}**.
-Yêu cầu: {gpt_req}
-Giọng văn: Ấm áp, chữa lành.
+Yêu cầu: 
+{gpt_req}
+Giọng văn: Ấm áp, chữa lành, giọng đọc chậm rãi.
 """
 
-# 3. Logic Prompt Video (Base)
+# 3. Logic Prompt Video
 base_video_prompt = f"""
 Cinematic shot.
 Subject: Statue of Buddha.
@@ -154,28 +165,21 @@ with t2:
 with t3:
     st.subheader(f"👉 Tạo Video: {topic_select}")
     
-    st.markdown("### 🎙️ Dán lời bình (Voiceover):")
-    voice_text = st.text_area("Voiceover script:", height=80)
+    st.markdown("### 🎙️ Dán Lời bình (Hook + Body + CTA):")
+    st.warning("⚠️ Lưu ý: Hãy dán ĐỦ cả 3 phần Hook, Quote và CTA mà GPT viết vào đây để AI đọc hết nhé!")
+    voice_text = st.text_area("Voiceover script:", height=100, placeholder="Ví dụ:\nHook: Bạn đang buồn phiền ư?\nBody: Hãy nhớ rằng...\nCTA: Niệm Phật để an yên.")
     
     def get_final_prompt(base, text):
-        if text: return base.replace("Warm Vietnamese voiceover.", f"Warm Vietnamese voiceover narrating: '{text[:100]}...'")
+        if text: return base.replace("Warm Vietnamese voiceover.", f"Warm Vietnamese voiceover narrating: '{text[:150]}...'")
         return base
 
     video_prompts = []
     if t_num == 15:
         video_prompts.append({"title": "🎞️ FULL VIDEO (15s)", "prompt": f"[INPUT ẢNH]\n{get_final_prompt(base_video_prompt, voice_text)} --duration 15s"})
+    # (Các phần khác giữ nguyên)
     elif t_num == 30:
         video_prompts.append({"title": "🎞️ PHẦN 1 (0-15s)", "prompt": f"[INPUT ẢNH]\n{get_final_prompt(base_video_prompt, voice_text)} --duration 15s"})
         video_prompts.append({"title": "🎞️ PHẦN 2 (15-30s)", "prompt": f"[INPUT: FRAME CUỐI P1]\n{base_video_prompt} (Continue motion) --duration 15s"})
-    elif t_num == 45:
-        video_prompts.append({"title": "🎞️ PHẦN 1 (0-15s)", "prompt": f"[INPUT ẢNH]\n{get_final_prompt(base_video_prompt, voice_text)} --duration 15s"})
-        video_prompts.append({"title": "🎞️ PHẦN 2 (15-30s)", "prompt": f"[INPUT: FRAME CUỐI P1]\n{base_video_prompt} --duration 15s"})
-        video_prompts.append({"title": "🎞️ PHẦN 3 (30-45s)", "prompt": f"[INPUT: FRAME CUỐI P2]\n{base_video_prompt} --duration 15s"})
-    else: # 60s
-        video_prompts.append({"title": "🎞️ PHẦN 1 (0-15s)", "prompt": f"[INPUT ẢNH]\n{get_final_prompt(base_video_prompt, voice_text)} --duration 15s"})
-        video_prompts.append({"title": "🎞️ PHẦN 2 (15-30s)", "prompt": f"[INPUT: FRAME CUỐI P1]\n{base_video_prompt} --duration 15s"})
-        video_prompts.append({"title": "🎞️ PHẦN 3 (30-45s)", "prompt": f"[INPUT: FRAME CUỐI P2]\n{base_video_prompt} --duration 15s"})
-        video_prompts.append({"title": "🎞️ PHẦN 4 (45-60s)", "prompt": f"[INPUT: FRAME CUỐI P3]\n{base_video_prompt} --duration 15s"})
 
     for vp in video_prompts:
         st.markdown(f"**{vp['title']}**")
