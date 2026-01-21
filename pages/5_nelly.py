@@ -166,4 +166,4 @@ with tab_video:
     --duration 6s
     """
     st.code(grok_prompt, language='text')
-    st.caption("💡 Mẹo: Dùng Grok làm Intro hoặc đoạn Highlight ngắn cực đẹp.")'text')
+    st.caption("💡 Mẹo: Dùng Grok làm Intro hoặc đoạn Highlight ngắn cực đẹp.")
