@@ -1,15 +1,5 @@
 import streamlit as st
 
-st.set_page_config(page_title="Moon's Food Matrix v7.3", page_icon="🥗", layout="wide")
-
-# =========================================================
-# 1. CẤU HÌNH DỮ LIỆU (12 CÔNG THỨC & 4 GÓC ĐỘ)
-# =========================================================
-
-# Danh sách 12 Công thức Detox (Chuẩn theo ảnh Moon gửi)
-detox_menu = [
-    "1. Chanh + Tỏi (Sạch mạch máu)"import streamlit as st
-
 st.set_page_config(page_title="Moon's Food Matrix v7.5", page_icon="🥗", layout="wide")
 
 # =========================================================
