@@ -2,11 +2,21 @@ import streamlit as st
 import random
 import datetime
 
-st.set_page_config(page_title="Nelly Manager v8.0", page_icon="👠", layout="wide")
+st.set_page_config(page_title="Nelly Manager v8.1", page_icon="👠", layout="wide")
 
 # =========================================================
-# 1. CẤU HÌNH LỊCH TRÌNH & DỮ LIỆU
+# 1. CẤU HÌNH DỮ LIỆU & NHẠC
 # =========================================================
+
+# Dictionary Âm nhạc theo chủ đề (MỚI)
+music_library = {
+    "Dancing": "🔥 Upbeat, EDM, Vinahouse, TikTok Trend Remix, High Tempo",
+    "Bohemian": "🌿 Acoustic Guitar, Indie Folk, Chill, Dreamy, Travel Vibe, Nomadic",
+    "Styling": "👠 Fashion Show BGM, Luxury Beat, Deep House, Chic & Cool, Runway",
+    "Posing": "📸 R&B, Trap Soul, Trendy Beat, Confident Vibe, Bad B*tch Energy",
+    "Beauty": "✨ Soft Pop, Fresh, Lo-fi Chill, Spa & Relaxing, Clean Girl Vibe",
+    "Lifestyle": "🥂 Vlog Music, Jazz Hop, Piano, Morning Coffee, Bright & Happy"
+}
 
 weekly_schedule = {
     "Thứ 2": {"Sáng": "🥂 Lifestyle: Tư duy độc lập", "Chiều": "👗 Styling: Phối đồ công sở", "Tối": "💃 Dancing: Biến hình", "Reason": "Đầu tuần chỉn chu & năng lượng."},
@@ -44,8 +54,8 @@ pillars = {
 # =========================================================
 # GIAO DIỆN APP
 # =========================================================
-st.title("👠 NELLY MANAGER v8.0")
-st.markdown("*Quy trình chuẩn: 1. Bài viết & Ảnh -> 2. Video (Sora/Grok)*")
+st.title("👠 NELLY MANAGER v8.1")
+st.markdown("*Quy trình chuẩn: 1. Bài viết & Ảnh -> 2. Video & Nhạc*")
 
 # --- SIDEBAR: CHECKLIST ---
 with st.sidebar:
@@ -64,7 +74,6 @@ with st.sidebar:
 with st.expander("⚙️ CẤU HÌNH NỘI DUNG (Bấm mở rộng)", expanded=True):
     c1, c2, c3 = st.columns([1, 1, 1])
     with c1: 
-        # Logic gợi ý chủ đề từ lịch
         suggested = schedule['Tối']
         cat_hint = suggested.split(':')[0].strip()
         cat_ix = next((i for i, k in enumerate(categories.keys()) if cat_hint in k), 0)
@@ -85,7 +94,7 @@ with st.expander("⚙️ CẤU HÌNH NỘI DUNG (Bấm mở rộng)", expanded=T
         st.caption(f"👕 Outfit: {outfit_desc}")
 
 # =========================================================
-# XỬ LÝ LOGIC (PROMPT GENERATOR)
+# XỬ LÝ LOGIC (BỔ SUNG NHẠC)
 # =========================================================
 
 # 1. Setup Visual Style
@@ -107,7 +116,17 @@ else:
 
 current_pillar = pillars[pillar_select]
 
-# 2. Logic Caption
+# 2. Logic Âm nhạc (Music Selection)
+music_key = "Lifestyle" # Default
+if is_bohemian: music_key = "Bohemian" # Ưu tiên Bohemian
+elif "Dancing" in group_select: music_key = "Dancing"
+elif "Styling" in group_select: music_key = "Styling"
+elif "Posing" in group_select: music_key = "Posing"
+elif "Beauty" in group_select: music_key = "Beauty"
+
+suggested_music = music_library[music_key]
+
+# 3. Logic Caption
 cap_key = "Lifestyle"
 if "Dancing" in group_select: cap_key = "Dancing"
 elif "Styling" in group_select: cap_key = "Styling"
@@ -116,54 +135,45 @@ elif "Posing" in group_select: cap_key = "Posing"
 selected_cap = random.choice(caption_library[cap_key])
 
 # =========================================================
-# HIỂN THỊ KẾT QUẢ (TAB CHUẨN)
+# HIỂN THỊ KẾT QUẢ
 # =========================================================
 
-tab_content, tab_video = st.tabs(["📝 BÀI VIẾT & ẢNH", "🎥 VIDEO (Sora & Grok)"])
+tab_content, tab_video = st.tabs(["📝 BÀI VIẾT & ẢNH", "🎥 VIDEO & NHẠC"])
 
-# --- TAB 1: NỘI DUNG & ẢNH (LÀM TRƯỚC) ---
+# --- TAB 1: NỘI DUNG ---
 with tab_content:
     col_cap, col_blog = st.columns(2)
-    
     with col_cap:
         st.subheader("1. Caption (TikTok/FB)")
         st.code(f"{selected_cap}\n\n#Nelly #{topic_select.replace(' ','')} #Trending", language="text")
-        
         st.divider()
-        st.subheader("2. Prompt Ảnh (Midjourney) - ĐÃ BỔ SUNG ✅")
+        st.subheader("2. Prompt Ảnh (Midjourney)")
         mj_prompt = f"/imagine prompt: A stunning photography shot of Nelly, {outfit_desc}, posing confidently. Context: {topic_select}. {vis_style.split(',')[0]}, vogue style, 8k --ar 3:4"
         st.code(mj_prompt, language='text')
 
     with col_blog:
         st.subheader("3. Prompt Viết Bài (ChatGPT)")
-        st.code(f"""
-        Viết bài Facebook/Blog về: {topic_select}.
-        - Phong cách: {outfit_desc}.
-        - Góc độ: {pillar_select}.
-        - Tone giọng: {current_pillar['tone']}.
-        - Kêu gọi hành động: Tương tác mạnh.
-        """, language='text')
+        st.code(f"Viết bài Facebook/Blog về: {topic_select}.\n- Phong cách: {outfit_desc}.\n- Tone: {current_pillar['tone']}.", language='text')
 
-# --- TAB 2: VIDEO (LÀM SAU) ---
+# --- TAB 2: VIDEO & NHẠC ---
 with tab_video:
     st.subheader(f"🎬 Sản xuất Video: {topic_select}")
     
-    st.markdown("#### 🅰️ Prompt Sora 2 (15s - Kể chuyện/Full bài)")
-    sora_prompt = f"""
-    {vis_style}. Subject: {subject}.
-    Action: {topic_select}, {current_pillar['kw']}.
-    Camera: Dynamic movement.
-    Lighting: Cinematic.
-    Constraint: NO TEXT. --duration 15s
-    """
-    st.code(sora_prompt, language='text')
+    # PHẦN GỢI Ý NHẠC MỚI
+    st.info(f"🎵 **Gợi ý Âm nhạc (Tìm trên CapCut):**\n{suggested_music}")
     
     st.divider()
     
-    st.markdown("#### 🅱️ Prompt Grok 2 (6s - Intro/Highlight)")
+    st.markdown("#### 🅰️ Prompt Sora 2 (15s)")
+    sora_prompt = f"""
+    {vis_style}. Subject: {subject}.
+    Action: {topic_select}, {current_pillar['kw']}.
+    Camera: Dynamic movement. Constraint: NO TEXT. --duration 15s
+    """
+    st.code(sora_prompt, language='text')
+    
+    st.markdown("#### 🅱️ Prompt Grok 2 (6s - Intro)")
     grok_prompt = f"""
-    Video of {subject}, performing {topic_select}. {grok_style}, highly detailed, fluid motion, trending on artstation.
-    --duration 6s
+    Video of {subject}, performing {topic_select}. {grok_style}, fluid motion. --duration 6s
     """
     st.code(grok_prompt, language='text')
-    st.caption("💡 Mẹo: Dùng Grok làm Intro hoặc đoạn Highlight ngắn cực đẹp.")
