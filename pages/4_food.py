@@ -1,194 +1,135 @@
 import streamlit as st
-import random
 
-st.set_page_config(page_title="Moon's Fresh Food", page_icon="🥗", layout="wide")
+st.set_page_config(page_title="Moon's Food Matrix v7.3", page_icon="🥗", layout="wide")
 
 # =========================================================
-# 1. DỮ LIỆU & LOGIC CAPTION HÀI HƯỚC
+# 1. CẤU HÌNH DỮ LIỆU (12 CÔNG THỨC & 4 GÓC ĐỘ)
 # =========================================================
 
-categories = {
-    "🥤 Smoothie & Detox (12 Công thức vàng)": [
-        "1. Chanh + Tỏi (Sạch mạch máu)",
-        "2. Chanh + Gừng (Tiêu hóa tốt)",
-        "3. Chanh + Nha đam (Đẹp da)",
-        "4. Chanh + Nghệ (Kháng viêm)",
-        "5. Chanh + Mật ong (Tăng đề kháng)",
-        "6. Trà chanh nóng (Thanh lọc)",
-        "7. Củ dền + Táo + Cà rốt (Bổ máu)",
-        "8. Bơ + Dưa leo + Gừng (Giảm viêm)",
-        "9. Việt quất + Cà chua + Gừng (Tăng miễn dịch)",
-        "10. Cam + Táo + Nghệ (Giảm mệt mỏi)",
-        "11. Bưởi + Cà rốt + Gừng (Giảm mỡ máu)",
-        "12. Kiwi + Xà lách + Gừng (Trị mất ngủ)"
-    ],
-    "🍎 Trái cây (Fruits)": [
-        "Táo", "Cam", "Chuối", "Dưa hấu", "Nho", "Thanh long", "Bơ",
-        "Sầu riêng", "Măng cụt", "Vải thiều", "Nhãn", "Xoài", "Dâu tây", "Chanh"
-    ],
-    "🥦 Rau xanh (Vegetables)": [
-        "Cải thìa", "Cà rốt", "Súp lơ", "Khổ qua", "Rau má", "Cà chua", "Khoai tây",
-        "Rau ngót", "Bắp cải", "Bí đỏ", "Dưa leo", "Cần tây"
-    ]
+# Danh sách 12 Công thức Detox (Chuẩn theo ảnh Moon gửi)
+detox_menu = [
+    "1. Chanh + Tỏi (Sạch mạch máu)",
+    "2. Chanh + Gừng (Tiêu hóa tốt)",
+    "3. Chanh + Nha đam (Đẹp da)",
+    "4. Chanh + Nghệ (Kháng viêm)",
+    "5. Chanh + Mật ong (Tăng đề kháng)",
+    "6. Trà chanh nóng (Thanh lọc)",
+    "7. Củ dền + Táo + Cà rốt (Bổ máu)",
+    "8. Bơ + Dưa leo + Gừng (Giảm viêm)",
+    "9. Việt quất + Cà chua + Gừng (Tăng miễn dịch)",
+    "10. Cam + Táo + Nghệ (Giảm mệt mỏi)",
+    "11. Bưởi + Cà rốt + Gừng (Giảm mỡ máu)",
+    "12. Kiwi + Xà lách + Gừng (Trị mất ngủ)"
+]
+
+# Danh sách 4 Góc độ Video (Chuẩn theo ảnh Moon gửi)
+video_angles = {
+    "🎥 1. Hướng dẫn (How-to/ASMR)": {
+        "style": "Macro shots, focus on cutting/blending sounds. Bright lighting.",
+        "desc": "Quay cận cảnh quy trình làm, âm thanh ASMR đã tai."
+    },
+    "🎓 2. Kiến thức (Education)": {
+        "style": "Medium shot of Moon (or 3D Character) pointing to a hologram chart. Professional studio.",
+        "desc": "Chuyên gia đứng phân tích thành phần hóa học/công dụng."
+    },
+    "⚠️ 3. Cảnh báo (Warning)": {
+        "style": "Dramatic lighting, serious tone. Holding a 'STOP' sign or shaking head.",
+        "desc": "Cảnh báo sai lầm khi uống (VD: Uống lúc đói hại dạ dày)."
+    },
+    "📖 4. Câu chuyện (Story/Vlog)": {
+        "style": "Handheld POV, sunny garden background, relaxing vibe.",
+        "desc": "Vlog tâm sự: 'Hôm nay Moon cảm thấy mệt, Moon uống ly này...'"
+    }
 }
 
-# Dịch & Data phụ trợ
-smoothie_map = {
-    "Chanh + Tỏi": {"en": "Lemon and Garlic", "cap": "Uống xong người yêu chạy mất dép nhưng tim mạch thì khỏe re! 🤣"},
-    "Chanh + Gừng": {"en": "Lemon and Ginger", "cap": "Ấm bụng hơn cả người yêu cũ nhắn tin quay lại! 🔥"},
-    "Chanh + Nha đam": {"en": "Lemon and Aloe Vera", "cap": "Da đẹp thế này thì ai chơi lại? 💅"},
-    "Chanh + Nghệ": {"en": "Lemon and Turmeric", "cap": "Vàng da là do nghệ, chứ không phải do 'nghệ' sĩ đâu nha! 😜"},
-    "Chanh + Mật ong": {"en": "Lemon and Honey", "cap": "Ngọt ngào đến mấy cũng tan thành... ly nước này thôi! 🍯"},
-    "Trà chanh nóng": {"en": "Hot Tea with Lemon", "cap": "Chill một chút thì có sao, miễn là khỏe! ☕"},
-    "Củ dền + Táo + Cà rốt": {"en": "Beetroot, Apple, Carrot", "cap": "Máu lên não nhanh hơn cả tốc độ lương về! 🚀"},
-    "Bơ + Dưa leo + Gừng": {"en": "Avocado, Cucumber, Ginger", "cap": "Xanh mượt mà như tình yêu đầu đời! 💚"},
-    "Việt quất + Cà chua + Gừng": {"en": "Blueberries, Tomato, Ginger", "cap": "Tăng đề kháng để còn 'chiến' với deadline! 💪"},
-    "Cam + Táo + Nghệ": {"en": "Orange, Apple, Turmeric", "cap": "Hết mệt mỏi, chỉ còn 'mệt' vì quá xinh! 😎"},
-    "Bưởi + Cà rốt + Gừng": {"en": "Grapefruit, Carrot, Ginger", "cap": "Mỡ đi nhé, đừng quay lại nữa! 👋"},
-    "Kiwi + Xà lách + Gừng": {"en": "Kiwi, Lettuce, Ginger", "cap": "Uống xong ngủ ngon hơn cả lúc họp! 😴"}
-}
-
-# Ma trận 4 góc độ
-pillars = {
-    "🥣 1. Hướng dẫn (How-to/ASMR)": {"focus": "Tập trung vào âm thanh, hình ảnh ngon mắt, quy trình làm.", "tone": "Thư giãn, ngon miệng", "action_kw": "chopping, blending, pouring, ASMR style"},
-    "🎓 2. Kiến thức (Education)": {"focus": "Giải thích tại sao công thức này tốt (Phân tích thành phần).", "tone": "Chuyên gia, tin cậy", "action_kw": "pointing to ingredients, showing health chart, nodding"},
-    "⚠️ 3. Cảnh báo (Warning)": {"focus": "Những sai lầm khi uống (Uống giờ nào? Ai không nên uống?).", "tone": "Nghiêm túc, cảnh báo", "action_kw": "shaking head No, holding STOP sign, showing clock"},
-    "💖 4. Câu chuyện (Story/Vlog)": {"focus": "Kể về trải nghiệm thực tế/Kết quả sau khi uống.", "tone": "Gần gũi, tâm tình", "action_kw": "talking to camera, drinking and smiling, showing before/after"}
+# KHO KIẾN THỨC (Tự động tra cứu hoạt chất cho 12 món)
+nutrition_db = {
+    "Chanh + Tỏi": {"chat": "Allicin & Vitamin C", "loi": "Allicin trong tỏi là 'vua' diệt khuẩn, kết hợp Vitamin C giúp quét sạch mỡ máu cực mạnh!"},
+    "Chanh + Gừng": {"chat": "Gingerol & Axit Citric", "loi": "Đầy bụng khó tiêu? Gingerol trong gừng sẽ làm ấm bụng và đẩy lùi cơn đau dạ dày ngay lập tức."},
+    "Chanh + Nha đam": {"chat": "Polysaccharide & Collagen", "loi": "Muốn da căng mướt? Nha đam cấp nước, còn chanh kích thích sản sinh Collagen tự nhiên."},
+    "Chanh + Nghệ": {"chat": "Curcumin hoạt tính", "loi": "Curcumin là chất kháng viêm tự nhiên mạnh nhất, giúp chữa lành mọi tổn thương bên trong."},
+    "Chanh + Mật ong": {"chat": "Enzyme kháng khuẩn", "loi": "Bài thuốc dân gian nhưng hiệu quả gấp 10 lần thuốc tây trong việc tăng cường hệ miễn dịch."},
+    "Trà chanh nóng": {"chat": "Theanine & Vitamin C", "loi": "Một ly ấm nóng giúp thanh lọc gan thận và xoa dịu tinh thần sau ngày dài."},
+    "Củ dền + Táo + Cà rốt": {"chat": "Sắt & Beta-carotene", "loi": "Công thức 'ABC' huyền thoại! Bơm máu lên não và giúp đôi mắt sáng khỏe."},
+    "Bơ + Dưa leo + Gừng": {"chat": "Omega-3 & Hydration", "loi": "Chất béo tốt từ bơ kết hợp dưa leo giúp giảm viêm khớp và cấp ẩm sâu cho da."},
+    "Việt quất + Cà chua + Gừng": {"chat": "Lycopene & Anthocyanin", "loi": "Siêu phẩm chống lão hóa! Lycopene bảo vệ tế bào khỏi gốc tự do gây hại."},
+    "Cam + Táo + Nghệ": {"chat": "Vitamin C & Curcumin", "loi": "Mệt mỏi tan biến! Cú hích năng lượng tự nhiên giúp bạn tỉnh táo không cần Cafein."},
+    "Bưởi + Cà rốt + Gừng": {"chat": "Naringenin & Fiber", "loi": "Naringenin trong bưởi kích thích gan đốt cháy mỡ thừa ngay cả khi bạn đang ngủ."},
+    "Kiwi + Xà lách + Gừng": {"chat": "Serotonin & Magie", "loi": "Mất ngủ kinh niên? Ly này chứa Serotonin tự nhiên giúp bạn chìm vào giấc ngủ êm ái."}
 }
 
 # =========================================================
 # GIAO DIỆN APP
 # =========================================================
+st.title("🥗 MOON'S FOOD MATRIX v7.3")
+st.markdown("*Phiên bản chuẩn: 12 Công thức Detox & 4 Góc độ*")
 
-st.title("🥗 MOON'S FOOD MATRIX v7.2")
-st.markdown("*Fix lỗi hiển thị: Caption rõ nét - Dễ Copy*")
-
-# --- BƯỚC 1 & 2: CHỌN NGUYÊN LIỆU & GÓC ĐỘ ---
-c1, c2, c3 = st.columns(3)
-with c1: cat_select = st.selectbox("1. Chọn nhóm:", list(categories.keys()))
-with c2: char_select = st.selectbox("2. Nguyên liệu/Công thức:", categories[cat_select])
-with c3: pillar_select = st.selectbox("3. Góc độ Video:", list(pillars.keys()))
-
-# Xử lý dữ liệu
-item_name = char_select.split('(')[0]
-benefit = char_select.split('(')[-1].replace(')', '') if '(' in char_select else "sức khỏe"
-current_pillar = pillars[pillar_select]
-
-# Lấy tên tiếng Anh và Caption hài
-ingredients_en = item_name
-funny_cap = f"Ai rồi cũng phải mê món {item_name} này thôi! 😋" # Mặc định
-if "Smoothie" in cat_select:
-    for key, val in smoothie_map.items():
-        if key in item_name:
-            ingredients_en = val["en"]
-            funny_cap = val["cap"]
-            break
-
-# --- BƯỚC 3: CẤU HÌNH ---
-st.divider()
-col_v1, col_v2, col_v3 = st.columns(3)
-with col_v1: style_select = st.radio("Style:", ["3D Animation (Pixar)", "KOL (Người thật)"])
-with col_v2: model_select = st.radio("AI Model:", ["Sora (15s)", "Veo 3 (8s)"])
-with col_v3: duration_option = st.select_slider("Thời lượng:", options=["15s", "30s", "45s", "60s"], value="15s")
-
-# =========================================================
-# XỬ LÝ LOGIC PROMPT (VISUAL & SCRIPT)
-# =========================================================
-if style_select == "3D Animation (Pixar)":
-    subject_prompt = f"a cute anthropomorphic {ingredients_en.split(',')[0]} character, Pixar style 3D"
-    visual_style = "Disney Pixar style, vibrant colors, soft lighting, 8k"
-else:
-    subject_prompt = f"a professional Vietnamese nutritionist (KOL) with {ingredients_en}"
-    visual_style = "Cinematic lighting, photorealistic, Arri Alexa, 8k"
-
-t_num = int(duration_option.replace("s", ""))
-prompts_list = []
-
-# (Logic Kịch bản rút gọn - Vẫn hoạt động như v7.0)
-if "Hướng dẫn" in pillar_select:
-    script_sum = f"- HOOK: Cận cảnh ly {item_name} hấp dẫn.\n- BODY: Quy trình xay/ép (ASMR).\n- CTA: Mời gọi làm thử."
-    act_15s = f"Start with close up of fresh {ingredients_en}. Cut to blender mixing vibrant colors. Cut to pouring into glass. End with offering to camera."
-    dia_15s = f"Cùng Moon làm ly {item_name} siêu ngon này nhé! Chỉ 3 bước đơn giản là có ngay 'thần dược' {benefit}. Thử ngay nào!"
-elif "Kiến thức" in pillar_select:
-    script_sum = f"- HOOK: Tại sao {item_name} tốt cho {benefit}?\n- BODY: Phân tích vitamin/dưỡng chất.\n- CTA: Lưu kiến thức."
-    act_15s = f"Start with {subject_prompt} pointing to a floating health chart. Cut to showing {ingredients_en} glowing. End with nodding wisely."
-    dia_15s = f"Tại sao {item_name} lại là khắc tinh của {benefit}? Vì trong này chứa lượng lớn hoạt chất quý. Nghe Moon giải thích nhé!"
-elif "Cảnh báo" in pillar_select:
-    script_sum = f"- HOOK: Dừng lại! Đừng uống {item_name} sai cách.\n- BODY: Chỉ ra sai lầm (ví dụ uống đói).\n- CTA: Dặn dò kỹ."
-    act_15s = f"Start with {subject_prompt} holding a STOP sign looking serious. Cut to showing a clock or 'X' mark. End with finger pointing up warningly."
-    dia_15s = f"Cảnh báo! Tuyệt đối không uống {item_name} vào thời điểm này nếu không muốn hại dạ dày. Xem hết video để tránh nhé!"
-else: # Câu chuyện
-    script_sum = f"- HOOK: Moon từng khổ sở vì {benefit}...\n- BODY: Hành trình thay đổi nhờ {item_name}.\n- CTA: Truyền cảm hứng."
-    act_15s = f"Start with {subject_prompt} looking sad/tired. Cut to drinking {item_name} everyday. Cut to happy glowing face. End with heart hands."
-    dia_15s = f"Trước đây Moon khổ sở vì {benefit} lắm. Nhưng từ khi biết đến {item_name}, mọi thứ thay đổi hẳn. Kiên trì 1 tuần là thấy khác liền!"
-
-# (Logic Chia Prompt rút gọn)
-if t_num == 15: prompts_list.append({"title": "🎞️ FULL VIDEO (15s) - GOM GỌN", "action": act_15s, "dialogue": dia_15s})
-elif t_num == 30:
-    prompts_list.append({"title": "🎞️ PHẦN 1 (0-15s): Mở đầu", "action": f"Part 1 of 2. {act_15s.split('.')[0]}...", "dialogue": f"{dia_15s.split('.')[0]}..."})
-    prompts_list.append({"title": "🎞️ PHẦN 2 (15-30s): Kết thúc", "action": f"Part 2 of 2. {act_15s.split('.')[-1]}...", "dialogue": f"...{dia_15s.split('.')[-1]}"})
-# ... (Tương tự cho 45s, 60s)
-
-# =========================================================
-# HIỂN THỊ KẾT QUẢ (FIX HIỂN THỊ)
-# =========================================================
-
-with st.expander("📜 KỊCH BẢN TÓM TẮT (Tiếng Việt)", expanded=True):
-    st.info(script_sum)
-
-st.divider()
-
-tab_video, tab_blog = st.tabs(["🎥 VIDEO & CAPTION", "📝 BÀI VIẾT & ẢNH BLOG"])
-
-# --- TAB 1: VIDEO + CAPTION HÀI ---
-with tab_video:
-    # 1. FIX: Hiển thị Caption bằng st.code cho RÕ RÀNG và DỄ COPY
-    st.subheader("🤣 Gợi ý Caption (Copy đăng TikTok/Reels):")
+# --- KHU VỰC CHỌN LỰA ---
+with st.expander("⚙️ CẤU HÌNH VIDEO (Mở rộng)", expanded=True):
+    c1, c2, c3 = st.columns([1, 2, 1])
+    with c1: 
+        # Mặc định chọn nhóm Detox vì Moon đang tập trung cái này
+        group = st.selectbox("Chọn nhóm:", ["🥤 Smoothie & Detox (12 Công thức vàng)", "🥗 Healthy Food (Khác)"])
     
-    caption_text = f"""{funny_cap}
-
-#SongKhoeCungMoon #{item_name.replace(' + ','').replace(' ','')} #SuaNgheHera"""
-    
-    # Dùng st.code để chữ không bị mờ và có nút Copy
-    st.code(caption_text, language="text")
-    
-    st.divider()
-    
-    # 2. Hiển thị Prompt Video
-    st.subheader(f"Prompt tạo video ({model_select})")
-    for p in prompts_list:
-        st.markdown(f"**{p['title']}**")
-        if "Sora" in model_select:
-            prompt = f"""
-            {visual_style}. Subject: {subject_prompt}.
-            Action: {p['action']}. {current_pillar['action_kw']}.
-            Speaking Line (Vietnamese): "{p['dialogue']}"
-            Lip-sync instruction: Match naturally. Context: {current_pillar['focus']}. Constraint: NO TEXT. --duration 15s
-            """
-            st.code(prompt, language='text')
-            st.caption(f"🗣️ Thoại: \"{p['dialogue']}\"")
+    with c2: 
+        if "Detox" in group:
+            recipe_full = st.selectbox("Nguyên liệu/Công thức:", detox_menu)
         else:
-            prompt = f"""
-            Cinematic shot, {subject_prompt}.
-            Action: {p['action'].split('.')[0]}. Speaking.
-            Atmosphere: {current_pillar['tone']}. {visual_style}.
-            --duration 8s
-            """
-            st.code(prompt, language='text')
-        st.divider()
+            recipe_full = st.text_input("Nhập tên món khác:", "Salad Ức gà")
+            
+    with c3:
+        angle_full = st.selectbox("Góc độ Video:", list(video_angles.keys()))
 
-# --- TAB 2: BÀI VIẾT + ẢNH MINH HỌA ---
-with tab_blog:
-    c_blog, c_img = st.columns(2)
+# --- XỬ LÝ DỮ LIỆU ---
+# Tách tên món để tra từ điển (VD: "1. Chanh + Tỏi..." -> "Chanh + Tỏi")
+if "Detox" in group:
+    key_name = recipe_full.split(". ")[1].split(" (")[0]
+else:
+    key_name = recipe_full
+
+# Lấy thông tin từ kho
+info = nutrition_db.get(key_name, {"chat": "Vitamin & Khoáng chất", "loi": "Công thức tuyệt vời cho sức khỏe của bạn!"})
+angle_data = video_angles.get(angle_full, video_angles["🎥 1. Hướng dẫn (How-to/ASMR)"])
+
+# =========================================================
+# HIỂN THỊ KẾT QUẢ
+# =========================================================
+
+st.divider()
+
+# 1. CAPTION & KỊCH BẢN NGẮN
+c_left, c_right = st.columns(2)
+
+with c_left:
+    st.subheader("📝 Caption TikTok:")
+    st.info(f"""
+    {recipe_full} 🌿
     
-    with c_blog:
-        st.subheader("1. Prompt viết bài (Cho ChatGPT):")
-        st.code(f"""
-        Viết bài Facebook về: {item_name}.
-        - Góc độ khai thác: {pillar_select} ({current_pillar['focus']}).
-        - Tone giọng: {current_pillar['tone']}.
-        - Hashtag: #{item_name.replace(' + ','').replace(' ','')} #SongKhoe
-        """, language='text')
+    bí mật nằm ở **{info['chat']}** giúp {info['loi'].lower()}
+    
+    👉 {angle_data['desc']}
+    #MoonDetox #{key_name.replace(' + ','').replace(' ','')} #SốngKhỏe
+    """)
+
+with c_right:
+    st.subheader("🗣️ Lời thoại (Voiceover):")
+    st.success(f"\"{info['loi']}\"")
+    st.caption(f"💡 Hoạt chất chính: {info['chat']}")
+
+# 2. PROMPT SORA (TỰ ĐỘNG ĐIỀN)
+st.subheader(f"🎥 Prompt Sora (15s) - {angle_full}")
+st.write("Copy đoạn code bên dưới:")
+
+sora_prompt = f"""
+8k, Food Cinematography.
+Subject: Fresh ingredients (**{key_name}**) transforming into a delicious smoothie.
+Style: {angle_data['style']}
+Action: {angle_data['desc']} showing the health benefits.
+Speaking Line (Vietnamese): "{info['loi']}"
+Overlay Text: Floating label showing "{info['chat']}".
+Constraint: NO TEXT OVERLAYS (except the label). --duration 15s
+"""
+st.code(sora_prompt, language='text')
         
     with c_img:
         st.subheader("2. Prompt ảnh minh họa (Cho Midjourney):")
