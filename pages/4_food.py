@@ -130,8 +130,3 @@ Overlay Text: Floating label showing "{info['chat']}".
 Constraint: NO TEXT OVERLAYS (except the label). --duration 15s
 """
 st.code(sora_prompt, language='text')
-        
-    with c_img:
-        st.subheader("2. Prompt ảnh minh họa (Cho Midjourney):")
-        mj_prompt = f"/imagine prompt: A vibrant, appetizing photograph of {ingredients_en} arranged beautifully on a rustic wooden table, natural morning light, fresh ingredients, cinematic depth of field. {current_pillar['tone']} atmosphere. 8k --ar 16:9"
-        st.code(mj_prompt, language='text')
