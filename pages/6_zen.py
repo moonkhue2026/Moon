@@ -1,186 +1,182 @@
 import streamlit as st
 
-st.set_page_config(page_title="Zen Master - Kinh Pháp Cú", page_icon="🙏", layout="wide")
+# --- CẤU HÌNH TRANG (ĐÚNG TÊN APP ZEN) ---
+st.set_page_config(page_title="Zen Master v3.5", layout="wide", page_icon="🙏")
 
-# =========================================================
-# 1. DỮ LIỆU CẤU HÌNH (Giữ nguyên 26 Phẩm & Góc quay)
-# =========================================================
+# --- CSS GIAO DIỆN ---
+st.markdown("""
+<style>
+    .main-header {font-size: 32px; font-weight: bold; color: #4A4A4A; text-align: center; margin-bottom: 10px;}
+    .sub-header {font-size: 16px; color: #666; text-align: center; font-style: italic; margin-bottom: 25px;}
+    .stButton>button {width: 100%; border-radius: 5px; font-weight: bold;}
+    .highlight-box {background-color: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #ddd;}
+</style>
+""", unsafe_allow_html=True)
 
-topics = {
-    "1️⃣ Phẩm Song Yếu (Khổ vui do tâm)": "Twin Verses, mind creates reality, duality of life",
-    "2️⃣ Phẩm Không Phóng Dật (Tỉnh thức)": "Vigilance, mindfulness, awakening, path to immortality",
-    "3️⃣ Phẩm Tâm (Điều phục tâm)": "The Mind, taming the mind, finding peace, meditation",
-    "4️⃣ Phẩm Hoa (Vô thường)": "Flowers, impermanence, fragility of life, withering flowers",
-    "5️⃣ Phẩm Kẻ Ngu (Vô minh)": "The Fool, ignorance, suffering, darkness vs light",
-    "6️⃣ Phẩm Người Trí (Trí tuệ)": "The Wise, wisdom, liberation, guiding light",
-    "7️⃣ Phẩm A-la-hán (Giải thoát)": "The Arhat/Saint, enlightenment, absolute freedom, nirvana",
-    "8️⃣ Phẩm Ngàn (Lời pháp)": "Thousands, truth, meaningful words, better than empty speech",
-    "9️⃣ Phẩm Ác (Tránh ác)": "Evil, karma, avoiding bad deeds, consequence",
-    "🔟 Phẩm Hình Phạt (Từ bi)": "Punishment, non-violence, compassion, fear of suffering",
-    "1️⃣1️⃣ Phẩm Già (Thân già)": "Old Age, aging, decay of body, time passing",
-    "1️⃣2️⃣ Phẩm Tự Ngã (Tự độ)": "The Self, self-mastery, reliance on oneself",
-    "1️⃣3️⃣ Phẩm Thế Gian (Danh lợi)": "The World, detachment, illusion of fame, lotus rising from mud",
-    "1️⃣4️⃣ Phẩm Phật (Tỉnh thức)": "The Buddha, awakened one, purity, infinite light",
-    "1️⃣5️⃣ Phẩm An Lạc (Không tham)": "Happiness, contentment, no greed, inner peace",
-    "1️⃣6️⃣ Phẩm Hỷ (Hoan hỷ)": "Pleasure, joy in Dharma, spiritual bliss",
-    "1️⃣7️⃣ Phẩm Phẫn Nộ (Diệt oán)": "Anger, forgiveness, love vs hate, overcoming anger",
-    "1️⃣8️⃣ Phẩm Cấu Uế (Tâm nhiễm ô)": "Impurity, cleansing the mind, removing stains",
-    "1️⃣9️⃣ Phẩm Pháp Trụ (Chân nhân)": "The Righteous, living by Dharma, justice, truth",
-    "2️⃣0️⃣ Phẩm Đạo (Bát Chánh Đạo)": "The Path, Eightfold Path, the way to freedom",
-    "2️⃣1️⃣ Phẩm Tạp (Lời dạy thực tiễn)": "Miscellaneous, practical wisdom, daily life practice",
-    "2️⃣2️⃣ Phẩm Địa Ngục (Ác nghiệp)": "Hell/Woeful State, bad karma, suffering, warning",
-    "2️⃣3️⃣ Phẩm Voi (Nhẫn nhục)": "The Elephant, endurance, patience, strength in battle",
-    "2️⃣4️⃣ Phẩm Ái (Ái dục)": "Craving, attachment, binding ropes, letting go of desire",
-    "2️⃣5️⃣ Phẩm Tỳ-kheo (Phạm hạnh)": "The Monk, holy life, discipline, serenity",
-    "2️⃣6️⃣ Phẩm Bà-la-môn (Vượt sinh tử)": "The Brahmin/Holy Man, transcendence, no ego, pure heart"
-}
+# --- HEADER APP ZEN ---
+st.markdown('<div class="main-header">🙏 ZEN MASTER: CONTENT VIRAL v3.5</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-header">Quy trình: 1. Tạo Ảnh → 2. Viết Kịch bản (Có Hook/CTA) → 3. Tạo Video</div>', unsafe_allow_html=True)
 
-visual_styles = {
-    "Vàng Gold (Uy Nghiêm)": "Golden buddha statue, cinematic golden lighting, divine atmosphere, floating light particles",
-    "Xanh Ngọc (Chữa Lành)": "Jade buddha statue, waterfall background, lush nature, soft mist, zen garden vibe",
-    "Trăng Đêm (Tĩnh Lặng)": "Silhouette of buddha against full moon, night sky, reflection in water, deep blue tones, peaceful",
-    "Thủy Mặc (Nghệ Thuật)": "Ink wash painting style, misty mountains, ancient aesthetics, soft brush strokes, ethereal"
-}
-
-formats = {
-    "📜 Lời Nhắc (Quote)": {"desc": "Câu nói ngắn gọn, thấm thía", "motion": "Static shot, very subtle movement"},
-    "❓ Giải Mã (Q&A)": {"desc": "Hỏi đáp thắc mắc đời thường", "motion": "Close-up on peaceful details"},
-    "📖 Kể Chuyện (Story)": {"desc": "Kể tích truyện nhân quả", "motion": "Narrative shot, slow panning"},
-    "🎶 Nhạc Thiền (Mantra)": {"desc": "Video lặp lại để nghe nhạc", "motion": "Seamless loop, fluid motion"}
-}
-
-camera_angles = {
-    "--- NHÓM ZEN/TĨNH (Khuyên dùng) ---": "", 
-    "🔍 Macro Extreme Close-up (Cận cảnh cực đại)": "Extreme close-up macro shot of details (eyes/hands/lotus texture), sharp focus",
-    "🦅 God’s Eye View (Góc nhìn thượng đế)": "Top-down god's eye view, looking down from the sky, epic scale",
-    "🧘 Immersive POV (Góc nhìn nhập vai)": "First-person POV shot, as if walking towards the Buddha, handheld camera movement",
-    "🛡️ Low Angle 'Hero Shot' (Góc thấp tôn vinh)": "Low angle shot looking up, making the subject look majestic and powerful",
-    "🎥 Dolly Zoom (Hiệu ứng Vertigo)": "Dolly zoom effect (Hitchcock zoom), subject size remains same while background expands, trippy spiritual effect",
-    "⚖️ Gimbal Stabilization (Mượt mà)": "Smooth gimbal stabilization, floating camera movement",
-    "--- NHÓM ACTION/MẠNH (Kịch tính) ---": "",
-    "⚡ Crash Zoom (Zoom sốc)": "Rapid crash zoom onto the face, dramatic and intense impact",
-    "😵 Whip Pan (Lia máy vút)": "Fast whip pan camera transition, dynamic blur motion",
-    "📏 Dutch Angle (Góc nghiêng)": "Dutch angle (tilted camera), creating a sense of unease or mystery",
-    "🌪️ SnorriCam (Gắn thân)": "Snorricam style, camera locked to the subject while background rotates dizzyingly"
-}
-
-GPT_LINK = "https://chatgpt.com/g/g-693137cfde808191b2a5f60c8a49c862-chia-khoa-tam-linh-bac-giac-ngo"
-
-# =========================================================
-# GIAO DIỆN APP
-# =========================================================
-st.title("🙏 ZEN MASTER: CONTENT VIRAL v3.5")
-st.markdown("*Quy trình: 1. Tạo Ảnh -> 2. Viết Kịch bản (Có Hook/CTA) -> 3. Tạo Video*")
-
-# --- CẤU HÌNH ---
-c1, c2, c3, c4, c5 = st.columns(5)
-with c1:
-    use_existing_image = st.checkbox("🔒 Đã có Ảnh cũ", value=True)
-    if not use_existing_image:
-        style_select = st.selectbox("Style ảnh:", list(visual_styles.keys()))
-        visual_prompt = visual_styles[style_select]
-    else:
-        visual_prompt = "Golden buddha statue, cinematic golden lighting" 
-
-with c2: topic_select = st.selectbox("2. Chọn Phẩm:", list(topics.keys()))
-with c3: format_select = st.selectbox("3. Định dạng:", list(formats.keys()))
-with c4: duration_option = st.select_slider("4. Thời lượng:", options=["15s", "30s", "45s", "60s"], value="15s")
-with c5: 
-    valid_angles = [k for k in camera_angles.keys() if "---" not in k]
-    angle_select = st.selectbox("5. Góc máy:", valid_angles, index=0)
-
-current_format = formats[format_select]
-context_kw = topics[topic_select]
-angle_prompt = camera_angles[angle_select]
-t_num = int(duration_option.replace("s", ""))
-
-# =========================================================
-# XỬ LÝ LOGIC (CẬP NHẬT LỆNH GPT GẮT HƠN)
-# =========================================================
-
-# 1. Prompt Ảnh
-mj_prompt = f"/imagine prompt: A majestic {visual_prompt}. Context: {context_kw}. High detail, photorealistic, 8k, spiritual atmosphere --ar 9:16"
-
-# 2. Logic Lệnh GPT (BẮT BUỘC CÓ HOOK & CTA)
-word_count = int(t_num * 2.5) # Số từ ước lượng
-
-if "Lời Nhắc" in format_select:
-    gpt_req = f"""
-    Viết Kịch bản video ngắn ({t_num}s) gồm 3 phần bắt buộc:
-    1. **HOOK (Mở đầu 3s):** Một câu hỏi hoặc vấn đề đánh trúng tâm lý người xem (VD: "Bạn đang mệt mỏi phải không?").
-    2. **QUOTE (Thân bài):** Một lời dạy của Phật sâu sắc và ngắn gọn để giải quyết vấn đề trên.
-    3. **CTA (Kết thúc):** Một lời chúc hoặc kêu gọi nhẹ nhàng (VD: "Nam Mô A Di Đà Phật").
-    *Tổng cộng khoảng {word_count} từ.*
-    """
-elif "Giải Mã" in format_select:
-    gpt_req = f"""
-    Viết Kịch bản HỎI XOÁY ĐÁP XOAY ({t_num}s) gồm 3 phần:
-    1. **HOOK (Câu hỏi xoáy):** Đặt vấn đề gai góc, đời thường.
-    2. **BODY (Đáp xoay):** Giải thích thấu đáo theo Nhân Quả.
-    3. **CTA:** Lời khuyên tu tập cụ thể.
-    """
-elif "Kể Chuyện" in format_select:
-    gpt_req = f"Viết truyện ngắn NHÂN QUẢ ({t_num}s). Mở đầu kịch tính (HOOK), Thân bài ý nghĩa, Kết thúc đúc kết (CTA)."
-else:
-    gpt_req = f"Gợi ý Nhạc thiền & Caption ({t_num}s). Caption phải có câu mở đầu thu hút."
-
-gpt_command = f"""
-Chủ đề: **{topic_select}**. Thời lượng: **{duration_option}**.
-Yêu cầu: 
-{gpt_req}
-Giọng văn: Ấm áp, chữa lành, giọng đọc chậm rãi.
-"""
-
-# 3. Logic Prompt Video
-base_video_prompt = f"""
-Cinematic shot.
-Subject: Statue of Buddha.
-CAMERA: {angle_prompt}.
-Action: {current_format['motion']}. Slow motion, cinematic depth of field.
-Lighting: Soft, volumetric lighting.
-Context: {context_kw}.
-AUDIO: Zen music + Warm Vietnamese voiceover.
-CONSTRAINT: NO TEXT, NO LOGO.
-"""
-
-# =========================================================
-# HIỂN THỊ KẾT QUẢ
-# =========================================================
-
-t1, t2, t3 = st.tabs(["1️⃣ PROMPT ẢNH (MJ)", "2️⃣ LẤY NỘI DUNG (GPT)", "3️⃣ PROMPT VIDEO (Sora)"])
-
-# --- TAB 1: ẢNH ---
-with t1:
-    if use_existing_image:
-        st.info("🔒 ĐANG DÙNG ẢNH CŨ (BRANDING)")
-    else:
-        st.code(mj_prompt, language='text')
-
-# --- TAB 2: NỘI DUNG ---
-with t2:
-    st.link_button("🧘‍♂️ Mở 'Bác Giác Ngộ' (GPT)", GPT_LINK)
-    st.code(gpt_command, language='text')
-
-# --- TAB 3: VIDEO ---
-with t3:
-    st.subheader(f"👉 Tạo Video: {topic_select}")
+# --- SIDEBAR: CẤU HÌNH ---
+with st.sidebar:
+    st.header("⚙️ CẤU HÌNH ZEN")
     
-    st.markdown("### 🎙️ Dán Lời bình (Hook + Body + CTA):")
-    st.warning("⚠️ Lưu ý: Hãy dán ĐỦ cả 3 phần Hook, Quote và CTA mà GPT viết vào đây để AI đọc hết nhé!")
-    voice_text = st.text_area("Voiceover script:", height=100, placeholder="Ví dụ:\nHook: Bạn đang buồn phiền ư?\nBody: Hãy nhớ rằng...\nCTA: Niệm Phật để an yên.")
+    # 1. Chọn Phẩm
+    pham_options = ["1️⃣ Phẩm Song Yếu", "2️⃣ Phẩm Tâm", "3️⃣ Phẩm Hoa", "4️⃣ Phẩm Ngu", "5️⃣ Phẩm Hiền Trí"]
+    selected_pham = st.selectbox("Chọn Phẩm:", pham_options)
     
-    def get_final_prompt(base, text):
-        if text: return base.replace("Warm Vietnamese voiceover.", f"Warm Vietnamese voiceover narrating: '{text[:150]}...'")
-        return base
+    # 2. Chọn Định dạng
+    format_options = [
+        "📖 Lời Nhắc (Quote)", 
+        "❓ Giải Mã (Q&A)", 
+        "🎬 Kể Chuyện (Story)", 
+        "🎶 Nhạc Thiền (Mantra)"
+    ]
+    selected_format = st.selectbox("Định dạng:", format_options)
+    
+    # 3. Chọn Thời lượng
+    duration = st.slider("Thời lượng (giây):", 10, 60, 15)
+    
+    # 4. Chọn Góc máy (10 Loại xịn)
+    camera_angles = [
+        "🔍 Macro Extreme Close-up (Cận cảnh cực đại)",
+        "🦅 God’s Eye View (Góc nhìn thượng đế)",
+        "🧘 Immersive POV (Góc nhìn nhập vai)",
+        "🛡️ Low Angle 'Hero Shot' (Góc thấp tôn vinh)",
+        "🎥 Dolly Zoom (Hiệu ứng Vertigo)",
+        "⚖️ Gimbal Stabilization (Mượt mà)",
+        "⚡ Crash Zoom (Zoom sốc)",
+        "😵 Whip Pan (Lia máy vút)",
+        "📏 Dutch Angle (Góc nghiêng)",
+        "🌪️ SnorriCam (Gắn thân)"
+    ]
+    selected_angle = st.selectbox("Góc máy:", camera_angles)
+    
+    # Thông báo trạng thái ảnh
+    if "Quote" in selected_format:
+        st.success("✅ Đã có Ảnh cũ (Mặc định cho Quote)")
+    else:
+        st.info("ℹ️ Cần tạo Ảnh mới (Prompt MJ ở Tab 1)")
 
-    video_prompts = []
-    if t_num == 15:
-        video_prompts.append({"title": "🎞️ FULL VIDEO (15s)", "prompt": f"[INPUT ẢNH]\n{get_final_prompt(base_video_prompt, voice_text)} --duration 15s"})
-    # (Các phần khác giữ nguyên)
-    elif t_num == 30:
-        video_prompts.append({"title": "🎞️ PHẦN 1 (0-15s)", "prompt": f"[INPUT ẢNH]\n{get_final_prompt(base_video_prompt, voice_text)} --duration 15s"})
-        video_prompts.append({"title": "🎞️ PHẦN 2 (15-30s)", "prompt": f"[INPUT: FRAME CUỐI P1]\n{base_video_prompt} (Continue motion) --duration 15s"})
+# --- TABS CHỨC NĂNG ---
+tab1, tab2, tab3 = st.tabs(["🖼️ 1. PROMPT ẢNH (MJ)", "📝 2. LẤY NỘI DUNG (GPT)", "🎬 3. PROMPT VIDEO (Sora)"])
 
-    for vp in video_prompts:
-        st.markdown(f"**{vp['title']}**")
-        st.code(vp['prompt'], language='text')
+# ==============================================================================
+# TAB 1: ẢNH (QUOTE CỐ ĐỊNH / CÒN LẠI TẠO MỚI)
+# ==============================================================================
+with tab1:
+    if "Quote" in selected_format:
+        st.subheader("🖼️ Visual Tĩnh (Quote)")
+        col_img, col_info = st.columns([1, 2])
+        with col_img:
+            # Ảnh Phật mẫu
+            st.image("https://r2.erweima.ai/imgcompressed/compressed_93452f4c478474246835150242250266.webp", caption="Ảnh Phật mẫu (Macro Style)", use_container_width=True)
+        with col_info:
+            st.warning("🔒 Định dạng 'Lời Nhắc' dùng ảnh Phật cố định.")
+            
+    else:
+        st.subheader(f"🖼️ Gợi ý Prompt Midjourney cho: {selected_format}")
+        
+        # Tạo Prompt MJ tự động
+        mj_subject = ""
+        if "Mantra" in selected_format:
+            mj_subject = "Abstract mandala art, spiritual flow, healing energy, seamless loop texture"
+        elif "Story" in selected_format:
+            mj_subject = "Cinematic character shot, a monk walking in ancient temple, dramatic lighting"
+        elif "Q&A" in selected_format:
+            mj_subject = "Conceptual art, duality of light and shadow, contrast between confusion and clarity"
+        
+        # Ghép chuỗi Prompt MJ
+        mj_prompt_text = f"/imagine prompt: {mj_subject}. Context: {selected_pham}. Style: {selected_angle.split('(')[0]}, 8k resolution, photorealistic, cinematic lighting --ar 9:16"
+        
+        st.info("👇 Copy dòng này dán vào Midjourney:")
+        st.code(mj_prompt_text, language="text")
+
+# ==============================================================================
+# TAB 2: LẤY NỘI DUNG (LINK SANG BÁC GIÁC NGỘ)
+# ==============================================================================
+with tab2:
+    st.subheader("📝 Bước 1: Lấy 'Combo Viral' từ Bác Giác Ngộ")
+    
+    gpt_link = "https://chatgpt.com/g/g-693137cfde808191b2a5f60c8a49c862-chia-khoa-tam-linh-bac-giac-ngo"
+    
+    col_btn, col_prompt = st.columns([1, 3])
+    with col_btn:
+        st.link_button("🧘 Mở 'Bác Giác Ngộ' (GPT)", gpt_link, type="primary")
+    
+    with col_prompt:
+        st.write("Copy đoạn yêu cầu này gửi cho GPT:")
+        
+        # Prompt xin đủ 3 món: Script + Caption + Hashtag
+        gpt_request = f"""Chủ đề: **{selected_pham}**. Thời lượng: **{duration}s**.
+Định dạng: **{selected_format}**.
+
+HÃY VIẾT 2 PHẦN:
+1. KỊCH BẢN VIDEO (Hook - Body - CTA):
+- Hook: Giật gân/Tò mò (0-3s).
+- Body: Sâu sắc ({duration-6}s).
+- CTA: Kêu gọi hành động (3s).
+
+2. BÀI ĐĂNG MXH:
+- Caption: Deep, cuốn hút.
+- Hashtag: 7-10 thẻ viral."""
+        
+        st.code(gpt_request, language="markdown")
+
+    st.divider()
+    
+    st.subheader("📝 Bước 2: Dán kết quả vào đây")
+    st.caption("Dán cả Kịch bản + Caption + Hashtag vào đây để App xử lý.")
+    
+    # Ô nhập liệu quan trọng
+    user_script_input = st.text_area("👇 Dán kết quả từ ChatGPT:", height=250)
+
+# ==============================================================================
+# TAB 3: PROMPT VIDEO (SORA) - LỌC CAPTION THÔNG MINH
+# ==============================================================================
+with tab3:
+    st.subheader(f"🎬 Tạo Video: {selected_pham}")
+    
+    if not user_script_input:
+        st.warning("⚠️ Vui lòng dán nội dung vào Tab 2 trước.")
+    else:
+        # 1. Visual Style
+        visual_desc = ""
+        if "Quote" in selected_format:
+            visual_desc = "Tĩnh tại (Minimalist). Macro shot chi tiết, ánh sáng tâm linh. Chuyển động cực chậm (Slow motion)."
+        elif "Mantra" in selected_format:
+            visual_desc = "Vòng lặp (Seamless Loop). Trừu tượng, Fractal art, thiên nhiên tuần hoàn. Không nhân vật cụ thể."
+        elif "Story" in selected_format:
+            visual_desc = "Điện ảnh (Cinematic). Có nhân vật, cốt truyện, diễn tiến theo thời gian."
+        elif "Q&A" in selected_format:
+            visual_desc = "Đối lập (Contrast). Hook tối/rối (vấn đề) -> Body/CTA sáng (giác ngộ)."
+            
+        # 2. System Prompt (Dạy Sora lọc Caption)
+        sora_prompt = f"""
+# SYSTEM PROMPT: SORA VIDEO GENERATOR (VIETNAMESE OUTPUT)
+
+ROLE: Bạn là Đạo diễn hình ảnh AI.
+INPUT DATA (Gồm Kịch bản & Caption):
+---
+{user_script_input}
+---
+Định dạng: {selected_format} | Góc máy: {selected_angle}
+
+NHIỆM VỤ QUAN TRỌNG:
+1. LỌC THÔNG TIN: Chỉ lấy phần "Kịch bản Video (Hook-Body-CTA)" để làm video. BỎ QUA Caption/Hashtag.
+2. Viết Visual Prompt tiếng Việt mô tả video {duration}s.
+
+YÊU CẦU VISUAL:
+- Style: {visual_desc}
+- Camera: {selected_angle}. Hãy mô tả chuyển động camera đúng kỹ thuật này.
+
+OUTPUT FORMAT (BẮT BUỘC):
+"Video chất lượng cao {duration}s.
+[00s-03s] (Hook - {selected_angle.split('(')[0]}): {{Mô tả hình ảnh mở đầu ấn tượng}}.
+[03s-{(duration-3)//2 + 3}s] (Body): {{Mô tả diễn biến chính}}.
+[{(duration-3)//2 + 3}s-{duration}s] (CTA): {{Hình ảnh kết thúc/Text overlay}}.
+Style: Cinematic, 8k, {selected_angle.split('(')[0]}."
+"""
+        st.success("✅ Đã tách Kịch bản (đã lọc bỏ Caption/Hashtag để Sora không bị nhiễu).")
+        st.text_area("Copy đoạn này ném vào Sora:", value=sora_prompt, height=450)
+        st.button("🔄 Tạo lại Prompt")
