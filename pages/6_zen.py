@@ -1,7 +1,7 @@
 import streamlit as st
 
 # --- CẤU HÌNH TRANG (TÊN FILE: Zen.py) ---
-st.set_page_config(page_title="Zen Master v4.5", layout="wide", page_icon="🙏")
+st.set_page_config(page_title="Zen Master v4.6 (Fix CTA)", layout="wide", page_icon="🙏")
 
 # --- CSS GIAO DIỆN ---
 st.markdown("""
@@ -14,7 +14,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- HEADER ---
-st.markdown('<div class="main-header">🙏 ZEN MASTER: CONTENT VIRAL v4.5</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-header">🙏 ZEN MASTER: CONTENT VIRAL v4.6</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-header">Quy trình: 1. Tạo Ảnh → 2. Viết Kịch bản & Caption → 3. App tự xuất Prompt Sora kỹ thuật</div>', unsafe_allow_html=True)
 
 # --- SIDEBAR: CẤU HÌNH ---
@@ -138,7 +138,7 @@ HÃY VIẾT 2 PHẦN RIÊNG BIỆT:
         st.subheader("📱 2. Dán Caption (Để đăng bài)")
         st.text_area("Dán Caption & Hashtag vào đây để lưu trữ (Không ảnh hưởng Video):", height=300, placeholder="Caption deep...\n#Hashtag")
 
-# TAB 3: VIDEO (OUTPUT KỸ THUẬT - NHƯ ẢNH 124)
+# TAB 3: VIDEO (OUTPUT KỸ THUẬT - FULL SCRIPT)
 with tab3:
     if not user_script_input:
         st.warning("⚠️ Vui lòng dán Kịch bản vào Tab 2 (Cột bên trái).")
@@ -146,10 +146,10 @@ with tab3:
         # Lấy thông số kỹ thuật
         sub, act, light, ctx_theme = get_technical_params(selected_format, selected_pham)
         
-        # Làm sạch kịch bản để đưa vào Context (Bỏ chữ Hook:, Body: thừa)
+        # Làm sạch kịch bản (Bỏ dòng Hook/Body/CTA thừa)
         clean_script = user_script_input.replace("Hook:", "").replace("Body:", "").replace("CTA:", "").replace("\n", " ").strip()
         
-        # TẠO PROMPT KỸ THUẬT (FORMAT CHUẨN SORA 2)
+        # TẠO PROMPT KỸ THUẬT (KHÔNG CẮT BỚT KÝ TỰ NỮA)
         sora_technical_prompt = f"""[INPUT ẢNH]
 
 Cinematic shot.
@@ -157,10 +157,10 @@ Subject: {sub}
 CAMERA: {selected_angle.split('(')[0]}
 Action: {act}
 Lighting: {light}
-Context: {ctx_theme} Script content: "{clean_script[:200]}..."
+Context: {ctx_theme} Script content: "{clean_script}"
 AUDIO: Zen music + Warm Vietnamese voiceover.
 CONSTRAINT: NO TEXT, NO LOGO.
 --duration {duration}s"""
         
-        st.success("✅ Đã tạo Prompt Kỹ thuật (Chuẩn format Sora 2):")
+        st.success("✅ Đã tạo Prompt Kỹ thuật (Full Kịch bản bao gồm CTA):")
         st.text_area("Copy đoạn này dán vào Sora:", value=sora_technical_prompt, height=350)
