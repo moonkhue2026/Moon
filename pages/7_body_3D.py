@@ -1,173 +1,180 @@
 import streamlit as st
-import pandas as pd
 
-# 1. CẤU HÌNH TRANG (Bắt buộc dòng đầu)
-st.set_page_config(page_title="Moon's 3D Anatomy V2", page_icon="🧬", layout="wide")
+# 1. CẤU HÌNH TRANG
+st.set_page_config(page_title="Moon's 3D Anatomy V4", page_icon="🧬", layout="wide")
 
-# 2. TIÊU ĐỀ
-st.title("Moon's 3D Studio: Cơ Thể & Làm Đẹp (V2.0) 🧬")
+# 2. STYLE CỐ ĐỊNH (LOCK STYLE) - XƯƠNG SỐNG CỦA VISUAL
+MOON_STYLE = "medical X-Ray cross-section view, dark blue background, glowing highlights, futuristic text labels, hyper-realistic texture, cinematic lighting, 8k resolution, unreal engine 5 render --ar 9:16"
+
+# 3. TỪ ĐIỂN LOGIC (CORE DATA)
+
+# --- A. LOGIC GIẢI PHẪU (FOOD) ---
+FOOD_LOGIC = {
+    "🔥 VIÊM / NHIỆT (Mì cay, Rượu, Ớt)": {
+        "visual": "glowing red inflamed tissue, pulsating violently, extreme swelling, heat waves",
+        "desc": "Sưng tấy đỏ rực, rung động mạnh và tỏa nhiệt."
+    },
+    "❄️ LẠNH / CO THẮT (Nước đá, Kem)": {
+        "visual": "frozen blue texture, ice crystals, veins shrinking and constricting, pale tissue",
+        "desc": "Tím tái, đóng băng, mạch máu co lại."
+    },
+    "☠️ ĐỘC TỐ / HƯ HẠI (Thuốc lá, Khói bụi)": {
+        "visual": "blackened tissue, tar accumulation, dark smoke, decaying texture, grey spots",
+        "desc": "Đen xám xịt, ám khói, mục nát và hư hại."
+    },
+    "⛔ TẮC NGHẼN / VẬT THỂ (Trân châu, Mỡ)": {
+        "visual": "thick yellow fat layers, solid blockage, sticky texture, compressing organs",
+        "desc": "Lớp mỡ/vật thể vàng chèn ép, gây tắc nghẽn dòng chảy."
+    },
+    "🌿 CHỮA LÀNH / BẢO VỆ (Yogurt, Vitamin)": {
+        "visual": "glowing green aura, cleaning effect, smooth healthy tissue, regeneration light",
+        "desc": "Phát sáng màu xanh dịu, lớp màng bảo vệ, chữa lành."
+    }
+}
+
+# --- B. LOGIC LÀM ĐẸP (BEAUTY) ---
+BEAUTY_MECHANISMS = {
+    "1. BƠM / LÀM ĐẦY (Filler, Má baby)": "injecting transparent gel, tissue expanding, volume increasing, plump texture",
+    "2. LẤY RA / LÀM SẠCH (Mụn, Hút mỡ)": "extracting impurities, suction tube removing yellow fat, pores clearing, unclogging",
+    "3. DI CHUYỂN / SẮP XẾP (Niềng răng, Nâng mũi)": "bone structure shifting, teeth alignment time-lapse, straightening, correction",
+    "4. TÁI TẠO / BẮN LASER (Peel da, Xóa xăm)": "laser beam scanning, burning old skin layer, revealing fresh pink skin, regeneration",
+    "5. CĂNG KÉO / NÂNG CƠ (Botox, Căng chỉ)": "threads pulling skin up, muscles relaxing, wrinkles smoothing out, firming texture"
+}
+
+# 4. GIAO DIỆN CHÍNH
+st.title("Moon's 3D Studio: Cơ Thể & Làm Đẹp (V4 Final) 🧬")
 st.markdown("---")
 
-# 3. CHIA TAB LỚN
-main_tab1, main_tab2 = st.tabs(["🍔 Giải phẫu (Food & Organ)", "💄 Làm đẹp (Beauty & Skincare)"])
+main_tab1, main_tab2 = st.tabs(["🍔 Giải phẫu (Food/Organ)", "💄 Làm đẹp (Beauty/Skin)"])
 
 # ==================================================
-# KHU VỰC 1: GIẢI PHẪU (FOOD)
+# TAB 1: GIẢI PHẪU (FOOD)
 # ==================================================
 with main_tab1:
     st.header("Anatomy Viral Station 🩺")
+    st.info("🛠️ **Bước 1: Nhập thông tin video**")
     
-    col_a, col_b = st.columns([1.2, 1.5]) # Chia cột lệch chút để phần nhập liệu rộng hơn
-
-    # --- CỘT TRÁI: NHẬP LIỆU & XUẤT PROMPT ---
-    with col_a:
-        st.subheader("🛠️ Bộ điều khiển")
-        with st.form("food_form"):
-            topic = st.text_input("Món ăn/Vật thể", "Mì cay cấp 7")
-            body_part = st.selectbox("Bộ phận tác động", ["Dạ dày", "Phổi", "Gan", "Ruột", "Não", "Tim"])
-            effect = st.text_input("Hiệu ứng Visual", "Dạ dày đỏ rực, co thắt mạnh, sủi bọt")
-            
-            # THANH CHỌN THỜI LƯỢNG VIDEO (QUAN TRỌNG)
-            duration = st.select_slider("Thời lượng Video (Sora 2)", options=["15s", "30s", "60s", "120s"], value="15s")
-            
-            submit_food = st.form_submit_button("🚀 Xuất Kịch Bản & Prompt")
-            
-            if submit_food:
-                st.success(f"Đã xuất bộ tài liệu cho video {duration}!")
-                
-                # --- A. KỊCH BẢN 3 PHẦN (HOOK - BODY - CTA) ---
-                st.markdown("### 1. Kịch bản Nội Dung (Script)")
-                
-                # Logic tạo nội dung theo thời lượng
-                body_script = ""
-                if duration == "15s":
-                    body_script = f"Cắt nhanh: {topic} rơi vào {body_part}. Zoom cực cận cảnh {body_part} đang {effect}. Hiệu ứng âm thanh dồn dập."
-                elif duration == "30s":
-                    body_script = f"0-5s: Cận cảnh ăn {topic}. 5-15s: Thức ăn trôi qua thực quản (X-Ray view). 15-25s: Tại {body_part}, phản ứng {effect} xảy ra dữ dội. 25-30s: {body_part} đổi màu báo động."
-                else: # 60s, 120s
-                    body_script = f"Giải thích chi tiết quy trình: Bắt đầu từ khoang miệng -> Thực quản -> {body_part}. Phân tích kỹ phản ứng hóa học của {topic} làm {effect}. So sánh tình trạng trước và sau khi ăn."
-
-                st.info(f"""
-                **📌 Phần 1: HOOK (3s đầu - Giữ chân người xem)**
-                "ĐỪNG ăn {topic} nếu bạn chưa thấy cảnh tượng này bên trong {body_part}!" 😱
-                
-                **📌 Phần 2: BODY (Nội dung chính)**
-                {body_script}
-                
-                **📌 Phần 3: CTA (Kêu gọi hành động)**
-                "Bạn có hay ăn món này không? Comment ngay bên dưới nhé! 👇 #Anatomy #Health"
-                """)
-
-                # --- B. PROMPT ẢNH (MIDJOURNEY) ---
-                st.markdown("### 2. Prompt Ảnh Thumbnail (Midjourney)")
-                mj_prompt = f"/imagine prompt: 3d medical animation cross-section of human {body_part}, inside is {topic}, visual effect is {effect}, hyper-realistic, detailed texture, cinematic lighting, 8k resolution, bright colors, --ar 9:16"
-                st.code(mj_prompt, language="bash")
-
-                # --- C. PROMPT VIDEO (SORA 2) - THEO THỜI LƯỢNG ---
-                st.markdown(f"### 3. Prompt Video Sora 2 ({duration})")
-                
-                sora_prompt = ""
-                base_style = "Photorealistic 3D medical animation, high quality, 8k, unreal engine 5 render style."
-                
-                if duration == "15s":
-                    sora_prompt = f"{base_style} Duration 15s. Continuous shot. Close up macro view of {topic} entering human {body_part}. Immediate reaction: {effect}. Fast paced, dramatic lighting."
-                elif duration == "30s":
-                    sora_prompt = f"{base_style} Duration 30s. Sequence. Shot 1: Person eating {topic}. Shot 2: X-Ray view of chest showing food traveling down. Shot 3: Inside {body_part}, showing intense {effect}, tissues turning red. Smooth camera movement."
-                elif duration == "60s":
-                    sora_prompt = f"{base_style} Duration 60s. Educational storytelling. Detailed journey of {topic} through the digestive system. Focus on {body_part}. Slow motion visualization of {effect}. Comparison view of healthy {body_part} vs damaged {body_part}. Clear visibility of texture and fluids."
-                else:
-                    sora_prompt = f"{base_style} Duration 120s. Full documentary style. Comprehensive anatomy tour of {body_part}. Interaction of {topic} at cellular level. Detailed simulation of {effect} over time. Multiple angles: wide shot of organs, macro shot of cells."
-
-                st.code(sora_prompt, language="bash")
-
-    # --- CỘT PHẢI: QUẢN LÝ ---
-    with col_b:
-        st.subheader("📅 Quản lý sản xuất")
-        df_food = pd.DataFrame({
-            "Chủ đề": ["Mì cay", "Trân châu", "Nước đá"],
-            "Thời lượng": ["15s", "60s", "30s"],
-            "Trạng thái": ["Render", "Idea", "Done"]
-        })
-        st.data_editor(df_food, use_container_width=True, num_rows="dynamic", key="food_editor")
-
-        st.divider()
-        st.subheader("👀 Góc nhìn tham khảo")
-        st.caption("(Đây là ảnh demo từ thư viện, Moon thay link ảnh thật của Moon sau nhé)")
+    with st.form("food_form"):
+        col1, col2 = st.columns(2)
+        with col1:
+            topic = st.text_input("Món ăn / Vật thể", "Mì cay cấp 7")
+            body_part = st.selectbox("Bộ phận cơ thể", ["Dạ dày", "Phổi", "Gan", "Ruột non", "Não", "Tim", "Thận", "Mạch máu"])
+        with col2:
+            reaction_key = st.selectbox("Loại phản ứng:", list(FOOD_LOGIC.keys()))
+            selected_logic = FOOD_LOGIC[reaction_key]
+            effect_preview = st.text_input("Chi tiết hiệu ứng:", value=selected_logic["desc"])
         
-        # Dùng từ khóa chung chung để đảm bảo luôn hiện ảnh
-        c1, c2 = st.columns(2)
-        with c1:
-            st.image("https://source.unsplash.com/400x600/?anatomy", caption="Style giải phẫu")
-            st.image("https://source.unsplash.com/400x600/?stomach", caption="Dạ dày")
-        with c2:
-            st.image("https://source.unsplash.com/400x600/?medical", caption="Góc nhìn X-Ray")
-            st.image("https://source.unsplash.com/400x600/?microscope", caption="Zoom tế bào")
+        duration = st.select_slider("Thời lượng Video (Sora 2)", options=["15s", "30s", "60s"], value="15s")
+        submit_food = st.form_submit_button("🚀 XUẤT KỊCH BẢN & PROMPT (FOOD)")
+
+    # --- KẾT QUẢ FOOD ---
+    if submit_food:
+        st.divider()
+        st.success(f"✅ Đã xong bộ tài liệu cho: {topic}")
+        visual_keywords = selected_logic["visual"]
+
+        # 1. Kịch bản & Caption
+        st.subheader("1. Kịch bản & Caption")
+        caption_hook = f"😱 Điều gì xảy ra khi {topic} đi vào {body_part}?"
+        caption_visual = f"Zoom cận cảnh {body_part} đang {effect_preview.lower()} Đừng chủ quan!"
+        caption_cta = f"👇 Tag ngay người cần xem video này nhé!"
+        
+        st.info(f"**HOOK (3s):** {caption_hook}\n\n**BODY:** Mô tả hành trình {topic} đi vào. Zoom vào tế bào thấy {effect_preview}. \n\n**CTA:** {caption_cta}")
+        st.code(f"{caption_hook}\n{caption_visual}\n{caption_cta}\n\n#Anatomy3D #Suckhoe #{topic.replace(' ', '')} #Kienthuc", language="text")
+
+        # 2. Prompt Ảnh
+        st.subheader("2. Prompt Thumbnail (Midjourney)")
+        mj_prompt = f"/imagine prompt: 3d medical animation of human {body_part}, inside containing {topic}, visual effect is {visual_keywords}, {MOON_STYLE}"
+        st.code(mj_prompt, language="bash")
+
+        # 3. Prompt Video
+        st.subheader(f"3. Prompt Video Sora 2 ({duration})")
+        sora_prompt = ""
+        base_sora = "Photorealistic 3D medical animation, high quality, 8k. Dark blue background aesthetic."
+        if duration == "15s":
+            sora_prompt = f"{base_sora} Duration 15s. Continuous shot. Macro view inside {body_part}. {topic} enters. Immediate reaction: {visual_keywords}. Fast paced action."
+        elif duration == "30s":
+            sora_prompt = f"{base_sora} Duration 30s. Sequence. Shot 1: Consumption of {topic}. Shot 2: X-Ray view of {body_part}. Shot 3: Detailed simulation of {visual_keywords}. Text labels explaining the mechanism."
+        else:
+            sora_prompt = f"{base_sora} Duration 60s. Educational storytelling. Journey of {topic} affecting {body_part}. Progressive damage showing {visual_keywords}. Comparison: Healthy vs Affected tissue."
+        st.code(sora_prompt, language="bash")
+
 
 # ==================================================
-# KHU VỰC 2: LÀM ĐẸP (BEAUTY)
+# TAB 2: LÀM ĐẸP (BEAUTY) - GIAO DIỆN ĐỒNG BỘ
 # ==================================================
 with main_tab2:
     st.header("Beauty 3D Studio 💉👄")
+    st.info("🛠️ **Bước 1: Nhập thông tin dịch vụ**")
     
-    b_col1, b_col2 = st.columns([1.2, 1.5])
+    with st.form("beauty_form"):
+        c1, c2 = st.columns(2)
+        with c1:
+            beauty_topic = st.text_input("Tên dịch vụ / Vấn đề", "Tiêm Filler Môi")
+            # 5 CƠ CHẾ LÀM ĐẸP
+            mech_key = st.selectbox("Cơ chế tác động:", list(BEAUTY_MECHANISMS.keys()))
+            
+        with c2:
+            # 3 GÓC NHÌN (PERSPECTIVE)
+            perspective = st.selectbox("Góc nhìn (Perspective):", 
+                                       ["🔬 Khoa học / Giải phẫu (Khuyên dùng)", 
+                                        "✨ Thẩm mỹ / Satisfying", 
+                                        "⚠️ Cảnh báo / Rủi ro"])
+            
+            # Visual tự động điền từ cơ chế
+            mech_visual = BEAUTY_MECHANISMS[mech_key]
+            beauty_visual_desc = st.text_input("Mô tả Visual (Tự động):", value=mech_visual)
 
-    # --- CỘT TRÁI: BEAUTY PROMPT ---
-    with b_col1:
-        st.subheader("✨ Tùy chỉnh Beauty")
-        
-        with st.form("beauty_form"):
-            # 1. Chọn nhóm
-            category = st.selectbox("Nhóm chủ đề", ["Tiêm Filler/Botox", "Phẫu thuật thẩm mỹ", "Nha khoa", "Skincare/Mụn"])
-            
-            # 2. Nhập chi tiết (Để Moon tự nhập cho linh hoạt)
-            beauty_topic = st.text_input("Tên video (VD: Nặn mụn đầu đen)", "Tiêm Filler Môi")
-            beauty_action = st.text_input("Hành động chính", "Kim tiêm bơm gel vào môi")
-            beauty_result = st.text_input("Kết quả/Hiệu ứng", "Môi phồng lên, căng mọng")
-            
-            # 3. Chọn thời lượng
-            beauty_duration = st.select_slider("Thời lượng Sora", options=["15s", "30s", "60s"], value="30s")
-            
-            submit_beauty = st.form_submit_button("🚀 Xuất Prompt Beauty")
-            
-            if submit_beauty:
-                st.success(f"Đã xuất bộ Beauty {beauty_duration}!")
-                
-                # A. KỊCH BẢN
-                st.markdown("### 1. Kịch bản (Script)")
-                st.info(f"""
-                **HOOK:** Xem cận cảnh {beauty_topic} dưới kính hiển vi 3D! Bạn có dám xem không?
-                **BODY:** {beauty_action}. Zoom 1000x vào lớp da. Thấy rõ {beauty_result}.
-                **CTA:** Bạn muốn soi da món nào tiếp theo? Comment nhé!
-                """)
-                
-                # B. MIDJOURNEY
-                st.markdown("### 2. Prompt Ảnh (Midjourney)")
-                st.code(f"/imagine prompt: 3d medical animation of {beauty_topic}, {beauty_action}, cross-section view of skin layers, hyper-realistic, 8k --ar 9:16", language="bash")
-                
-                # C. SORA VIDEO
-                st.markdown(f"### 3. Prompt Video Sora ({beauty_duration})")
-                sora_beauty = ""
-                if beauty_duration == "15s":
-                     sora_beauty = f"Photorealistic 3D animation, 15s. Macro shot of {beauty_topic}. Action: {beauty_action}. Immediate visual satisfaction: {beauty_result}. Bright lighting."
-                else:
-                     sora_beauty = f"Photorealistic 3D animation, {beauty_duration}. Process visualization. Step 1: Show {beauty_topic} condition. Step 2: {beauty_action} in slow motion. Step 3: Transformation to {beauty_result}. Smooth texture, medical aesthetic."
-                
-                st.code(sora_beauty, language="bash")
+        beauty_duration = st.select_slider("Thời lượng Video", options=["15s", "30s", "60s"], value="30s")
+        submit_beauty = st.form_submit_button("🚀 XUẤT KỊCH BẢN & PROMPT (BEAUTY)")
 
-    # --- CỘT PHẢI: QUẢN LÝ BEAUTY ---
-    with b_col2:
-        st.subheader("📅 Quản lý Beauty")
-        df_beauty = pd.DataFrame({
-            "Chủ đề": ["Filler Môi", "Niềng răng", "Nặn mụn"],
-            "Phân loại": ["Nội khoa", "Nha khoa", "Da liễu"],
-            "Trạng thái": ["Done", "Render", "Idea"]
-        })
-        st.data_editor(df_beauty, use_container_width=True, num_rows="dynamic", key="beauty_editor")
-        
+    # --- KẾT QUẢ BEAUTY ---
+    if submit_beauty:
         st.divider()
-        st.subheader("👀 Beauty Demo")
-        c3, c4 = st.columns(2)
-        with c3:
-            st.image("https://source.unsplash.com/400x600/?skincare", caption="Skincare")
-        with c4:
-            st.image("https://source.unsplash.com/400x600/?dentist", caption="Nha khoa")
+        st.success(f"✅ Đã xong bộ tài liệu Beauty: {beauty_topic}")
+        
+        # LOGIC XỬ LÝ THEO GÓC NHÌN (PERSPECTIVE)
+        p_hook, p_body, p_tone = "", "", ""
+        
+        if "Khoa học" in perspective:
+            p_hook = f"🔍 Giải phẫu học: Điều gì thực sự diễn ra dưới lớp da khi {beauty_topic}?"
+            p_body = f"Mô phỏng mặt cắt lớp (Cross-section). Thấy rõ cấu trúc da/xương. Cơ chế {beauty_topic} tác động vào lớp trung bì/hạ bì. Hiển thị khoa học, trung lập."
+            p_tone = "Educational, Neutral, Anatomically correct"
+        elif "Thẩm mỹ" in perspective:
+            p_hook = f"✨ Visual cực đã mắt: Quá trình {beauty_topic} biến hình trong 1 nốt nhạc!"
+            p_body = f"Tập trung vào sự thay đổi mượt mà. Hiệu ứng {beauty_visual_desc} diễn ra trơn tru. Kết quả hoàn hảo, căng bóng."
+            p_tone = "Satisfying, Beautiful, Smooth, Glowing"
+        else: # Cảnh báo
+            p_hook = f"⚠️ Cảnh báo: Đừng {beauty_topic} nếu chưa hiểu rõ cấu trúc giải phẫu này!"
+            p_body = f"Mô phỏng rủi ro nếu làm sai kỹ thuật. Hiển thị mạch máu bị chèn ép hoặc vật liệu bị vón cục. Nhắc nhở an toàn."
+            p_tone = "Warning, Detailed, Medical Risk"
+
+        # 1. Kịch bản 3 Phần
+        st.subheader("1. Kịch bản & Caption")
+        st.info(f"""
+        **🎬 KỊCH BẢN ({perspective})**
+        * **HOOK:** {p_hook}
+        * **BODY:** {p_body}
+        * **VISUAL:** {beauty_visual_desc}
+        * **CTA:** 👇 Bạn nghĩ sao về phương pháp này? Comment nhé!
+        """)
+        
+        # Caption ngắn
+        st.code(f"{p_hook}\nXem cận cảnh: {beauty_visual_desc}\n👇 Góc nhìn 3D chân thực nhất!\n\n#Beauty3D #{beauty_topic.replace(' ','')} #Giaiphau #Kienthuc", language="text")
+
+        # 2. Prompt Thumbnail (Midjourney)
+        st.subheader("2. Prompt Thumbnail (Style Đồng bộ)")
+        mj_beauty = f"/imagine prompt: 3d medical animation cross-section of {beauty_topic}, showing {beauty_visual_desc}, perspective is {p_tone}, {MOON_STYLE}"
+        st.code(mj_beauty, language="bash")
+
+        # 3. Prompt Video Sora
+        st.subheader(f"3. Prompt Video Sora ({beauty_duration})")
+        sora_b = ""
+        base_beauty = "Photorealistic 3D medical animation, 8k, dark blue background."
+        
+        if beauty_duration == "15s":
+             sora_b = f"{base_beauty} Duration 15s. Macro shot. Focus on {beauty_topic}. Action: {beauty_visual_desc}. Tone: {p_tone}. Fast and clear."
+        else:
+             sora_b = f"{base_beauty} Duration {beauty_duration}. Process visualization. Step 1: Anatomy layers before procedure. Step 2: {beauty_visual_desc} in detail. Step 3: Result. Tone: {p_tone}. Text labels explaining anatomy."
+             
+        st.code(sora_b, language="bash")
