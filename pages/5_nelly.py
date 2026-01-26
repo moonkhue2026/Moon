@@ -1,239 +1,255 @@
 import streamlit as st
-import datetime
 import random
+import datetime
 
-# --- CẤU HÌNH TRANG (Giữ nguyên vẻ sang trọng) ---
-st.set_page_config(
-    page_title="Nelly's Week v9.8 - Fashion & Lifestyle Manager",
-    page_icon="👠",
-    layout="wide"
-)
+# =========================================================
+# CẤU HÌNH APP & VERSION
+# =========================================================
+APP_VERSION = "v9.8"
+st.set_page_config(page_title=f"Nelly Manager {APP_VERSION}", page_icon="👠", layout="wide")
 
-# --- CSS TÙY CHỈNH (Giữ nguyên) ---
-st.markdown("""
-<style>
-    .main-header { font-size: 2.5rem; font-weight: 700; color: #333; text-align: center; }
-    .sub-header { font-size: 1.2rem; font-style: italic; color: #666; text-align: center; margin-bottom: 10px; }
-    .version-caption { text-align: center; color: #888; font-size: 0.9rem; margin-bottom: 30px; }
-    /* Style cho các box nhiệm vụ */
-    .task-box-sang { border-left: 5px solid #d4af37; background-color: #fffbf0; padding: 15px; border-radius: 8px; }
-    .task-box-chieu { border-left: 5px solid #333; background-color: #f4f4f4; padding: 15px; border-radius: 8px; }
-    .task-box-toi { border-left: 5px solid #9c27b0; background-color: #f8f0fb; padding: 15px; border-radius: 8px; }
-    /* Style cho tiêu đề ngày */
-    .day-header { color: #d4af37; font-weight: bold; font-size: 1.3rem; margin-top: 20px;}
-    /* Nút bấm */
-    .stButton>button { border-radius: 20px; }
-    /* Style cho code block */
-    .stCode { border: 1px solid #d4af37; border-radius: 5px; }
-</style>
-""", unsafe_allow_html=True)
+# =========================================================
+# 1. KHO DỮ LIỆU KHỔNG LỒ (ĐÃ CẬP NHẬT THÊM DU LỊCH)
+# =========================================================
 
-# --- DỮ LIỆU: KHO PROMPT MẪU (ĐÃ KIỆN TOÀN Ở v9.7) ---
-prompts = {
-    # 1. Prompt cho Status/Caption ngắn
-    "stt_sangchanh": """
-Tôi là Nelly, một KOL Fashion & Lifestyle theo phong cách sang trọng, hiện đại, tự tin.
-Hãy viết cho tôi một caption Facebook/Instagram ngắn (dưới 100 từ) kèm 3 hashtag.
-Chủ đề: [Chủ đề nhiệm vụ hiện tại].
-Tone giọng: Quyền lực, tự tin, truyền cảm hứng nhưng vẫn gần gũi.
-Yêu cầu bắt buộc:
-- Bắt đầu bằng một câu hook (câu dẫn) ấn tượng để thu hút sự chú ý ngay lập tức.
-- Sử dụng ngôn từ tinh tế, đắt giá, tránh dùng từ ngữ quá bình dân hoặc sến súa để giữ vững hình ảnh sang trọng.
-""",
-
-    # 2. Prompt cho Kịch bản video ngắn
-    "video_kịch_bản": """
-Tôi là Nelly (KOL Fashion/Lifestyle sang trọng). Hãy viết cho tôi một kịch bản video ngắn (Reels/TikTok) khoảng 30-45 giây.
-Chủ đề: [Chủ đề nhiệm vụ hiện tại].
-Tone giọng: Năng động, cuốn hút, chuyên nghiệp.
-Cấu trúc:
-- 0-3s (Hook): Gây tò mò hoặc đánh vào nỗi đau/mong muốn của khán giả.
-- 3-15s (Thân): Chia sẻ 2-3 tips chính hoặc show các góc quay đẹp nhất.
-- 15s+ (Call to Action): Kêu gọi tương tác (lưu lại, chia sẻ, follow).
-Yêu cầu thêm:
-- Mô tả ngắn gọn hành động hoặc bối cảnh (Visual cues) trong ngoặc đơn () để người quay dễ hình dung. Ví dụ: (Cận cảnh tay cầm túi), (Góc toàn cảnh bước đi tự tin).
-""",
-
-    # 3. Prompt cho bài viết dài/hướng dẫn
-    "guide_post": """
-Tôi là Nelly (KOL Fashion/Lifestyle sang trọng). Hãy viết một bài blog/bài post Facebook chi tiết, sâu sắc.
-Chủ đề: [Chủ đề nhiệm vụ hiện tại].
-Tone giọng: Chuyên gia, tinh tế, chia sẻ chân thành như một người chị đi trước.
-Cấu trúc:
-1. Tiêu đề thu hút (có thể dùng con số).
-2. Đặt vấn đề (Tại sao việc này quan trọng với phụ nữ hiện đại?).
-3. Giải pháp chi tiết (Các bước thực hiện cụ thể, các tips nhỏ "đắt giá").
-4. Kết luận truyền cảm hứng & Kêu gọi hành động nhẹ nhàng.
-Yêu cầu trình bày:
-- Sử dụng emoji tinh tế, phù hợp, không lạm dụng quá nhiều.
-- Chia đoạn rõ ràng, dễ đọc trên điện thoại.
-"""
+# 1.1. Danh sách chủ đề chi tiết
+categories = {
+    "💃 Dancing & Trends (Vũ đạo Viral)": [
+        "Nhảy Cover Trend TikTok mới nhất",
+        "Aerobic đốt mỡ bụng tại nhà",
+        "Sexy Dance thần thái (High Heels)",
+        "Shuffle Dance cực cuốn",
+        "Dance Sport sang trọng (Cha Cha Cha/Rumba)",
+        "Biến hình: Từ đồ ngủ sang Đồ nhảy (Transformation)",
+        "Nhảy Free-style ngẫu hứng trên phố"
+    ],
+    "👗 Hack Dáng & Phối Đồ (Styling)": [
+        "Hack chân dài cho nấm lùn 1m50",
+        "Che bụng mỡ dưới thần thánh",
+        "Phối đồ Gym/Sporty đi chơi vẫn sang",
+        "Biến đồ công sở nhàm chán thành Sang chảnh",
+        "Tips chọn quần Jeans tôn vòng 3",
+        "Phối màu đơn sắc (Monochrome) tinh tế"
+    ],
+    "📸 Tạo Dáng & Thần Thái (Posing)": [
+        "3 Dáng đứng chụp ảnh 'kéo chân' ảo diệu",
+        "Tạo dáng với gương phòng tập (Gym Mirror)",
+        "Cách cười tự nhiên không bị gượng gạo",
+        "Xử lý tay khi chụp ảnh (đỡ bị đơ)",
+        "Thần thái 'Chị Đại' (Boss Girl Energy)",
+        "Tạo dáng ngoại cảnh / Check-in du lịch (Outdoor)" # <-- MỚI THÊM
+    ],
+    "💄 Làm Đẹp & Skincare (Beauty)": [
+        "Makeup tone Tây đi tiệc/đi quẩy",
+        "Tips giữ lớp nền không trôi khi tập Gym",
+        "Quy trình dưỡng da Glass Skin buổi tối",
+        "Chọn mùi nước hoa 'Bad Girl' quyến rũ",
+        "Cách buộc tóc đuôi ngựa (Ponytail) hack tuổi"
+    ],
+    "🥂 Phong Cách Sống (Lifestyle)": [
+        "Xây dựng sự tự tin từ bên trong",
+        "Vlog: Một ngày đi tập & làm việc của Nelly",
+        "Chế độ ăn Eat Clean giữ dáng",
+        "Tư duy phụ nữ hiện đại: Độc lập & Hạnh phúc",
+        "Vlog Du lịch & Trải nghiệm (Travel Vlog)" # <-- MỚI THÊM
+    ]
 }
 
-# --- DỮ LIỆU: LỊCH TRÌNH CỐ ĐỊNH CẢ TUẦN (Giữ nguyên) ---
-weekly_plan = {
-    # --- THỨ 2 ---
-    ("Monday", "Sáng"): {
-        "task": "🔥 Khởi động tuần mới: Power Outfit & Kế hoạch",
-        "detail": "Chọn một bộ đồ 'quyền lực' nhất (Power Outfit) để đi họp hoặc cafe đầu tuần. Thể hiện thần thái tổng tài/sang chảnh để set mood cho cả tuần.",
-        "prompt_type": "stt_sangchanh"
-    },
-    ("Monday", "Chiều"): {
-        "task": "✨ Thử thách Styling: Biến đồ công sở nhàm chán thành Sang chảnh",
-        "detail": "Lấy một món basic (sơ mi trắng/quần âu đen) và dùng phụ kiện cao cấp (khăn lụa, trang sức gold, túi hiệu) để nâng tầm nó. Quay video biến hình.",
-        "prompt_type": "video_kịch_bản"
-    },
-    ("Monday", "Tối"): {
-        "task": "Self-care: Dưỡng da Luxury & Tổng kết",
-        "detail": "Routine skincare buổi tối thư giãn với các sản phẩm yêu thích. Viết một story nhẹ nhàng tổng kết cảm xúc.",
-        "prompt_type": "stt_sangchanh"
-    },
-
-    # --- THỨ 3 ---
-    ("Tuesday", "Sáng"): {
-        "task": "Cafe sáng & Chụp ảnh flatlay phụ kiện",
-        "detail": "Đi một quán cafe đẹp, sang trọng. Sắp xếp và chụp ảnh flatlay chi tiết các phụ kiện (túi, giày, kính, nước hoa) bạn dùng hôm nay.",
-        "prompt_type": "stt_sangchanh"
-    },
-    ("Tuesday", "Chiều"): {
-        "task": "Quay Video: Tips phối màu trang phục (Color Blocking/Monochrome)",
-        "detail": "Chia sẻ kiến thức về phối màu sao cho sang trọng, không bị lòe loẹt.",
-        "prompt_type": "video_kịch_bản"
-    },
-    ("Tuesday", "Tối"): {
-        "task": "Nghiên cứu trend & Tương tác cộng đồng",
-        "detail": "Dành thời gian lướt Pinterest/Vogue nắm bắt xu hướng. Trả lời Q&A trên Story để giữ kết nối.",
-        "prompt_type": None # Không cần prompt
-    },
-
-    # --- THỨ 4 ---
-    ("Wednesday", "Sáng"): {
-        "task": "Họp đối tác/Sự kiện & OOTD Chuyên nghiệp",
-        "detail": "Trang phục đi gặp đối tác quan trọng. Chia sẻ góc nhìn về sự chuyên nghiệp và thần thái trong công việc.",
-        "prompt_type": "stt_sangchanh"
-    },
-    ("Wednesday", "Chiều"): {
-        "task": "Review sản phẩm High-end (Mỹ phẩm/Thời trang)",
-        "detail": "Bài viết review chi tiết một sản phẩm đắt tiền bạn tâm đắc. Nhấn mạnh vào trải nghiệm, chất lượng xứng đáng với giá tiền.",
-        "prompt_type": "guide_post"
-    },
-    ("Wednesday", "Tối"): {
-        "task": "Wellness: Tập luyện giữ dáng (Pilates/Yoga)",
-        "detail": "Chia sẻ hình ảnh tập luyện trong không gian đẹp. Truyền cảm hứng về lối sống lành mạnh, yêu bản thân.",
-        "prompt_type": "stt_sangchanh"
-    },
-    # (Các ngày khác có thể bổ sung tiếp tục theo cấu trúc này)
+# 1.2. Kho Caption phong phú
+caption_library = {
+    "Dancing": [
+        "Nhảy xấu không sao, quan trọng là thần thái! 💃🔥",
+        "Đốt cháy sàn diễn (và cả mỡ bụng) cùng Nelly! 💦",
+        "Nhạc lên là em lên! Ai đu trend này chưa? 🎶",
+        "Tập luyện là cách yêu bản thân tốt nhất. Go hard or go home! 💪"
+    ],
+    "Styling": [
+        "Quần áo không làm nên con người, nhưng làm nên thần thái! 😎",
+        "Không có phụ nữ lùn, chỉ có phụ nữ chưa biết hack dáng! 👠",
+        "Mặc đẹp không phải để ai ngắm, mà là để mình vui! ✨"
+    ],
+    "Posing": [
+        "Đứng im cũng đẹp, mà cười cái là 'đổ' luôn! 📸",
+        "Thần thái là thứ không mua được bằng tiền, nhưng luyện tập thì được! 💃",
+        "Lưu ngay bí kíp tạo dáng này kẻo xóa video nha mấy bà! 🤫"
+    ],
+    "Beauty": [
+        "Đẹp tự nhiên nhưng không phải tự nhiên mà đẹp! 💄",
+        "Mồ hôi là lớp makeup đẹp nhất của cô gái phòng Gym! 💦",
+        "Makeup sương sương nhưng sát thương cực lớn! 💋"
+    ],
+    "Lifestyle": [
+        "Sống sang không phải là khoe tiền, mà là biết yêu bản thân. 🥂",
+        "Phụ nữ hiện đại: Kiếm tiền giỏi, Sống chất chơi! 👑",
+        "Body này được tạo nên từ kỷ luật, không phải may mắn. 🔥",
+        "Đi đâu không quan trọng, quan trọng là đi cùng ai (và có ảnh đẹp mang về)! ✈️🌊" # <-- MỚI THÊM
+    ]
 }
 
-# Hàm hỗ trợ lấy ngày trong tuần (tiếng Anh để khớp với data)
-def get_weekday_name(day_index):
-    days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    return days[day_index]
+# 1.3. Lịch trình tuần
+weekly_schedule = {
+    "Thứ 2": {"Sáng": "🥂 Lifestyle: Dọn tủ đồ", "Chiều": "👗 Styling: Đồ công sở", "Tối": "💃 Dancing: Cơ bản", "Reason": "Đầu tuần năng lượng"},
+    "Thứ 3": {"Sáng": "💄 Beauty: Skincare", "Chiều": "📸 Posing: Tập dáng", "Tối": "💃 Dancing: Sexy Dance", "Reason": "Tập trung kỹ năng"},
+    "Thứ 4": {"Sáng": "🥂 Lifestyle: Cafe sáng", "Chiều": "👗 Styling: Streetwear", "Tối": "💃 Dancing: Shuffle", "Reason": "Đổi gió Bohemian"},
+    "Thứ 5": {"Sáng": "💄 Beauty: Makeup", "Chiều": "📸 Posing: Chụp ảnh", "Tối": "💃 Dancing: Choreography", "Reason": "Chuẩn bị cuối tuần"},
+    "Thứ 6": {"Sáng": "🥂 Lifestyle: Dọn tủ đồ", "Chiều": "👗 Styling: Đồ đi tiệc", "Tối": "💃 Dancing: Trend TikTok", "Reason": "Thứ 6 máu chảy về tim"},
+    "Thứ 7": {"Sáng": "🥂 Lifestyle: Du lịch", "Chiều": "📸 Posing: Ngoại cảnh", "Tối": "💃 Dancing: Free style", "Reason": "Cuối tuần Chill"},
+    "Chủ Nhật": {"Sáng": "💄 Beauty: Spa", "Chiều": "👗 Styling: Sắp xếp", "Tối": "🥂 Lifestyle: Tổng kết", "Reason": "Chủ nhật chữa lành"}
+}
 
-# Hàm tạo block hiển thị prompt (Logic giữ nguyên)
-def show_prompt_block(prompt_key, task_subject):
-    if prompt_key in prompts:
-        st.markdown("#### 🤖 Gợi ý câu lệnh (Prompt) cho ChatGPT:")
-        st.info("👉 Copy toàn bộ đoạn code bên dưới và dán vào ChatGPT để nhận nội dung chất lượng như trong ảnh mẫu nha!")
-        # Thay thế [Chủ đề...] bằng nhiệm vụ thực tế
-        final_prompt = prompts[prompt_key].replace("[Chủ đề nhiệm vụ hiện tại]", task_subject)
-        # Hiển thị dạng code block để dễ copy
-        st.code(final_prompt, language="markdown")
-    else:
-        st.warning("Nhiệm vụ này cần sự sáng tạo tự do của Nelly, không có prompt mẫu!")
+# 1.4. Góc độ (Angles)
+angles_list = ["🔥 Biến hình (Transformation)", "🎓 Hướng dẫn (Tutorial)", "⚠️ Sai lầm (Mistakes)", "❤️ Biểu diễn/Vlog"]
 
-# --- GIAO DIỆN CHÍNH ---
-st.markdown('<p class="main-header">👠 NELLY\'S WEEKLY MANAGER & AI PROMPTS</p>', unsafe_allow_html=True)
-st.markdown('<p class="sub-header">"Quản lý lịch trình sang trọng & Lấy prompt chuẩn chỉ trong 1 cú click"</p>', unsafe_allow_html=True)
-# Cập nhật phiên bản hiển thị
-st.markdown('<p class="version-caption">Phiên bản: Nelly v9.8 (Kiện toàn Prompt)</p>', unsafe_allow_html=True)
+# =========================================================
+# 2. GIAO DIỆN APP
+# =========================================================
 
+# --- SIDEBAR ---
+with st.sidebar:
+    st.markdown(f"## 🚀 {APP_VERSION}") 
+    st.header("🗓️ CHECKLIST HÔM NAY")
+    
+    days = list(weekly_schedule.keys())
+    today = datetime.datetime.today().strftime("%A")
+    d_map = {"Monday": "Thứ 2", "Tuesday": "Thứ 3", "Wednesday": "Thứ 4", "Thursday": "Thứ 5", "Friday": "Thứ 6", "Saturday": "Thứ 7", "Sunday": "Chủ Nhật"}
+    today_vi = d_map.get(today, "Thứ 2")
+    
+    selected_day = st.selectbox("Ngày làm việc:", days, index=days.index(today_vi) if today_vi in days else 0)
+    schedule = weekly_schedule[selected_day]
+    
+    st.info(f"🎯 Mục tiêu: {schedule['Reason']}")
+    st.write("---")
+    st.checkbox(f"🌅 SÁNG: {schedule['Sáng']}")
+    st.checkbox(f"🌞 CHIỀU: {schedule['Chiều']}")
+    st.checkbox(f"🌙 TỐI: {schedule['Tối']}")
 
-# Thanh chọn ngày
-today = datetime.date.today()
-days_in_week = [today + datetime.timedelta(days=i) for i in range(7)]
-day_mapping = {day.strftime("%Y-%m-%d"): get_weekday_name(day.weekday()) for day in days_in_week}
-vietnamese_days = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ Nhật"]
-day_labels = [f"{vietnamese_days[day.weekday()]} - {day.strftime('%d/%m')}" for day in days_in_week]
+# --- MAIN CONFIG ---
+st.title(f"👠 NELLY MANAGER {APP_VERSION}")
 
-selected_day_label = st.selectbox("📅 Chọn ngày bạn muốn xem lịch:", day_labels, index=0)
-selected_date_str = days_in_week[day_labels.index(selected_day_label)].strftime("%Y-%m-%d")
-selected_weekday_en = day_mapping[selected_date_str]
+with st.expander("⚙️ CẤU HÌNH NỘI DUNG", expanded=True):
+    c1, c2, c3 = st.columns([1.5, 2, 1.5])
+    with c1: 
+        group_select = st.selectbox("Nhóm chủ đề:", list(categories.keys()))
+    with c2: 
+        topic_select = st.selectbox("Chủ đề cụ thể:", categories[group_select])
+    with c3: 
+        angle_select = st.selectbox("Góc độ:", angles_list)
 
-st.divider()
+    st.write("---")
+    
+    c_style, c_outfit = st.columns([1.5, 3])
+    with c_style: 
+        style_select = st.radio("Style:", ["🔴 KOL (Người thật)", "⚪ 3D Animation"], horizontal=True)
+    
+    with c_outfit:
+        # LOGIC XỬ LÝ THÔNG MINH (MAPPING DATA)
+        # 1. Xác định Style cơ bản
+        if "Dancing" in group_select:
+            key_style = "Dancing"
+            music_text = "🔥 Upbeat, EDM, Vinahouse, TikTok Trend Remix"
+            outfit_text = "Sexy Cut-out Bodysuit & High Heels 👠" if "Sexy" in topic_select else "Trendy gym set 👟"
+        elif "Styling" in group_select:
+            key_style = "Styling"
+            music_text = "👠 Fashion Show BGM, Luxury Beat, Chic"
+            outfit_text = "High-fashion blazer & jeans, heels ✨"
+        elif "Posing" in group_select:
+            key_style = "Posing"
+            music_text = "📸 R&B, Trap Soul, Confident Vibe"
+            outfit_text = "Elegant Dress or Streetwear 👗"
+        elif "Beauty" in group_select:
+            key_style = "Beauty"
+            music_text = "✨ Soft Pop, Fresh, Lo-fi Chill, Spa"
+            outfit_text = "Bathrobe / Clean Girl Outfit 🧖‍♀️"
+        else: # Lifestyle
+            key_style = "Lifestyle"
+            music_text = "🥂 Vlog Music, Jazz Hop, Morning Coffee"
+            outfit_text = "Casual Chic / Yoga wear 🧘‍♀️"
 
-# --- HIỂN THỊ NHIỆM VỤ THEO 3 BUỔI ---
-task_sang = weekly_plan.get((selected_weekday_en, "Sáng"))
-task_chieu = weekly_plan.get((selected_weekday_en, "Chiều"))
-task_toi = weekly_plan.get((selected_weekday_en, "Tối"))
+        # 2. Xử lý NGOẠI LỆ (Ghi đè - Override)
+        if "Biến hình" in topic_select:
+             outfit_text = "Pajamas (Before) -> Glitter Dress (After) ✨"
+             music_text = "🎵 Transition Sound, Magic Chime, Drop Beat"
+             
+        # NEW: Xử lý Du lịch / Ngoại cảnh (v9.8)
+        if "Du lịch" in topic_select or "Outdoor" in topic_select or "Ngoại cảnh" in topic_select:
+             outfit_text = "Maxi Dress đi biển 🌊 / Streetwear năng động & Kính râm 😎"
+             music_text = "🌊 Tropical House, Travel Vibe, Summer Chill"
+             key_style = "Lifestyle" # Đưa về lifestyle để chọn caption hợp lý
 
-# Sử dụng st.tabs cho 3 buổi
-tab1, tab2, tab3 = st.tabs(["🌅 SÁNG (Morning)", "☀️ CHIỀU (Afternoon)", "🌙 TỐI (Evening)"])
+        st.caption(f"👕 Outfit: {outfit_text}")
 
-# --- TAB SÁNG ---
+st.success(f"🎵 Gợi ý Nhạc (CapCut): {music_text}")
+
+# =========================================================
+# 3. KẾT QUẢ OUTPUT
+# =========================================================
+
+tab1, tab2, tab3 = st.tabs(["📝 BÀI VIẾT & ẢNH", "🎥 VIDEO (Sora & Grok)", "🎬 KỊCH BẢN (Script)"])
+
+# --- TAB 1: CAPTION & MIDJOURNEY ---
 with tab1:
-    if task_sang:
-        st.markdown(f'<div class="task-box-sang"><h3>{task_sang["task"]}</h3><p>{task_sang["detail"]}</p></div>', unsafe_allow_html=True)
-        st.divider()
-        
-        st.write("### 👩‍💻 Khu vực sáng tạo & Lấy Prompt")
-        # Radio button chọn loại content (Ví dụ cho Thứ 2 Sáng)
-        content_type_am = st.radio("Chọn loại nội dung sẽ làm:", ["Ảnh OOTD kèm Caption chất", "Story nhanh"], horizontal=True, key="am_radio")
-        
-        if content_type_am == "Ảnh OOTD kèm Caption chất":
-            # Hiển thị prompt mặc định của task đó
-            if task_sang.get("prompt_type"):
-                show_prompt_block(task_sang["prompt_type"], task_sang["task"])
-
-        st.text_area("✍️ Ghi chú thêm:", height=80, key="am_note")
-        st.checkbox("✅ Đã hoàn thành", key="am_check")
-    else:
-        st.info("Chưa có lịch cho buổi sáng này. Enjoy your free time!")
-
-# --- TAB CHIỀU ---
-with tab2:
-    if task_chieu:
-        st.markdown(f'<div class="task-box-chieu"><h3>{task_chieu["task"]}</h3><p>{task_chieu["detail"]}</p></div>', unsafe_allow_html=True)
-        st.divider()
-        
-        st.write("### 👩‍💻 Khu vực sáng tạo & Lấy Prompt")
-        # Radio button chọn loại content (Ví dụ cho Thứ 2 Chiều)
-        content_type_pm = st.radio("Chọn loại nội dung sẽ làm:", ["Quay Video Biến Hình (Reels)", "Bài viết Hướng dẫn chi tiết"], horizontal=True, key="pm_radio")
-        
-        # --- LOGIC HIỂN THỊ PROMPT LINH HOẠT ---
-        if content_type_pm == "Quay Video Biến Hình (Reels)":
-             # Buộc hiển thị prompt kịch bản video
-            show_prompt_block("video_kịch_bản", task_chieu["task"])
-
-        elif content_type_pm == "Bài viết Hướng dẫn chi tiết":
-            # Buộc hiển thị prompt bài viết hướng dẫn
-            show_prompt_block("guide_post", task_chieu["task"])
+    col_cap, col_prompt = st.columns(2)
+    with col_cap:
+        st.subheader("1. Caption (TikTok/FB)")
+        # Lấy random caption
+        if key_style in caption_library:
+            base_cap = random.choice(caption_library[key_style])
+        else:
+            base_cap = "Cùng Nelly tỏa sáng nhé! ✨"
             
-        st.text_area("✍️ Ghi chú kịch bản/ý tưởng:", height=100, key="pm_note")
-        st.checkbox("✅ Đã hoàn thành", key="pm_check")
-    else:
-        st.info("Chưa có lịch cho buổi chiều này.")
-
-# --- TAB TỐI ---
-with tab3:
-    if task_toi:
-        st.markdown(f'<div class="task-box-toi"><h3>{task_toi["task"]}</h3><p>{task_toi["detail"]}</p></div>', unsafe_allow_html=True)
-        st.divider()
+        final_cap = f"{topic_select}\n\n{base_cap}\n\n#Nelly #{key_style} #Trending #Viral"
+        st.info(final_cap)
+        if st.button("🔄 Đổi Caption khác"): 
+            pass 
         
-        st.write("### 👩‍💻 Khu vực sáng tạo & Lấy Prompt")
-        content_type_night = st.radio("Chọn hoạt động:", ["Viết Story tổng kết/Tâm sự", "Chỉ tương tác (Không viết bài)"], horizontal=True, key="night_radio")
+    with col_prompt:
+        st.subheader("2. Prompt Ảnh (Midjourney)")
+        st.code(f"/imagine prompt: A stunning photography shot of Nelly, {outfit_text}, performing {topic_select}, cinematic lighting, natural sunlight, travel photography style --ar 3:4", language="text")
 
-        if content_type_night == "Viết Story tổng kết/Tâm sự":
-             if task_toi.get("prompt_type"):
-                show_prompt_block(task_toi["prompt_type"], task_toi["task"])
+# --- TAB 2: SORA & GROK ---
+with tab2:
+    st.subheader(f"🎬 Sản xuất Video: {topic_select}")
+    
+    # Sora Logic
+    action_desc = f"performing {topic_select}"
+    if "Biến hình" in angle_select:
+        action_desc = "TRANSFORMATION EFFECT: Starts with messy look/pajamas, then magic transition to stunning look in " + outfit_text
+    elif "Sai lầm" in angle_select:
+        action_desc = "holding a STOP sign initially, shaking head 'No', then smiling and showing the correct way"
+    # NEW logic cho Du lịch
+    elif "Du lịch" in topic_select or "Outdoor" in topic_select:
+        action_desc = "walking confidently on the beach/street, enjoying the view, hair blowing in the wind, smiling at camera"
+        
+    st.markdown("#### 🅰️ Prompt Sora 2 (15s)")
+    st.code(f"""
+    Cinematic outdoor, 4k, sunny day. Subject: A stunning Vietnamese fashion KOL (Nelly).
+    Outfit: {outfit_text}.
+    Action: {action_desc}. Relaxed and happy vibe.
+    Camera: Dynamic zoom/pan, tracking shot. Constraint: NO TEXT. --duration 15s
+    """, language="text")
 
-        st.text_area("✍️ Ghi lại cảm xúc cuối ngày:", height=80, key="night_note")
-        st.checkbox("✅ Đã hoàn thành", key="night_check")
+    st.markdown("#### 🅱️ Prompt Grok 2 (6s - Intro)")
+    st.code(f"Video of A stunning Vietnamese fashion KOL (Nelly), wearing {outfit_text}, {topic_select}, travel vlog style, trending artstation. --duration 6s", language="text")
+
+# --- TAB 3: SCRIPT KỊCH BẢN ---
+with tab3:
+    st.warning(f"💡 Kịch bản quay chi tiết cho Editor ({angle_select})")
+    
+    if "Biến hình" in angle_select:
+        st.markdown(f"""
+        * **0-3s (Hook):** Mặc đồ thường. Gương mặt buồn chán. Nhạc intro nhẹ.
+        * **3-5s (Transition):** Búng tay cái "Tách"!
+        * **5-15s (Result):** BÙM! {outfit_text} xuất hiện. Nhạc {music_text} nổi lên cực mạnh. Nelly diễn thần thái.
+        """)
+    elif "Du lịch" in topic_select or "Outdoor" in topic_select: # Kịch bản Du lịch
+         st.markdown(f"""
+        * **0-3s (Hook):** Quay lưng về phía camera, view đẹp (biển/phố). Nelly quay lại cười tươi.
+        * **3-10s (Montage):** Cắt ghép các đoạn ngắn: đi dạo, uống nước, check-in góc đẹp. Nhạc chill.
+        * **10-15s (Outro):** Tạo dáng "thần thánh" chốt video. Vẫy tay chào.
+        """)
     else:
-        st.info("Buổi tối tự do nghỉ ngơi!")
-
-# --- FOOTER ---
-st.divider()
-if st.button("💾 Cập nhật trạng thái ngày hôm nay"):
-    st.balloons()
-    st.success("Đã lưu lại tiến độ! Nelly đã có một ngày làm việc hiệu quả và sang trọng.")
+        st.markdown(f"""
+        * **Toàn bộ video:** Quay các góc cận (chi tiết outfit/makeup) -> trung (nửa người) -> toàn (dáng đi).
+        * **Lưu ý:** Chú ý bắt trọn khoảnh khắc thần thái nhất (Eye contact).
+        * **Nhạc:** {music_text}
+        """)
