@@ -7,12 +7,21 @@ import datetime
 # =========================================================
 APP_VERSION = "v10.0"
 st.set_page_config(page_title=f"Nelly Manager {APP_VERSION}", page_icon="👠", layout="wide")
+import streamlit as st
+import random
+import datetime
 
 # =========================================================
-# 1. KHO DỮ LIỆU KHỔNG LỒ (GIỮ NGUYÊN V9.9)
+# CẤU HÌNH APP & VERSION
+# =========================================================
+APP_VERSION = "v10.1"
+st.set_page_config(page_title=f"Nelly Manager {APP_VERSION}", page_icon="👠", layout="wide")
+
+# =========================================================
+# 1. KHO DỮ LIỆU KHỔNG LỒ (ĐẦY ĐỦ UPDATE)
 # =========================================================
 
-# 1.1. Danh sách chủ đề chi tiết
+# 1.1. Danh sách chủ đề chi tiết (Đã thêm Plan & Du lịch)
 categories = {
     "💃 Dancing & Trends (Vũ đạo Viral)": [
         "Nhảy Cover Trend TikTok mới nhất",
@@ -37,7 +46,7 @@ categories = {
         "Cách cười tự nhiên không bị gượng gạo",
         "Xử lý tay khi chụp ảnh (đỡ bị đơ)",
         "Thần thái 'Chị Đại' (Boss Girl Energy)",
-        "Tạo dáng ngoại cảnh / Check-in du lịch (Outdoor)"
+        "Tạo dáng ngoại cảnh / Check-in du lịch (Outdoor)" # <-- ĐÃ THÊM
     ],
     "💄 Làm Đẹp & Skincare (Beauty)": [
         "Makeup tone Tây đi tiệc/đi quẩy",
@@ -51,7 +60,8 @@ categories = {
         "Vlog: Một ngày đi tập & làm việc của Nelly",
         "Chế độ ăn Eat Clean giữ dáng",
         "Tư duy phụ nữ hiện đại: Độc lập & Hạnh phúc",
-        "Vlog Du lịch & Trải nghiệm (Travel Vlog)"
+        "Vlog: Lên kế hoạch tuần mới & Cafe (Weekly Plan)", # <-- ĐÃ THÊM (Cho Thứ 2)
+        "Vlog Du lịch & Trải nghiệm (Travel Vlog)" # <-- ĐÃ THÊM
     ]
 }
 
@@ -86,7 +96,7 @@ caption_library = {
     ]
 }
 
-# 1.3. Lịch trình tuần (Đã Fixed Thứ 2)
+# 1.3. Lịch trình tuần
 weekly_schedule = {
     "Thứ 2": {"Sáng": "🥂 Lifestyle: Lên Plan tuần & Cafe", "Chiều": "👗 Styling: Đồ công sở", "Tối": "💃 Dancing: Cơ bản", "Reason": "Đầu tuần năng lượng"},
     "Thứ 3": {"Sáng": "💄 Beauty: Skincare", "Chiều": "📸 Posing: Tập dáng", "Tối": "💃 Dancing: Sexy Dance", "Reason": "Tập trung kỹ năng"},
@@ -97,7 +107,7 @@ weekly_schedule = {
     "Chủ Nhật": {"Sáng": "💄 Beauty: Spa", "Chiều": "👗 Styling: Sắp xếp", "Tối": "🥂 Lifestyle: Tổng kết", "Reason": "Chủ nhật chữa lành"}
 }
 
-# 1.4. Góc độ (Angles)
+# 1.4. Góc độ
 angles_list = ["🔥 Biến hình (Transformation)", "🎓 Hướng dẫn (Tutorial)", "⚠️ Sai lầm (Mistakes)", "❤️ Biểu diễn/Vlog"]
 
 # =========================================================
@@ -128,18 +138,14 @@ st.title(f"👠 NELLY MANAGER {APP_VERSION}")
 
 with st.expander("⚙️ CẤU HÌNH NỘI DUNG", expanded=True):
     c1, c2, c3 = st.columns([1.5, 2, 1.5])
-    with c1: 
-        group_select = st.selectbox("Nhóm chủ đề:", list(categories.keys()))
-    with c2: 
-        topic_select = st.selectbox("Chủ đề cụ thể:", categories[group_select])
-    with c3: 
-        angle_select = st.selectbox("Góc độ:", angles_list)
+    with c1: group_select = st.selectbox("Nhóm chủ đề:", list(categories.keys()))
+    with c2: topic_select = st.selectbox("Chủ đề cụ thể:", categories[group_select])
+    with c3: angle_select = st.selectbox("Góc độ:", angles_list)
 
     st.write("---")
     
     c_style, c_outfit = st.columns([1.5, 3])
-    with c_style: 
-        style_select = st.radio("Style:", ["🔴 KOL (Người thật)", "⚪ 3D Animation"], horizontal=True)
+    with c_style: style_select = st.radio("Style:", ["🔴 KOL (Người thật)", "⚪ 3D Animation"], horizontal=True)
     
     with c_outfit:
         # LOGIC XỬ LÝ (MAPPING)
@@ -164,11 +170,17 @@ with st.expander("⚙️ CẤU HÌNH NỘI DUNG", expanded=True):
             music_text = "🥂 Vlog Music, Jazz Hop, Morning Coffee"
             outfit_text = "Casual Chic / Yoga wear 🧘‍♀️"
 
-        # Override Logic
+        # OVERRIDE LOGIC
         if "Biến hình" in topic_select:
              outfit_text = "Pajamas (Before) -> Glitter Dress (After) ✨"
              music_text = "🎵 Transition Sound, Magic Chime, Drop Beat"
         
+        # Logic Plan Tuần & Du lịch
+        if "Plan" in topic_select or "Weekly" in topic_select:
+             outfit_text = "Smart Casual (Blazer nhẹ & Jeans) ☕"
+             music_text = "☕ Coffee Shop Jazz, Productive Beat"
+             key_style = "Lifestyle"
+
         if "Du lịch" in topic_select or "Outdoor" in topic_select or "Ngoại cảnh" in topic_select:
              outfit_text = "Maxi Dress đi biển 🌊 / Streetwear năng động & Kính râm 😎"
              music_text = "🌊 Tropical House, Travel Vibe, Summer Chill"
@@ -179,18 +191,18 @@ with st.expander("⚙️ CẤU HÌNH NỘI DUNG", expanded=True):
 st.success(f"🎵 Gợi ý Nhạc (CapCut): {music_text}")
 
 # =========================================================
-# 3. KẾT QUẢ OUTPUT (CHỈ 2 TAB)
+# 3. KẾT QUẢ OUTPUT (TABBED INTERFACE)
 # =========================================================
 
-tab1, tab2 = st.tabs(["📝 1. BÀI VIẾT & ẢNH", "🎥 2. SẢN XUẤT VIDEO"])
+tab1, tab2 = st.tabs(["📝 1. BÀI VIẾT & ẢNH", "🎥 2. VIDEO (Kịch bản & Prompt)"])
 
-# --- TAB 1: BÀI VIẾT & ẢNH ---
+# --- TAB 1: BÀI VIẾT, ẢNH & CHATGPT ---
 with tab1:
-    col_cap, col_img = st.columns(2)
+    col_cap, col_gpt = st.columns(2)
     
+    # CỘT TRÁI: CAPTION
     with col_cap:
-        st.subheader("Caption Chất (TikTok/FB)")
-        # Logic Caption
+        st.subheader("1. Caption (TikTok/FB)")
         if key_style in caption_library:
             base_cap = random.choice(caption_library[key_style])
         else:
@@ -199,23 +211,38 @@ with tab1:
         final_cap = f"{topic_select}\n\n{base_cap}\n\n#Nelly #{key_style} #Trending #Viral"
         st.info(final_cap)
         
-        # Nút đổi caption
         if st.button("🔄 Đổi Caption khác"): 
             pass 
-        
-    with col_img:
-        st.subheader("Prompt Ảnh (Midjourney)")
-        st.code(f"/imagine prompt: A stunning photography shot of Nelly, {outfit_text}, performing {topic_select}, cinematic lighting, travel photography style --ar 3:4", language="text")
 
-# --- TAB 2: VIDEO (KỊCH BẢN + SORA + GROK) ---
+    # CỘT PHẢI: CHATGPT (ĐÃ KHÔI PHỤC)
+    with col_gpt:
+        st.subheader("3. Prompt Viết Bài (ChatGPT)")
+        st.markdown("_Copy lệnh này dán vào ChatGPT để viết bài chi tiết:_")
+        
+        gpt_prompt = f"""
+        Viết bài Facebook/Blog về chủ đề: {topic_select}.
+        - Phong cách outfit: {outfit_text}.
+        - Góc độ nội dung: {angle_select}.
+        - Tone giọng: Thân thiện, Hào hứng, Trendy.
+        - Kêu gọi hành động (CTA): Tương tác mạnh, Chia sẻ ngay.
+        """
+        st.code(gpt_prompt, language='text')
+
+    st.divider()
+    
+    # HÀNG DƯỚI: PROMPT ẢNH
+    st.subheader("2. Prompt Ảnh (Midjourney)")
+    st.code(f"/imagine prompt: A stunning photography shot of Nelly, {outfit_text}, performing {topic_select}, cinematic lighting, 8k resolution --ar 3:4", language="text")
+
+# --- TAB 2: VIDEO (SCRIPT, SORA, GROK) ---
 with tab2:
-    # 1. KỊCH BẢN (SCRIPT)
-    st.markdown("### 🎬 1. Kịch bản Video")
-    st.warning(f"Góc độ quay: {angle_select}")
+    # 1. KỊCH BẢN
+    st.subheader("🎬 Kịch bản Video (Script)")
+    st.warning(f"Góc độ: {angle_select}")
     
     if "Biến hình" in angle_select:
         st.markdown(f"""
-        * **0-3s (Hook):** Mặc đồ thường. Gương mặt buồn chán. Nhạc intro nhẹ.
+        * **0-3s (Hook):** Mặc đồ thường/đồ ngủ. Gương mặt buồn chán. Nhạc intro nhẹ.
         * **3-5s (Transition):** Búng tay cái "Tách"!
         * **5-15s (Result):** BÙM! {outfit_text} xuất hiện. Nhạc {music_text} nổi lên cực mạnh. Nelly diễn thần thái.
         """)
@@ -238,7 +265,7 @@ with tab2:
     col_sora, col_grok = st.columns(2)
     
     with col_sora:
-        st.markdown("### 🅰️ Prompt Sora 2 (15s)")
+        st.subheader("🅰️ Prompt Sora 2 (15s)")
         
         # Sora Logic
         action_desc = f"performing {topic_select}"
@@ -253,9 +280,4 @@ with tab2:
         Cinematic outdoor, 4k, sunny day. Subject: A stunning Vietnamese fashion KOL (Nelly).
         Outfit: {outfit_text}.
         Action: {action_desc}. Relaxed and happy vibe.
-        Camera: Dynamic zoom/pan, tracking shot. Constraint: NO TEXT. --duration 15s
-        """, language="text")
-
-    with col_grok:
-        st.markdown("### 🅱️ Prompt Grok 2 (6s - Intro)")
-        st.code(f"Video of A stunning Vietnamese fashion KOL (Nelly), wearing {outfit_text}, {topic_select}, travel vlog style, trending artstation. --duration 6s", language="text")
+        Camera: Dynamic zoom/pan, tracking shot. Constraint: NO TEXT. --duration
