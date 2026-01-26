@@ -5,15 +5,6 @@ import datetime
 # =========================================================
 # CẤU HÌNH APP & VERSION
 # =========================================================
-APP_VERSION = "v10.0"
-st.set_page_config(page_title=f"Nelly Manager {APP_VERSION}", page_icon="👠", layout="wide")
-import streamlit as st
-import random
-import datetime
-
-# =========================================================
-# CẤU HÌNH APP & VERSION
-# =========================================================
 APP_VERSION = "v10.1"
 st.set_page_config(page_title=f"Nelly Manager {APP_VERSION}", page_icon="👠", layout="wide")
 
@@ -280,4 +271,9 @@ with tab2:
         Cinematic outdoor, 4k, sunny day. Subject: A stunning Vietnamese fashion KOL (Nelly).
         Outfit: {outfit_text}.
         Action: {action_desc}. Relaxed and happy vibe.
-        Camera: Dynamic zoom/pan, tracking shot. Constraint: NO TEXT. --duration
+        Camera: Dynamic zoom/pan, tracking shot. Constraint: NO TEXT. --duration 15s
+        """, language="text")
+
+    with col_grok:
+        st.subheader("🅱️ Prompt Grok 2 (6s - Intro)")
+        st.code(f"Video of A stunning Vietnamese fashion KOL (Nelly), wearing {outfit_text}, {topic_select}, trending artstation. --duration 6s", language="text")
