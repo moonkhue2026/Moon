@@ -11,7 +11,7 @@ st.set_page_config(
 # Link Chatbot Elima
 ELIMA_LINK = "https://chatgpt.com/g/g-68ab318836f48191a9b7fae7afcca279-elima-tarot"
 
-# 2. DỮ LIỆU BÀI TAROT (Database gốc)
+# 2. DỮ LIỆU BÀI TAROT
 tarot_database = [
     # === TÀI CHÍNH ===
     {
@@ -20,7 +20,7 @@ tarot_database = [
         "image_url": "https://i.pinimg.com/564x/a2/27/98/a22798e604de6e9e436894d7545e8550.jpg",
         "message": "Cánh cửa tài chính đang mở toang! Một nguồn tiền khổng lồ đang chảy vào túi bạn.",
         "affirmation": "Gõ 'TRIỆU PHÚ' để nhận chìa khóa kho báu!",
-        "caption_template": "🔥 Tín hiệu vũ trụ: Dòng tiền lớn đang lao đến bạn! 💰\nSự túng thiếu kết thúc ngay hôm nay. Vũ trụ đang mở khóa kho báu dành riêng cho bạn.\n👇 Gõ 'TRIỆU PHÚ' để nhận ngay!",
+        "caption": "🔥 Tín hiệu vũ trụ: Dòng tiền lớn đang lao đến bạn! 💰\nSự túng thiếu kết thúc ngay hôm nay. Vũ trụ đang mở khóa kho báu dành riêng cho bạn.\n👇 Gõ 'TRIỆU PHÚ' để nhận ngay!",
         "hashtags": "#TarotMoney #LuatHapDan #TaiChinh #GiauCo #Manifest"
     },
     {
@@ -29,7 +29,7 @@ tarot_database = [
         "image_url": "https://i.pinimg.com/564x/e7/33/c7/e733c7f8a706598375971488c9f53265.jpg",
         "message": "Quý nhân quyền lực sẽ xuất hiện giúp bạn lội ngược dòng ngoạn mục.",
         "affirmation": "Gõ 'QUÝ NHÂN' để kết nối người dẫn đường!",
-        "caption_template": "⚡️ Bế tắc sẽ chấm dứt! Quý nhân của bạn đã xuất hiện.\nNgười này sẽ mang đến cơ hội và công lý cho bạn.\n👇 Gõ 'QUÝ NHÂN' để đón nhận sự giúp đỡ!",
+        "caption": "⚡️ Bế tắc sẽ chấm dứt! Quý nhân của bạn đã xuất hiện.\nNgười này sẽ mang đến cơ hội và công lý cho bạn.\n👇 Gõ 'QUÝ NHÂN' để đón nhận sự giúp đỡ!",
         "hashtags": "#TarotReading #QuyNhan #JusticeCard #DoiDoi #SuNghiep"
     },
     {
@@ -38,7 +38,7 @@ tarot_database = [
         "image_url": "https://i.pinimg.com/564x/0f/68/73/0f68735500806443657754b23829035e.jpg",
         "message": "Sự sung túc trọn vẹn cho cả gia đình. Tiền bạc, bất động sản đang trên đường tới.",
         "affirmation": "Gõ 'SUNG TÚC' để đón lộc về nhà!",
-        "caption_template": "🏠 Nhà cao cửa rộng, tiền bạc đầy kho! \nLá 10 Tiền báo hiệu sự viên mãn về vật chất. Một khoản tiền lớn hoặc tài sản giá trị đang đến.\n👇 Gõ 'SUNG TÚC' để nhận lộc đất đai!",
+        "caption": "🏠 Nhà cao cửa rộng, tiền bạc đầy kho! \nLá 10 Tiền báo hiệu sự viên mãn về vật chất. Một khoản tiền lớn hoặc tài sản giá trị đang đến.\n👇 Gõ 'SUNG TÚC' để nhận lộc đất đai!",
         "hashtags": "#10OfPentacles #BatDongSan #TaiLoc #GiaDinh #TarotReading"
     },
 
@@ -49,7 +49,7 @@ tarot_database = [
         "image_url": "https://i.pinimg.com/564x/53/76/75/5376752765b4528bf80016a504859bc0.jpg", 
         "message": "Một kết nối linh hồn sâu sắc đang đến. Người ấy sẽ yêu thương bạn vô điều kiện.",
         "affirmation": "Gõ 'HẠNH PHÚC' để thu hút tri kỷ!",
-        "caption_template": "💘 Đừng lướt qua nếu bạn đang cô đơn! Soulmate của bạn đang đến gần.\nNgười này sẽ bù đắp mọi tổn thương trong quá khứ của bạn.\n👇 Gõ 'HẠNH PHÚC' để mở cửa trái tim!",
+        "caption": "💘 Đừng lướt qua nếu bạn đang cô đơn! Soulmate của bạn đang đến gần.\nNgười này sẽ bù đắp mọi tổn thương trong quá khứ của bạn.\n👇 Gõ 'HẠNH PHÚC' để mở cửa trái tim!",
         "hashtags": "#TarotLove #TinhYeu #Soulmate #LuatHapDan #BoiBaiTinhYeu"
     },
     {
@@ -58,7 +58,7 @@ tarot_database = [
         "image_url": "https://i.pinimg.com/564x/b8/0e/4d/b80e4d026926955743df07823f982959.jpg",
         "message": "Gương vỡ lại lành, hoặc một mối quan hệ mới đầy thấu hiểu sắp bắt đầu.",
         "affirmation": "Gõ 'KẾT NỐI' để chữa lành mối quan hệ!",
-        "caption_template": "💌 Ai đó đang rất nhớ bạn... \nCó thể là người cũ muốn quay lại, hoặc một người mới đang thầm thương trộm nhớ.\n👇 Gõ 'KẾT NỐI' để nhận tín hiệu!",
+        "caption": "💌 Ai đó đang rất nhớ bạn... \nCó thể là người cũ muốn quay lại, hoặc một người mới đang thầm thương trộm nhớ.\n👇 Gõ 'KẾT NỐI' để nhận tín hiệu!",
         "hashtags": "#2OfCups #TarotCrush #NguoiYeuCu #TinhYeu #ThongDiepVuTru"
     },
 
@@ -69,7 +69,7 @@ tarot_database = [
         "image_url": "https://i.pinimg.com/564x/27/b1/76/27b176711979318a6665796a5f15478d.jpg",
         "message": "Sau cơn mưa trời lại sáng. Mọi vết thương lòng đang được vũ trụ xoa dịu.",
         "affirmation": "Gõ 'BÌNH YÊN' để gột rửa mọi nỗi buồn!",
-        "caption_template": "🌿 Gửi những tâm hồn đang mệt mỏi... \nBạn đã vất vả rồi. The Star nói rằng: Thời kỳ đen tối nhất đã qua. Ánh sáng của sự bình yên đang về.\n👇 Gõ 'BÌNH YÊN' để thả trôi muộn phiền.",
+        "caption": "🌿 Gửi những tâm hồn đang mệt mỏi... \nBạn đã vất vả rồi. The Star nói rằng: Thời kỳ đen tối nhất đã qua. Ánh sáng của sự bình yên đang về.\n👇 Gõ 'BÌNH YÊN' để thả trôi muộn phiền.",
         "hashtags": "#ChuaLanh #TheStar #Healing #MentalHealth #TarotVietnam"
     },
 
@@ -80,7 +80,7 @@ tarot_database = [
         "image_url": "https://i.pinimg.com/564x/a6/f8/f1/a6f8f11059df1cb75f1df75e533d31d4.jpg",
         "message": "Thành công rực rỡ và niềm vui vỡ òa! Bạn là trung tâm của ánh sáng và sự chú ý.",
         "affirmation": "Gõ 'TỎA SÁNG' để đón hào quang!",
-        "caption_template": "☀️ Thời tới cản không kịp! \nMọi bóng tối bị xua tan. Chỉ còn lại thành công và niềm vui. Bạn chính là Mặt Trời!\n👇 Gõ 'TỎA SÁNG' để nhận năng lượng!",
+        "caption": "☀️ Thời tới cản không kịp! \nMọi bóng tối bị xua tan. Chỉ còn lại thành công và niềm vui. Bạn chính là Mặt Trời!\n👇 Gõ 'TỎA SÁNG' để nhận năng lượng!",
         "hashtags": "#TheSun #ThanhCong #VuiVe #NangLuongTichCuc #Tarot"
     },
      {
@@ -89,7 +89,7 @@ tarot_database = [
         "image_url": "https://i.pinimg.com/564x/31/ee/b2/31eeb24f46757b8559648942b0051676.jpg",
         "message": "Bạn mạnh mẽ hơn bạn nghĩ. Đừng bỏ cuộc, chiến thắng đang ở rất gần!",
         "affirmation": "Gõ 'MẠNH MẼ' để đánh thức con hổ bên trong bạn!",
-        "caption_template": "🔥 Đừng bỏ cuộc ngay trước vạch đích! \nThử thách hiện tại chỉ để tôi luyện bản lĩnh của bạn. Hãy đứng dậy và chiến đấu!\n👇 Gõ 'MẠNH MẼ' để tiếp thêm năng lượng!",
+        "caption": "🔥 Đừng bỏ cuộc ngay trước vạch đích! \nThử thách hiện tại chỉ để tôi luyện bản lĩnh của bạn. Hãy đứng dậy và chiến đấu!\n👇 Gõ 'MẠNH MẼ' để tiếp thêm năng lượng!",
         "hashtags": "#DongLuc #StrengthCard #Motivation #PhatTrienBanThan #NeverGiveUp"
     }
 ]
@@ -236,14 +236,17 @@ def main():
                         st.code(final_prompt, language="text")
                         st.success("✅ Đã tạo Prompt theo ý Elima!")
                     else:
-                        # Nếu chưa có input -> Hiện prompt mặc định (nếu có trong DB) hoặc nhắc nhở
                         st.info("👈 Hãy dán mô tả từ Elima vào ô bên trên để tạo Prompt.")
             st.markdown('</div>', unsafe_allow_html=True)
 
             # --- BƯỚC 3: CAPTION & HASHTAG (Dự phòng) ---
+            # Sử dụng .get() để tránh lỗi nếu dữ liệu cũ chưa cập nhật
+            default_caption = card.get('caption', 'Chưa có caption mẫu.')
+            default_hashtags = card.get('hashtags', '#Tarot')
+            
             with st.expander("3️⃣ Bước 3: Caption & Hashtag mẫu (Dùng ngay)", expanded=False):
-                st.text_area("Caption:", value=card['caption_template'], height=120)
-                st.code(card['hashtags'], language="text")
+                st.text_area("Caption:", value=default_caption, height=120)
+                st.code(default_hashtags, language="text")
 
     else:
         # Màn hình chờ
