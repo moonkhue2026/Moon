@@ -1,16 +1,16 @@
 import streamlit as st
 import random
 
-# 1. CẤU HÌNH TRANG
+# 1. CẤU HÌNH TRANG (Page Config)
 st.set_page_config(
     page_title="Moon's Content Station",
     page_icon="🎬",
     layout="wide"
 )
 
-# 2. DỮ LIỆU BÀI TAROT ĐA DẠNG (TIỀN - TÌNH - CHỮA LÀNH)
+# 2. DỮ LIỆU BÀI TAROT (FULL DATA - 4 CHỦ ĐỀ)
 tarot_database = [
-    # === CHỦ ĐỀ: TÀI CHÍNH (MONEY) ===
+    # === CHỦ ĐỀ: TÀI CHÍNH (MONEY) - MÀU VÀNG ===
     {
         "category": "Tài chính",
         "name": "Ace of Pentacles - Át Tiền",
@@ -19,11 +19,10 @@ tarot_database = [
         "affirmation": "Gõ 'TRIỆU PHÚ' để nhận chìa khóa kho báu!",
         "caption": "🔥 Tín hiệu vũ trụ: Dòng tiền lớn đang lao đến bạn! 💰\nSự túng thiếu kết thúc ngay hôm nay. Vũ trụ đang mở khóa kho báu dành riêng cho bạn.\n👇 Gõ 'TRIỆU PHÚ' để nhận ngay!",
         "hashtags": "#TarotMoney #LuatHapDan #TaiChinh #GiauCo #Manifest",
-        "color": "#FFD700", # Vàng
         "sora_prompts": {
             "15s": "Cinematic close-up, golden coin spinning in mid-air, bursting into sparkles. Luxury vibe.",
-            "30s": "A hand opening a treasure chest glowing with golden light. The light illuminates a dark room.",
-            "60s": "A path paved with gold leading to a majestic castle. A person walks confidently towards it. The sky is golden hour. Symbolizing the journey to wealth."
+            "30s": "A hand opening a treasure chest glowing with golden light. The light illuminates a dark room. Magical atmosphere.",
+            "60s": "A path paved with gold leading to a majestic castle. A person walks confidently towards it. The sky is golden hour. Symbolizing the journey to wealth. 8k resolution."
         }
     },
     {
@@ -34,24 +33,36 @@ tarot_database = [
         "affirmation": "Gõ 'QUÝ NHÂN' để kết nối người dẫn đường!",
         "caption": "⚡️ Bế tắc sẽ chấm dứt! Quý nhân của bạn đã xuất hiện.\nNgười này sẽ mang đến cơ hội và công lý cho bạn. Những ai chơi xấu bạn sẽ lùi bước.\n👇 Gõ 'QUÝ NHÂN' để đón nhận sự giúp đỡ!",
         "hashtags": "#TarotReading #QuyNhan #JusticeCard #DoiDoi #SuNghiep",
-        "color": "#FFD700",
         "sora_prompts": {
             "15s": "A golden scale balancing perfectly. A sword of light cuts through darkness.",
-            "30s": "A person stuck in fog. A glowing hand reaches down from the sky to pull them up.",
-            "60s": "Lady Justice standing tall on a mountain top, clouds clearing away to reveal a bright blue sky. A path opens up for the protagonist."
+            "30s": "A person stuck in fog. A glowing hand reaches down from the sky to pull them up. High contrast lighting.",
+            "60s": "Lady Justice standing tall on a mountain top, clouds clearing away to reveal a bright blue sky. A path opens up for the protagonist. Epic cinematic shot."
+        }
+    },
+    {
+        "category": "Tài chính",
+        "name": "10 of Pentacles - Di Sản Thịnh Vượng",
+        "image_url": "https://i.pinimg.com/564x/0f/68/73/0f68735500806443657754b23829035e.jpg",
+        "message": "Sự sung túc trọn vẹn cho cả gia đình. Tiền bạc, bất động sản đang trên đường tới.",
+        "affirmation": "Gõ 'SUNG TÚC' để đón lộc về nhà!",
+        "caption": "🏠 Nhà cao cửa rộng, tiền bạc đầy kho! \nLá 10 Tiền báo hiệu sự viên mãn về vật chất. Một khoản tiền lớn hoặc tài sản giá trị đang đến với gia đình bạn.\n👇 Gõ 'SUNG TÚC' để nhận lộc đất đai!",
+        "hashtags": "#10OfPentacles #BatDongSan #TaiLoc #GiaDinh #TarotReading",
+        "sora_prompts": {
+            "15s": "A beautiful family standing in front of a large mansion gate that slowly opens. Golden light spills out.",
+            "30s": "Old coins raining down and stacking up to build a strong castle wall. Safe and secure vibe.",
+            "60s": "A multi-generational gathering in a beautiful garden. Children playing with golden dogs. An elder passes a heavy chest of gold to a younger person (legacy). Warm, sunset lighting."
         }
     },
 
-    # === CHỦ ĐỀ: TÌNH YÊU (LOVE) ===
+    # === CHỦ ĐỀ: TÌNH YÊU (LOVE) - MÀU HỒNG ===
     {
         "category": "Tình yêu",
         "name": "The Lovers - Tình Yêu Đích Thực",
         "image_url": "https://i.pinimg.com/564x/53/76/75/5376752765b4528bf80016a504859bc0.jpg", 
-        "message": "Một kết nối linh hồn sâu sắc đang đến. Người ấy sẽ yêu thương và trân trọng bạn vô điều kiện.",
+        "message": "Một kết nối linh hồn sâu sắc đang đến. Người ấy sẽ yêu thương bạn vô điều kiện.",
         "affirmation": "Gõ 'HẠNH PHÚC' để thu hút tri kỷ (Soulmate)!",
         "caption": "💘 Đừng lướt qua nếu bạn đang cô đơn! Soulmate của bạn đang đến gần.\nVũ trụ đã sắp xếp một cuộc gặp gỡ định mệnh. Người này sẽ bù đắp mọi tổn thương trong quá khứ của bạn.\n👇 Gõ 'HẠNH PHÚC' để mở cửa trái tim!",
         "hashtags": "#TarotLove #TinhYeu #Soulmate #LuatHapDan #BoiBaiTinhYeu",
-        "color": "#FF69B4", # Hồng
         "sora_prompts": {
             "15s": "Two glowing souls (pink and blue energy) spiraling and merging into a heart shape. Romantic and soft.",
             "30s": "A couple silhouette standing under a galaxy sky full of shooting stars. They hold hands, and sparks fly.",
@@ -66,7 +77,6 @@ tarot_database = [
         "affirmation": "Gõ 'KẾT NỐI' để chữa lành mối quan hệ!",
         "caption": "💌 Ai đó đang rất nhớ bạn... \nCó thể là người cũ muốn quay lại, hoặc một người mới đang thầm thương trộm nhớ. Tần số rung động của tình yêu đang rất mạnh.\n👇 Gõ 'KẾT NỐI' để nhận tín hiệu!",
         "hashtags": "#2OfCups #TarotCrush #NguoiYeuCu #TinhYeu #ThongDiepVuTru",
-        "color": "#FF69B4",
         "sora_prompts": {
             "15s": "Two golden cups clinking together, liquid light overflowing and turning into rose petals.",
             "30s": "A message in a bottle floating on a pink ocean, reaching the shore. A hand picks it up.",
@@ -74,7 +84,7 @@ tarot_database = [
         }
     },
 
-    # === CHỦ ĐỀ: CHỮA LÀNH (HEALING) ===
+    # === CHỦ ĐỀ: CHỮA LÀNH (HEALING) - MÀU XANH NGỌC ===
     {
         "category": "Chữa lành",
         "name": "The Star - Hy Vọng & Chữa Lành",
@@ -83,15 +93,28 @@ tarot_database = [
         "affirmation": "Gõ 'BÌNH YÊN' để gột rửa mọi nỗi buồn!",
         "caption": "🌿 Gửi những tâm hồn đang mệt mỏi... \nBạn đã vất vả rồi. Vũ trụ gửi lá bài The Star để nói rằng: Thời kỳ đen tối nhất đã qua. Ánh sáng của sự bình yên đang về.\n👇 Gõ 'BÌNH YÊN' để thả trôi muộn phiền.",
         "hashtags": "#ChuaLanh #TheStar #Healing #MentalHealth #TarotVietnam",
-        "color": "#00CED1", # Xanh ngọc
         "sora_prompts": {
             "15s": "A bright star shining in a night sky, reflecting on a calm lake. Peaceful and serene.",
             "30s": "A woman pouring water from a jug into a stream. The water glows, and flowers bloom instantly where the water touches.",
             "60s": "A person sitting in rain (symbolizing sadness). The rain stops, clouds part, and a giant beautiful star appears. The person stands up, their clothes dry instantly, and they look up with a smile. Transformation from sadness to hope."
         }
     },
+    {
+        "category": "Chữa lành",
+        "name": "The Hermit - Quay Về Bên Trong",
+        "image_url": "https://i.pinimg.com/564x/6a/0c/36/6a0c36098059049448831464303e878e.jpg",
+        "message": "Câu trả lời nằm trong sự tĩnh lặng. Hãy tách mình khỏi ồn ào để lắng nghe trực giác.",
+        "affirmation": "Gõ 'THẤU HIỂU' để kết nối với bản thân!",
+        "caption": "🕯 Đừng tìm kiếm bên ngoài nữa... \nÁnh sáng của ngọn đèn Hermit soi rọi vào tâm hồn bạn. Hãy dành thời gian nghỉ ngơi, bạn sẽ thấy lối ra.\n👇 Gõ 'THẤU HIỂU' để tìm thấy bình an.",
+        "hashtags": "#TheHermit #TinhLang #ThienDinh #HieuBanThan #Tarot",
+        "sora_prompts": {
+            "15s": "A lantern glowing warmly in a dark, misty forest. Fireflies surround it.",
+            "30s": "A figure in a cloak standing on a mountain peak at night, holding a star-lantern. Looking down at the world.",
+            "60s": "Journey through a dark cave that leads to a hidden crystal sanctuary. The sound of water dripping. A feeling of absolute solitude and peace."
+        }
+    },
     
-    # === CHỦ ĐỀ: ĐỘNG LỰC (MOTIVATION) ===
+    # === CHỦ ĐỀ: ĐỘNG LỰC (MOTIVATION) - MÀU ĐỎ CAM ===
     {
         "category": "Động lực",
         "name": "Strength - Sức Mạnh Nội Tại",
@@ -100,11 +123,24 @@ tarot_database = [
         "affirmation": "Gõ 'MẠNH MẼ' để đánh thức con hổ bên trong bạn!",
         "caption": "🔥 Đừng bỏ cuộc ngay trước vạch đích! \nThử thách hiện tại chỉ để tôi luyện bản lĩnh của bạn. Bạn có sức mạnh của một chiến binh. Hãy đứng dậy và chiến đấu!\n👇 Gõ 'MẠNH MẼ' để tiếp thêm năng lượng!",
         "hashtags": "#DongLuc #StrengthCard #Motivation #PhatTrienBanThan #NeverGiveUp",
-        "color": "#FF4500", # Đỏ cam
         "sora_prompts": {
             "15s": "Close up of a lion's eye, zooming out to a woman gently petting a lion. Radiant orange aura.",
             "30s": "A phoenix rising from ashes, spreading wings made of fire. Epic and empowering.",
             "60s": "A runner exhausted, falling down. They look at a glowing light ahead, stand up with determination, and run faster than before, breaking through a brick wall. High energy visual."
+        }
+    },
+    {
+        "category": "Động lực",
+        "name": "The Sun - Mặt Trời Rực Rỡ",
+        "image_url": "https://i.pinimg.com/564x/a6/f8/f1/a6f8f11059df1cb75f1df75e533d31d4.jpg",
+        "message": "Thành công rực rỡ và niềm vui vỡ òa! Bạn là trung tâm của ánh sáng và sự chú ý.",
+        "affirmation": "Gõ 'TỎA SÁNG' để đón hào quang!",
+        "caption": "☀️ Thời tới cản không kịp! Lá bài đẹp nhất bộ bài đã ra!\nMọi bóng tối bị xua tan. Chỉ còn lại thành công và niềm vui. Bạn chính là Mặt Trời!\n👇 Gõ 'TỎA SÁNG' để nhận năng lượng!",
+        "hashtags": "#TheSun #ThanhCong #VuiVe #NangLuongTichCuc #Tarot",
+        "sora_prompts": {
+            "15s": "A giant sun rising, banishing clouds instantly. Sunflowers bloom rapidly.",
+            "30s": "A child riding a white horse with a red banner through a sunflower field. Laughing.",
+            "60s": "Dark rainy scene turning into a vibrant summer paradise. People dancing in the light. Pure joy."
         }
     }
 ]
@@ -112,10 +148,11 @@ tarot_database = [
 # Link Chatbot Elima
 ELIMA_LINK = "https://chatgpt.com/g/g-68ab318836f48191a9b7fae7afcca279-elima-tarot"
 
-# 3. CSS TÙY CHỈNH (DYNAMIC)
+# 3. CSS TÙY CHỈNH (DYNAMIC THEME)
 def inject_custom_css(color_theme):
     st.markdown(f"""
     <style>
+    /* Nút bấm */
     .stButton>button {{
         background-color: {color_theme};
         color: white;
@@ -129,6 +166,7 @@ def inject_custom_css(color_theme):
         filter: brightness(85%);
         transform: scale(1.05);
     }}
+    /* Hộp Manifest */
     .affirmation-box {{
         background-color: #f8f9fa;
         border-left: 8px solid {color_theme};
@@ -136,6 +174,12 @@ def inject_custom_css(color_theme):
         border-radius: 8px;
         font-size: 1.1em;
         box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        margin-top: 10px;
+    }}
+    /* Tiêu đề phần */
+    .header-text {{
+        color: {color_theme};
+        font-weight: bold;
     }}
     </style>
     """, unsafe_allow_html=True)
@@ -169,20 +213,20 @@ def main():
             index=0
         )
 
-    # Xác định màu chủ đề để đổi giao diện
+    # Xác định màu chủ đề
     theme_colors = {
-        "Tài chính": "#FFD700", # Vàng
+        "Tài chính": "#FFD700", # Vàng Gold
         "Tình yêu": "#FF69B4",  # Hồng
-        "Chữa lành": "#00CED1", # Xanh
-        "Động lực": "#FF4500",  # Đỏ
+        "Chữa lành": "#00CED1", # Xanh Ngọc
+        "Động lực": "#FF4500",  # Đỏ Cam
         "Tất cả": "#7E57C2"     # Tím
     }
     current_color = theme_colors.get(topic, "#7E57C2")
     inject_custom_css(current_color)
 
     with col_action:
-        st.write("") # Spacer
-        st.write("") # Spacer
+        st.write("") # Khoảng trống
+        st.write("") 
         if st.button(f"✨ SẢN XUẤT VIDEO: {topic.upper()} ✨", use_container_width=True):
             draw_card(topic)
             st.rerun()
@@ -203,7 +247,7 @@ def main():
             # Khung thông điệp
             st.info(f"💌 **Thông điệp:** {card['message']}")
             
-            # Khung Affirmation (Điểm nhấn để quay video chỉ tay vào)
+            # Khung Affirmation (Điểm nhấn)
             st.markdown(f"""
             <div class="affirmation-box">
                 <b>🔥 MANIFEST NGAY:</b><br>
@@ -226,7 +270,7 @@ def main():
                 st.markdown("**Hashtags chuẩn SEO:**")
                 st.code(card['hashtags'], language="text")
 
-            # Tab Prompt Sora
+            # Tab Prompt Sora (GIỮ NGUYÊN 3 MỐC THỜI GIAN)
             st.markdown(f"### 🎥 Sora Prompts ({topic})")
             st.caption("Prompt được tối ưu hóa visual theo đúng chủ đề bạn chọn.")
             
