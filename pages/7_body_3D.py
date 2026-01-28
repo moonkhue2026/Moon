@@ -4,8 +4,7 @@ import streamlit as st
 st.set_page_config(page_title="Moon's 3D Anatomy V4", page_icon="🧬", layout="wide")
 
 # 2. STYLE CỐ ĐỊNH (LOCK STYLE) - XƯƠNG SỐNG CỦA VISUAL
-MOON_STYLE = "medical X-Ray cross-section view, dark blue background, glowing highlights, futuristic text labels, hyper-realistic texture, cinematic lighting, 8k resolution, unreal engine 5 render --ar 9:16"
-
+MOON_STYLE = "medical X-Ray cross-section view, dark blue background, glowing highlights, hyper-realistic texture, cinematic lighting, 8k resolution, unreal engine 5 render --no text, labels, words, watermark --ar 9:16"
 # 3. TỪ ĐIỂN LOGIC (CORE DATA)
 
 # --- A. LOGIC GIẢI PHẪU (FOOD) ---
