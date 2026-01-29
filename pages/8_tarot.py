@@ -1,3 +1,4 @@
+# Version: v2.0 (Giao diện Rộng Thoáng - Tối ưu cho người mắt kém)
 import streamlit as st
 import random
 
@@ -11,7 +12,7 @@ st.set_page_config(
 # Link Chatbot Elima
 ELIMA_LINK = "https://chatgpt.com/g/g-68ab318836f48191a9b7fae7afcca279-elima-tarot"
 
-# 2. DỮ LIỆU BÀI TAROT
+# 2. DỮ LIỆU BÀI TAROT (Giữ nguyên dữ liệu cũ)
 tarot_database = [
     # === TÀI CHÍNH ===
     {
@@ -96,9 +97,7 @@ tarot_database = [
 
 # 3. HÀM TẠO SORA PROMPT TỰ ĐỘNG
 def generate_sora_prompt_dynamic(description, duration):
-    """Tạo prompt Sora dựa trên input mô tả của User (lấy từ Elima)"""
     style_keywords = "Cinematic lighting, photorealistic, 8k, highly detailed, magical atmosphere, vertical ratio 9:16."
-    
     if duration == "15s (Shorts)":
         return f"Fast paced close-up shot. Visual focus: {description}. High energy, visual hook, vivid colors. {style_keywords}"
     elif duration == "30s (Story)":
@@ -106,37 +105,47 @@ def generate_sora_prompt_dynamic(description, duration):
     else: # 60s
         return f"Wide establishing shot zooming in. Narrative journey: {description}. Epic scale, deep depth of field, slow motion moments. {style_keywords}"
 
-# 4. CSS TÙY CHỈNH
+# 4. CSS TÙY CHỈNH (Cập nhật font chữ to hơn)
 def inject_custom_css(color_theme):
     st.markdown(f"""
     <style>
+    /* Button Style */
     .stButton>button {{
         background-color: {color_theme};
         color: white;
         border-radius: 12px;
         font-weight: bold;
         border: none;
-        padding: 10px 20px;
+        padding: 12px 24px;
+        font-size: 16px;
     }}
     .stButton>button:hover {{ filter: brightness(90%); }}
+    
+    /* Affirmation Box */
     .affirmation-box {{
         background-color: #f0f2f6;
-        border-left: 8px solid {color_theme};
-        padding: 20px;
-        border-radius: 8px;
-        font-size: 1.1em;
-        margin-top: 10px;
-    }}
-    .step-box {{
-        border: 1px dashed #ccc;
-        padding: 15px;
+        border-left: 10px solid {color_theme};
+        padding: 25px;
         border-radius: 10px;
-        margin-bottom: 15px;
+        font-size: 1.2em;
+        margin-top: 15px;
+        margin-bottom: 25px;
+    }}
+    
+    /* Step Header */
+    .step-header {{
+        color: {color_theme};
+        font-size: 1.5em;
+        font-weight: bold;
+        margin-top: 30px;
+        margin-bottom: 10px;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 5px;
     }}
     </style>
     """, unsafe_allow_html=True)
 
-# 5. HÀM XỬ LÝ RÚT BÀI
+# 5. HÀM RÚT BÀI
 def draw_card(category):
     if category == "Tất cả":
         filtered = tarot_database
@@ -149,14 +158,13 @@ def draw_card(category):
 # 6. GIAO DIỆN CHÍNH
 def main():
     st.title("🎬 Moon's Content Station")
-    st.caption("Quy trình chuẩn: Rút bài -> Hỏi Elima (Kịch bản/Ảnh) -> Tạo Prompt Video -> Đăng bài")
+    st.caption("Trạm sáng tạo Video Tarot: Quy trình tối ưu cho người sáng tạo")
     
-    # --- THANH MENU CHỌN CHỦ ĐỀ ---
+    # --- MENU CHỌN CHỦ ĐỀ ---
     col_menu, col_btn = st.columns([1, 2])
     with col_menu:
         topic = st.selectbox("Chọn chủ đề video:", ("Tài chính", "Tình yêu", "Chữa lành", "Động lực", "Tất cả"))
     
-    # Màu sắc theo chủ đề
     colors = {"Tài chính": "#FFD700", "Tình yêu": "#FF69B4", "Chữa lành": "#00CED1", "Động lực": "#FF4500", "Tất cả": "#7E57C2"}
     current_color = colors.get(topic, "#7E57C2")
     inject_custom_css(current_color)
@@ -170,20 +178,21 @@ def main():
             
     st.divider()
 
-    # --- HIỂN THỊ KẾT QUẢ ---
+    # --- HIỂN THỊ KẾT QUẢ (PHẦN TRÊN) ---
     if 'card_result' in st.session_state:
         card = st.session_state['card_result']
         
-        # Chia 2 cột: Trái (Visual/Vibe) - Phải (Công cụ Creator)
-        col_left, col_right = st.columns([1, 1.4])
+        # BỐ CỤC TRÊN: 2 Cột cân đối cho Visual & Thông điệp
+        col_img, col_info = st.columns([1, 1.5], gap="large")
         
-        # === CỘT TRÁI: HIỂN THỊ LÁ BÀI & THÔNG ĐIỆP ===
-        with col_left:
-            st.subheader(f"🔮 {card['name']}")
-            st.image(card['image_url'], use_column_width=True)
+        with col_img:
+            st.image(card['image_url'], use_container_width=True)
+            
+        with col_info:
+            st.markdown(f"## 🔮 {card['name']}")
             st.info(f"💌 **Thông điệp:** {card['message']}")
             
-            # Manifest Box
+            # Manifest Box nổi bật
             st.markdown(f"""
             <div class="affirmation-box">
                 <b>🔥 MANIFEST NGAY:</b><br>
@@ -191,69 +200,66 @@ def main():
             </div>
             """, unsafe_allow_html=True)
             
-            st.write("")
             if st.button("🔄 Rút bài khác"):
                 draw_card(topic)
                 st.rerun()
 
-        # === CỘT PHẢI: CÔNG CỤ SÁNG TẠO (QUY TRÌNH 3 BƯỚC) ===
-        with col_right:
-            st.subheader("🛠️ Công cụ Creator")
+        # --- CÔNG CỤ CREATOR (PHẦN DƯỚI - TRẢI RỘNG) ---
+        st.markdown("---")
+        st.markdown(f"<div class='step-header'>🛠️ CÔNG CỤ SẢN XUẤT (Full Màn Hình)</div>", unsafe_allow_html=True)
 
-            # --- BƯỚC 1: ELIMA (Kịch bản & Ảnh) ---
-            st.markdown("#### 1️⃣ Bước 1: Gặp Elima lấy nội dung")
-            st.markdown('<div class="step-box">', unsafe_allow_html=True)
-            
-            # Tạo câu lệnh mẫu để user copy
-            prompt_for_elima = f"Tôi vừa rút được lá bài '{card['name']}' về chủ đề '{card['category']}'. Hãy đóng vai một Tarot Reader chuyên nghiệp, viết cho tôi kịch bản video ngắn (gồm Hook giật gân, Body cảm động, Call to Action: '{card['affirmation']}'). Sau đó hãy vẽ giúp tôi hình ảnh lá bài này theo phong cách 3D, ánh sáng huyền ảo để làm nền video."
-            
-            st.text_area("Copy câu lệnh này gửi cho Elima:", value=prompt_for_elima, height=100)
-            
-            st.link_button(
-                "💬 Chat với Elima ngay (Lấy Kịch bản & Ảnh)", 
-                ELIMA_LINK, 
-                type="primary", 
-                use_container_width=True
-            )
-            st.markdown('</div>', unsafe_allow_html=True)
+        # 1. BƯỚC 1: LẤY PROMPT CHO ELIMA
+        st.markdown("#### 1️⃣ Bước 1: Copy câu lệnh này gửi cho Elima")
+        prompt_for_elima = f"Tôi vừa rút được lá bài '{card['name']}' về chủ đề '{card['category']}'. Hãy đóng vai một Tarot Reader chuyên nghiệp, viết cho tôi kịch bản video ngắn (gồm Hook giật gân, Body cảm động, Call to Action: '{card['affirmation']}'). Sau đó hãy vẽ giúp tôi hình ảnh lá bài này theo phong cách 3D, ánh sáng huyền ảo để làm nền video."
+        
+        # Dùng st.code để copy dễ, không bị trượt
+        st.code(prompt_for_elima, language="text")
+        
+        st.link_button("💬 Mở Chat với Elima ngay", ELIMA_LINK, type="primary", use_container_width=True)
 
-            # --- BƯỚC 2: TẠO PROMPT SORA (Từ mô tả của Elima) ---
-            st.markdown("#### 2️⃣ Bước 2: Tạo Prompt Video (Sora)")
-            st.markdown('<div class="step-box">', unsafe_allow_html=True)
-            st.caption("Sau khi Elima mô tả cảnh/hình ảnh, hãy copy đoạn mô tả đó dán vào đây:")
+        st.write("") # Khoảng trống
+
+        # 2. BƯỚC 2: NHẬP LIỆU & TẠO PROMPT
+        st.markdown("#### 2️⃣ Bước 2: Dán nội dung từ Elima vào đây")
+        st.caption("Dán đoạn mô tả hình ảnh vào ô bên dưới. Ô nhập liệu đã được mở rộng để bạn dễ nhìn.")
+        
+        # Ô nhập liệu SIÊU TO (height=300)
+        user_desc = st.text_area(
+            label="Dán mô tả hình ảnh tại đây:", 
+            placeholder="Ví dụ: Một dòng sông vàng chảy qua thung lũng, bầu trời rực rỡ...",
+            height=300 
+        )
+        
+        # 3. KẾT QUẢ: PROMPT SORA & CAPTION
+        if user_desc:
+            st.success("✅ Đã nhận mô tả! Dưới đây là Prompt Video cho bạn:")
             
-            # Ô nhập liệu từ User
-            user_desc = st.text_area("Dán mô tả hình ảnh từ Elima vào đây:", placeholder="Ví dụ: Một dòng sông vàng chảy qua thung lũng...")
-            
-            # Logic tạo Prompt
+            # Prompt Sora (Tabs)
             tabs = st.tabs(["15s (Shorts)", "30s (Story)", "60s (Full)"])
-            for i, tab in enumerate(tabs):
-                durations = ["15s (Shorts)", "30s (Story)", "60s (Full)"]
-                with tab:
-                    if user_desc:
-                        # Nếu có input từ Elima -> Tạo prompt mới
-                        final_prompt = generate_sora_prompt_dynamic(user_desc, durations[i])
-                        st.code(final_prompt, language="text")
-                        st.success("✅ Đã tạo Prompt theo ý Elima!")
-                    else:
-                        st.info("👈 Hãy dán mô tả từ Elima vào ô bên trên để tạo Prompt.")
-            st.markdown('</div>', unsafe_allow_html=True)
-
-            # --- BƯỚC 3: CAPTION & HASHTAG (Dự phòng) ---
-            # Sử dụng .get() để tránh lỗi nếu dữ liệu cũ chưa cập nhật
-            default_caption = card.get('caption', 'Chưa có caption mẫu.')
-            default_hashtags = card.get('hashtags', '#Tarot')
+            durations = ["15s (Shorts)", "30s (Story)", "60s (Full)"]
             
-            with st.expander("3️⃣ Bước 3: Caption & Hashtag mẫu (Dùng ngay)", expanded=False):
-                st.text_area("Caption:", value=default_caption, height=120)
-                st.code(default_hashtags, language="text")
+            for i, tab in enumerate(tabs):
+                with tab:
+                    final_prompt = generate_sora_prompt_dynamic(user_desc, durations[i])
+                    st.code(final_prompt, language="text")
+        
+        # Caption & Hashtag (Luôn hiện ở cuối để tiện copy)
+        st.markdown("#### 3️⃣ Bước 3: Caption & Hashtag (Copy đăng bài)")
+        default_caption = card.get('caption', 'Chưa có caption mẫu.')
+        default_hashtags = card.get('hashtags', '#Tarot')
+        
+        col_cap, col_hash = st.columns(2)
+        with col_cap:
+            st.text_area("Caption Facebook/TikTok:", value=default_caption, height=150)
+        with col_hash:
+            st.text_area("Hashtags:", value=default_hashtags, height=150)
 
     else:
         # Màn hình chờ
         st.markdown(f"""
         <div style='text-align: center; color: #666; padding: 50px;'>
             <h3>👋 Chào Moon!</h3>
-            <p>Hôm nay chúng ta sẽ lan tỏa thông điệp ánh sáng nào? <br>Hãy chọn chủ đề bên trên để bắt đầu nhé.</p>
+            <p>Giao diện mới đã được tối ưu rộng rãi dễ nhìn hơn.<br>Hãy chọn chủ đề bên trên để bắt đầu nhé.</p>
         </div>
         """, unsafe_allow_html=True)
 
