@@ -1,7 +1,7 @@
 import streamlit as st
 
 # --- CẤU HÌNH TRANG (TÊN FILE: Zen.py) ---
-st.set_page_config(page_title="Zen Master v4.6 (Fix CTA)", layout="wide", page_icon="🙏")
+st.set_page_config(page_title="Zen Master v5.0 (Final)", layout="wide", page_icon="🙏")
 
 # --- CSS GIAO DIỆN ---
 st.markdown("""
@@ -14,14 +14,25 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- HEADER ---
-st.markdown('<div class="main-header">🙏 ZEN MASTER: CONTENT VIRAL v4.6</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-header">Quy trình: 1. Tạo Ảnh → 2. Viết Kịch bản & Caption → 3. App tự xuất Prompt Sora kỹ thuật</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-header">🙏 ZEN MASTER: CONTENT VIRAL v5.0</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-header">Quy trình: 1. Tạo Ảnh → 2. Viết Kịch bản (Lưu trữ) → 3. App tự xuất Prompt Visual (Sạch & Chuẩn)</div>', unsafe_allow_html=True)
 
 # --- SIDEBAR: CẤU HÌNH ---
 with st.sidebar:
     st.header("⚙️ CẤU HÌNH ZEN")
     
-    pham_options = ["1️⃣ Phẩm Song Yếu", "2️⃣ Phẩm Tâm", "3️⃣ Phẩm Hoa", "4️⃣ Phẩm Ngu", "5️⃣ Phẩm Hiền Trí"]
+    # DANH SÁCH ĐỦ 26 PHẨM KINH PHÁP CÚ
+    pham_options = [
+        "1. Phẩm Song Yếu (Twin Verses)", "2. Phẩm Không Phóng Dật (Vigilance)", "3. Phẩm Tâm (The Mind)", 
+        "4. Phẩm Hoa (Flowers)", "5. Phẩm Ngu (The Fool)", "6. Phẩm Hiền Trí (The Wise)", 
+        "7. Phẩm A-la-hán (The Arhat)", "8. Phẩm Ngàn (Thousands)", "9. Phẩm Ác (Evil)", 
+        "10. Phẩm Hình Phạt (Punishment)", "11. Phẩm Già (Old Age)", "12. Phẩm Tự Ngã (Self)", 
+        "13. Phẩm Thế Gian (The World)", "14. Phẩm Phật Đà (The Buddha)", "15. Phẩm Hạnh Phúc (Happiness)", 
+        "16. Phẩm Hỷ Ái (Pleasure)", "17. Phẩm Phẫn Nộ (Anger)", "18. Phẩm Cấu Uế (Impurity)", 
+        "19. Phẩm Pháp Trụ (The Just)", "20. Phẩm Đạo (The Path)", "21. Phẩm Tạp Lục (Miscellaneous)", 
+        "22. Phẩm Địa Ngục (Hell)", "23. Phẩm Voi (The Elephant)", "24. Phẩm Tham Ái (Craving)", 
+        "25. Phẩm Tỳ Kheo (The Monk)", "26. Phẩm Bà-la-môn (The Brahmin)"
+    ]
     selected_pham = st.selectbox("Chọn Phẩm:", pham_options)
     
     format_options = ["📖 Lời Nhắc (Quote)", "❓ Giải Mã (Q&A)", "🎬 Kể Chuyện (Story)", "🎶 Nhạc Thiền (Mantra)"]
@@ -43,37 +54,38 @@ with st.sidebar:
     else:
         st.info("ℹ️ Tạo Ảnh mới (Tab 1)")
 
-# --- HÀM MAPPING DỮ LIỆU SORA (LOGIC NGẦM) ---
-def get_technical_params(fmt, pham):
-    # 1. Map Subject & Action theo Định dạng
+# --- HÀM MAPPING DỮ LIỆU SORA (VISUAL ONLY) ---
+def get_technical_params(fmt, pham_full_name):
+    # 1. Map Subject & Action & Audio theo Định dạng (KHÔNG CÓ VOICE)
     if "Quote" in fmt:
         subject = "Statue of Buddha, golden texture."
         action = "Stillness, subtle breathing motion, dust particles floating."
         lighting = "Soft, volumetric lighting, God rays (divine atmosphere)."
+        audio_style = "Silence, temple bell sound, peace."
     elif "Mantra" in fmt:
         subject = "Abstract Zen Mandala, Lotus flower opening."
         action = "Infinite seamless loop, hypnotic rotation, fluid motion."
         lighting = "Pastel colors, bioluminescent glow, healing energy."
+        audio_style = "Deep meditation music, theta waves, nature sounds."
     elif "Story" in fmt:
         subject = "A Zen monk walking in ancient temple, cinematic character."
         action = "Slow walking meditation, storytelling flow, looking at the sky."
         lighting = "Cinematic drama lighting, deep shadows, morning sun."
+        audio_style = "Cinematic score, emotional ambient."
     else: # Q&A
         subject = "Conceptual art, duality of light and darkness."
         action = "Morphing shapes, transition from chaos to order."
         lighting = "High contrast (Chiaroscuro), dramatic spotlight."
+        audio_style = "Mystery ambient, revealing sound effect."
 
-    # 2. Map Context (Phẩm) sang tiếng Anh
-    context_map = {
-        "1️⃣ Phẩm Song Yếu": "Twin Verses, mind creates reality, duality of life.",
-        "2️⃣ Phẩm Tâm": "The Mind, control your thoughts, inner peace.",
-        "3️⃣ Phẩm Hoa": "Flowers, beauty of impermanence, blooming wisdom.",
-        "4️⃣ Phẩm Ngu": "The Fool, darkness and ignorance, awakening.",
-        "5️⃣ Phẩm Hiền Trí": "The Wise, clarity, mountain of wisdom."
-    }
-    context_theme = context_map.get(pham, "Zen philosophy.")
+    # 2. Lấy tên tiếng Anh của Phẩm làm Context (Tách từ chuỗi input)
+    # Ví dụ: "1. Phẩm Song Yếu (Twin Verses)" -> Lấy "Twin Verses"
+    try:
+        context_theme = pham_full_name.split("(")[1].replace(")", "") + ", Zen philosophy, Buddhism."
+    except:
+        context_theme = "Zen philosophy, Buddhism, Inner peace."
     
-    return subject, action, lighting, context_theme
+    return subject, action, lighting, context_theme, audio_style
 
 # --- HÀM TẠO CAPTION STYLE ---
 def get_caption_style(fmt):
@@ -97,15 +109,14 @@ with tab1:
         st.image("https://r2.erweima.ai/imgcompressed/compressed_93452f4c478474246835150242250266.webp", caption="Ảnh Phật mẫu (Macro Style)", width=300)
     else:
         st.info("👇 Prompt Midjourney (Copy & Paste):")
-        subject, action, lighting, _ = get_technical_params(selected_format, selected_pham)
+        subject, action, lighting, _, _ = get_technical_params(selected_format, selected_pham)
         mj_prompt = f"/imagine prompt: {subject} {action} {lighting} {selected_angle.split('(')[0]} style, 8k, cinematic --ar 9:16"
         st.code(mj_prompt, language="text")
 
-# TAB 2: NỘI DUNG (TÁCH BIỆT RÕ RÀNG)
+# TAB 2: NỘI DUNG (GIỮ NGUYÊN ĐỂ USER LƯU TRỮ/LẤY IDEA)
 with tab2:
     st.link_button("🧘 Mở 'Bác Giác Ngộ' (GPT)", "https://chatgpt.com/g/g-693137cfde808191b2a5f60c8a49c862-chia-khoa-tam-linh-bac-giac-ngo", type="primary")
     
-    # Logic Style Caption động
     caption_style = get_caption_style(selected_format)
     suggested_tags = get_hashtags(selected_format)
     
@@ -129,38 +140,32 @@ HÃY VIẾT 2 PHẦN RIÊNG BIỆT:
     st.divider()
     
     col_script, col_social = st.columns(2)
-    
     with col_script:
-        st.subheader("🎥 1. Dán Kịch bản (Làm Video)")
-        user_script_input = st.text_area("Chỉ dán phần Hook-Body-CTA vào đây:", height=300, placeholder="Hook: ...\nBody: ...\nCTA: ...")
+        st.subheader("🎥 1. Dán Kịch bản (Lưu trữ)")
+        user_script_input = st.text_area("Dán Kịch bản vào đây (Chỉ để bạn xem, KHÔNG đưa vào Video):", height=300)
     
     with col_social:
-        st.subheader("📱 2. Dán Caption (Để đăng bài)")
-        st.text_area("Dán Caption & Hashtag vào đây để lưu trữ (Không ảnh hưởng Video):", height=300, placeholder="Caption deep...\n#Hashtag")
+        st.subheader("📱 2. Dán Caption (Đăng bài)")
+        st.text_area("Dán Caption & Hashtag vào đây:", height=300)
 
-# TAB 3: VIDEO (OUTPUT KỸ THUẬT - FULL SCRIPT)
+# TAB 3: VIDEO (OUTPUT VISUAL THUẦN TÚY - KHÔNG TEXT KỊCH BẢN)
 with tab3:
-    if not user_script_input:
-        st.warning("⚠️ Vui lòng dán Kịch bản vào Tab 2 (Cột bên trái).")
-    else:
-        # Lấy thông số kỹ thuật
-        sub, act, light, ctx_theme = get_technical_params(selected_format, selected_pham)
-        
-        # Làm sạch kịch bản (Bỏ dòng Hook/Body/CTA thừa)
-        clean_script = user_script_input.replace("Hook:", "").replace("Body:", "").replace("CTA:", "").replace("\n", " ").strip()
-        
-        # TẠO PROMPT KỸ THUẬT (KHÔNG CẮT BỚT KÝ TỰ NỮA)
-        sora_technical_prompt = f"""[INPUT ẢNH]
+    # Lấy thông số kỹ thuật thuần túy
+    sub, act, light, ctx_theme, audio_st = get_technical_params(selected_format, selected_pham)
+    
+    # TẠO PROMPT KỸ THUẬT (SẠCH - CLEAN)
+    # Lưu ý: Phần Context chỉ lấy Theme tiếng Anh, không lấy user_script_input
+    sora_technical_prompt = f"""[INPUT ẢNH]
 
 Cinematic shot.
 Subject: {sub}
 CAMERA: {selected_angle.split('(')[0]}
 Action: {act}
 Lighting: {light}
-Context: {ctx_theme} Script content: "{clean_script}"
-AUDIO: Zen music + Warm Vietnamese voiceover.
-CONSTRAINT: NO TEXT, NO LOGO.
+Context: {ctx_theme}
+AUDIO: {audio_st}
+CONSTRAINT: NO TEXT, NO LOGO, NO WATERMARK.
 --duration {duration}s"""
-        
-        st.success("✅ Đã tạo Prompt Kỹ thuật (Full Kịch bản bao gồm CTA):")
-        st.text_area("Copy đoạn này dán vào Sora:", value=sora_technical_prompt, height=350)
+    
+    st.success(f"✅ Đã tạo Prompt Visual (Sạch & Không dính Text). Phẩm: {selected_pham}")
+    st.text_area("Copy đoạn này dán vào Sora:", value=sora_technical_prompt, height=350)
