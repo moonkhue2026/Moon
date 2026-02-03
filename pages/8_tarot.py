@@ -1,4 +1,4 @@
-# Version: v3.1 (AUTO VISUAL - Tự động tạo Prompt Sora chuẩn Style Video 2)
+# Version: v3.2 (FIX ERROR - Vá lỗi xung đột dữ liệu cũ)
 import streamlit as st
 import random
 
@@ -12,14 +12,14 @@ st.set_page_config(
 # Link Chatbot Elima
 ELIMA_LINK = "https://chatgpt.com/g/g-68ab318836f48191a9b7fae7afcca279-elima-tarot"
 
-# 2. DỮ LIỆU BÀI TAROT (Đã thêm trường 'visual_desc' để tự động tạo Prompt)
+# 2. DỮ LIỆU BÀI TAROT
 tarot_database = [
     # =======================
     # 💰 TÀI CHÍNH
     # =======================
     {
         "category": "Tài chính",
-        "name": "Ace of Pentacles", # Tên tiếng Anh chuẩn để Sora hiểu
+        "name": "Ace of Pentacles",
         "vn_name": "Át Tiền",
         "image_url": "https://i.pinimg.com/564x/a2/27/98/a22798e604de6e9e436894d7545e8550.jpg",
         "message": "Cánh cửa tài chính mở toang! Nguồn tiền khổng lồ đang chảy vào.",
@@ -141,18 +141,11 @@ tarot_database = [
     }
 ]
 
-# 3. HÀM TẠO SORA PROMPT (ĐÃ TỐI ƯU HÓA KHÔNG CẦN NHẬP TAY)
+# 3. HÀM TẠO SORA PROMPT (AUTO)
 def generate_sora_prompt_auto(card_name, visual_desc, duration):
-    # Style Video 2: Mystical, Cinematic, Immersive
     style = "Cinematic lighting, photorealistic, 8k, highly detailed, magical atmosphere, depth of field."
-    
-    # Yêu cầu hiển thị rõ lá bài (Video 1) nhưng Vibe huyền bí (Video 2)
     base_subject = f"A clear, cinematic close-up view of the Tarot card '{card_name}'. The card art is visible."
-    
-    # Ghép nội dung
     content = f"{base_subject} {visual_desc}"
-    
-    # Cấm Text & Voice (Quan trọng)
     negative = "--negative text, subtitles, captions, words, voice, speech"
     sound = "--sound mystical ambiance, magic chimes, cinematic sound effects, nature sounds, NO voice"
 
@@ -210,7 +203,7 @@ def draw_card(category):
 # 6. GIAO DIỆN CHÍNH
 def main():
     st.title("🎬 Moon's Content Station")
-    st.caption("v3.1 - Auto Visual: Tự động tạo Video Prompt chuẩn Style Huyền Bí")
+    st.caption("v3.2 - Fix Error: Đã vá lỗi xung đột dữ liệu cũ")
     
     # --- MENU ---
     col_menu, col_btn = st.columns([1, 2])
@@ -238,7 +231,11 @@ def main():
         with col_img:
             st.image(card['image_url'], use_container_width=True)
         with col_info:
-            st.markdown(f"## 🔮 {card['name']} - {card['vn_name']}")
+            # === [ĐOẠN CODE VÁ LỖI Ở ĐÂY] ===
+            # Sử dụng .get('vn_name', '') để nếu không có tên tiếng Việt thì không bị lỗi
+            vn_name = card.get('vn_name', '') 
+            st.markdown(f"## 🔮 {card['name']} - {vn_name}")
+            
             st.info(f"💌 **Thông điệp:** {card['message']}")
             st.markdown(f"""<div class="affirmation-box"><b>🔥 MANIFEST:</b><br><i>"{card['affirmation']}"</i></div>""", unsafe_allow_html=True)
             if st.button("🔄 Rút bài khác"):
@@ -261,7 +258,6 @@ def main():
             
             for i, tab in enumerate(tabs):
                 with tab:
-                    # Tự động lấy visual_desc từ data để tạo prompt
                     final_prompt = generate_sora_prompt_auto(card['name'], card.get('visual_desc', ''), durations[i])
                     st.code(final_prompt, language="text")
                     st.success("👉 Copy dán vào Sora/Runway.")
@@ -271,12 +267,13 @@ def main():
             st.subheader("🎙️ 2. Lấy Kịch bản Voice (Elima)")
             st.caption("Dùng lệnh này để Elima viết lời bình (Voiceover) cho bạn.")
             
-            prompt_voice = f"Tôi rút được lá '{card['name']}' ({card['vn_name']}) về '{card['category']}'. Hãy viết kịch bản Voiceover ngắn gọn (3 phần: Hook - Body - CTA '{card['affirmation']}'). Tone giọng huyền bí, lôi cuốn. Đừng viết mô tả ảnh, chỉ viết lời bình để đọc."
+            prompt_voice = f"Tôi rút được lá '{card['name']}' ({vn_name}) về '{card['category']}'. Hãy viết kịch bản Voiceover ngắn gọn (3 phần: Hook - Body - CTA '{card['affirmation']}'). Tone giọng huyền bí, lôi cuốn. Đừng viết mô tả ảnh, chỉ viết lời bình để đọc."
             st.code(prompt_voice, language="text")
             st.link_button("💬 Chat với Elima ngay", ELIMA_LINK, type="primary", use_container_width=True)
             
             st.markdown("---")
             st.caption("📝 **Caption & Hashtags (Dự phòng):**")
+            # Dùng .get() cho caption để tránh lỗi luôn
             st.code(f"{card.get('caption', '')}\n\n{card.get('hashtags', '')}", language="text")
 
     else:
